@@ -8,7 +8,7 @@ except FileNotFoundError:
 
 setup(
     name='setprint',
-    version='0.1.4',
+    version='0.1.7',
     packages=find_packages(),
     install_requires=[
         'numpy',
@@ -16,7 +16,7 @@ setup(
     ],
     author='mtur',  
     author_email='2007helloworld@gmail.com',
-    description='リストの中身を整理し、構造を可視化するライブラリ',
+    description='リストの中身を整理し、階層構造を可視化するモジュール',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/mtur2007/SetPrint',

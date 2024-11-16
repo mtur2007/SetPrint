@@ -1,1 +1,1 @@
-setprint_module
+setprint

@@ -284,7 +284,7 @@ def slice_blocks(datas,mode):
 リストを整列させるクラス。
 '''
 
-class setprint:
+class SetPrint:
 
     def __init__(self, input_list):
         self.input_list = input_list
