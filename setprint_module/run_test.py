@@ -47,13 +47,13 @@ test_array[20][12][0] = [bug,bug,bug] #
 test_array[21][10][0] = [bug,bug,bug] #
 
 list_data = setprint(test_list)
-answer = list_data.set_list(guide=True,keep_start=2,keeplen=10)
+answer = list_data.set_list(guide=True,keep_start=1,keeplen=10)
 
-with open('/Users/matsuurakenshin/WorkSpace/development/set_data/Make_txtfile/SET_list.txt','w') as f:
+with open('output_path.txt','w') as f:
     for line in answer['grid_slice']:
         f.write(line)
 
-list_data.pick_guidePrint('/Users/matsuurakenshin/WorkSpace/development/set_data/Make_txtfile/test_SetData_GuidePrint.txt')
+list_data.pick_guidePrint('output_path.txt')
 
 # b = pick_guidePrint(answer,'/Users/matsuurakenshin/WorkSpace/development/set_data/Make_txtfile/test_SetData_GuidePrint.txt')
 # b.execute()
