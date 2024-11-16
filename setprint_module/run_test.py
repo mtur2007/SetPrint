@@ -54,22 +54,3 @@ with open('output_path.txt','w') as f:
         f.write(line)
 
 list_data.pick_guidePrint('output_path.txt')
-
-# b = pick_guidePrint(answer,'/Users/matsuurakenshin/WorkSpace/development/set_data/Make_txtfile/test_SetData_GuidePrint.txt')
-# b.execute()
-
-
-# output_path = '/Users/matsuurakenshin/WorkSpace/development/set_data/Make_txtfile/SET_list.txt'
-
-# All_blocks = [ 
-#                [ ['title','1line','2line'], ['1_2','1_txt','2_txt'] ],
-#                [ ['2_1','1_data','2_data'], ['2_2','1_line','2_line','3_line'], ['title','1_txt','2_txt']],
-#                [ ['3_1','1_txt','2_txt']],
-
-#                ]
-# list_data = setprint( All_blocks)
-# grid_slice = list_data.blocks_border_print(guide=True)
-
-# with open(output_path,'w') as f:
-#     for line in grid_slice:
-#         f.write(line)
