@@ -478,7 +478,7 @@ class setprint:
                         if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < 5:
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = 5
 
-                    self.keep_linetxts.append([self.keep_index,'◆list'])
+                    self.keep_linetxts.append([self.keep_index,self.list_txt_image])
 
                     '''
                     ここに '[' を入れるプログラムを作成する。
@@ -666,7 +666,7 @@ class setprint:
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)] < 5:
                             self.MAX_indexlen[self.MAX_index.index(insert_index)] = 5
 
-                    self.keep_linetxts.append([insert_index,'◆list'])
+                    self.keep_linetxts.append([insert_index,self.list_txt_image])
 
                     '''
                     ここに '[' を入れるプログラムを作成する。
@@ -774,6 +774,8 @@ class setprint:
         All_blocks = []
         keep_Ylines_data = []
 
+        self.list_txt_image = '►list'
+
         if self.keep_start == self.now_deep:
 
             # < self.MAX_indexlen > インデックス別整列をする為、linenumの値[リストのインデックス]は使わず、リストの一列毎の階層だげを調べる。
@@ -808,7 +810,7 @@ class setprint:
                         if self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] < 5:
                             self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] = 5
 
-                    self.keep_linetxts.append([copy_keep_index,'◆list'])
+                    self.keep_linetxts.append([copy_keep_index,self.list_txt_image])
                     '''
                     ここに '[' を入れるプログラムを作成する。
                     '''
