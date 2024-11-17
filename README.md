@@ -9,7 +9,7 @@
 `• python`
 ```python
 from setprint import SetPrint
-list_data = setprint( ' list' )
+list_data = SetPrint( ' list' )
 set_data = list_data. method
 ```
 ## **メソッド**
@@ -61,8 +61,8 @@ set_data = list_data. method
                         '[4]'
                     ]
 
-        list_data = setprint(test_list)
-        answer = list_data.set_list(guide=True,keep_start=False,keeplen=False)
+        list_data = SetPrint(test_list)
+        set_datas = list_data.set_list(guide=True,keep_start=False,keeplen=False)
 
         with open('output_path.txt','w') as f:
             for line in set_datas['grid_slice']:
@@ -91,7 +91,7 @@ set_data = list_data. method
             |  [0][2]                     |
             |  [0][3]                     |
 
-         =================================================================
+        =================================================================
          {1}|  [1]{n}                     |  [1][2]{n}                  |
             |-----------------------------|-----------------------------|
             :                             :                             :
@@ -148,8 +148,8 @@ set_data = list_data. method
                         '[4]'
                     ]
 
-        list_data = setprint(test_list)
-        answer = list_data.set_list(guide=True,keep_start=1,keeplen=10) 
+        list_data = SetPrint(test_list)
+        set_datas = list_data.set_list(guide=True,keep_start=1,keeplen=10) 
         '''
         現在はkeep_lenに、keep_startの次元に格納されている配列をすべて1列にする機能はないので、すべて一列にする場合はkeep_lenに大きな数を入れてください。
         '''
@@ -198,10 +198,11 @@ set_data = list_data. method
     ```python
 
     # from setprint import SetPrint
-    # list_data = setprint( `list` )
-    # list_data.SET_list(guide=True,keep_start=1,keeplen=10)
+    # list_data = SetPrint(test_list)
+    # list_data.set_list(guide=True,keep_start=1,keeplen=10)
 
-    list_data.pick_guideprint( 'output_path' )
+    list_data.pick_guideprint(output_path)
+
 
     ```
 
@@ -244,9 +245,9 @@ set_data = list_data. method
         
                                             1列目                            2列目                            3列目
         All_blocks = [ 
-                        1step[ ['block_title','1line','2line'], ['1_2','1_txt','2_txt'] ]
-                        2step[ ['2_1','1_data','2_data'],       ['2_2','1_line','2_line','3_line'], ['2_3','1_txt','2_txt']]
-                        3step[ ['3_1','1_txt','2_txt']]
+                        [ ['block_title','1line','2line'], ['1_2','1_txt','2_txt'] ],                                      #1step
+                        [ ['2_1','1_data','2_data'],       ['2_2','1_line','2_line','3_line'], ['2_3','1_txt','2_txt'] ],  #2step
+                        [ ['3_1','1_txt','2_txt'] ]                                                                        #3step
 
                     ]
 
@@ -293,10 +294,10 @@ set_data = list_data. method
     `• python`
     ```python
 
-    # from setprint import SetPrint
+    #from setprint import SetPrint
 
-    list_data = setprint( `All_blocks` )
-    grid_slice = blocks_border_print(line_title = line_title,　guide=True):
+    list_data = SetPrint( `All_blocks` )
+    grid_slice = list_data.blocks_border_print(line_title =  `line_title` , guide=True):
 
     with open('output_path','w') as f:
         for line in grid_slice:

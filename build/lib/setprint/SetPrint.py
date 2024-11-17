@@ -845,7 +845,7 @@ class SetPrint:
                 self.MAX_index,self.MAX_indexlen = sort_MAX_index,sort_MAX_indexlen
 
                 linenum = 0
-                self.keep_linetxts = ['[]'] #ガイド
+                self.keep_linetxts = ['{n}'] #ガイド
 
                 S_onlylist_index = set()
                 F_onlylist_index = set()
@@ -1153,7 +1153,7 @@ class SetPrint:
                 # ESC キーが押された場合に終了
                 return False
 
-    def pick_guidePrint(self, output_path):
+    def pick_guideprint(self, output_path):
 
         # リスト内包表記を使って、キーに対応する値を取り出す
         try:

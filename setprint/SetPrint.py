@@ -365,7 +365,7 @@ class SetPrint:
                 for line in writeline:
                     printlist.append(f"{line}\n")
 
-                printlist.append('\n') #※0
+                printlist.append('\n') # <※0>
             
             else:
                 printlist.append(f"{'='*linelen0}\n")
@@ -415,8 +415,7 @@ class SetPrint:
                     printlist.insert(set_index,guidex0[:-2]+'\n')
                     printlist.insert(set_index+1,guidex1[:-2]+'\n')
 
-                    #ボーダー作成時に追加した空白部分(※0)はガイドをつける場合、いらないので情報を書き換える。
-                    printlist[set_index+2] = guidex2[:-2] + '\n'
+                    printlist[set_index+2] = guidex2[:-2] + '\n' #更新場所プログラム内の印<※0>
 
                     set_index += len(line)+2 + 2
 
@@ -444,14 +443,17 @@ class SetPrint:
         txtline = [txt_index]
         insert_index = len(self.Xline_blocks)-1
 
+        # キープする次元と現在の次元が同じなら、キープ用の処理に移る。
         if self.keep_start == self.now_deep:
+            
+            # 格納情報、次元情報、文字数を取得する為の処理
 
-            # < self.MAX_indexlen > インデックス別整列をする為、linenumの値[リストのインデックス]は使わず、リストの一列毎の階層だげを調べる。
+            # 格納情報の初期化
             txtline = []
 
-            self.MAX_index = []
-            self.MAX_indexlen = []
-            self.finish_index = {}
+            self.MAX_index = []    #存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
+            self.MAX_indexlen = [] #インデックスに格納されている配列の文字数を格納する。
+            self.finish_index = {} #リスト配列の最後尾のインデックスを格納
 
             self.now_index.append('')
             self.Xline_blocks.append('')
@@ -461,7 +463,6 @@ class SetPrint:
 
             for linenum in range(len(datas)):
                 self.keep_index = []
-                #now_index[1:]を表す
                 line = datas[linenum]
                 
                 self.now_index[-1] = linenum
@@ -469,8 +470,10 @@ class SetPrint:
                 datatype = type(line)
 
                 if datatype == list or datatype == np.ndarray:
-                    self.keep_linetxts = []
 
+                    self.keep_linetxts = [] #1列毎の配列情報を格納するリスト
+                    
+                    #存在するインデックスの情報の新規作成/更新
                     if (self.keep_index in self.MAX_index) == False:
                         self.MAX_index.append(self.keep_index.copy())
                         self.MAX_indexlen.append(5)
@@ -480,16 +483,14 @@ class SetPrint:
 
                     self.keep_linetxts.append([self.keep_index,self.list_txt_image])
 
-                    '''
-                    ここに '[' を入れるプログラムを作成する。
-                    '''
+                    #リストだった場合、またこのメソッドが呼び出される。
                     self.search_index(line)
          
                     txtline.append(self.keep_linetxts)
                 else:
-                    #リストの最下層の場合の処理
                     txt_line = str(line)
 
+                    #存在するインデックスの情報の新規作成/更新
                     if (self.keep_index in self.MAX_index) == False:
                         self.MAX_index.append(self.keep_index.copy())
                         self.MAX_indexlen.append(len(txt_line))
@@ -499,9 +500,14 @@ class SetPrint:
 
                     txtline.append([[self.keep_index,txt_line]])
             
-           
-            if len(datas) >= 1:
 
+            # 取得し終えた、配列情報を、場所や長さで整える処理
+            if len(datas) >= 1:
+                '''
+                1列毎に調査された内容毎をfor構文で回し、
+                存在したインデックスが格納された配列と比べて整えていく。
+                '''
+                # その為には、両者の格納を昇降順にソートする必要があるのでsorted関数を使用する。
                 sort_MAX_index = sorted(self.MAX_index)
                 sort_MAX_indexlen = []
                 for indexline in sort_MAX_index:
@@ -512,9 +518,13 @@ class SetPrint:
                 linenum = 0
                 self.keep_linetxts = [txt_index] #ガイド
 
-                S_onlylist_index = set()
-                F_onlylist_index = set()
+                # 格納情報の中には リストである事を表す為に '[', "]" の情報が格納されており、pick_guideprint関数では扱われないようにする為、それらサブで調べる。
 
+                # 他の列と格納状況が異なる箇所を格納する変数。存在だけを確認するのでset()。結果を用いて、見た目を変更する。
+                S_onlylist_index = set() # '['  →  "{"
+                F_onlylist_index = set() # ']'  →  "}"
+
+                
                 for keep_linenum in range(len(txtline)):
                     keep_line = txtline[keep_linenum]
                     txt = ''
@@ -525,19 +535,27 @@ class SetPrint:
                         index_line = self.MAX_index[linenum]
                         noput_point = []
 
+                        # 両者のインデックスが同じだった場合。
                         if keep_txts[0] == index_line:
                             index_len = self.MAX_indexlen[linenum]
                             air = (index_len - len(keep_txts[1])) * ' '
                             txt += air + str(keep_txts[1]) + ' '
 
                         else:
+                            #違かった場合、配列数が足りない 又は、違う次元があるのかを調べる
+                            #         [ a, b, 'c', d ] 　   [ a, b, '[' a,b,c ], d  ]
+                            #         [ a, b  "]"  -     　 [ a, b,  ^  ^ ^ ^ ^ 'd' ]
+
                             if keep_txts[0] == 'finish':
+                                #配列が足りない場合は同じ次元の終わりのインデックスを検索項目にする。
                                 search_finish = keep_txts[1][:-1]
                                 search_finish.append(self.finish_index[str(search_finish)])
                             else:
+                                #違う次元がある場合は現在のインデックスを検索項目にする。
                                 search_finish = keep_txts[0]
 
                             while True:
+                                #検索項目のインデックスが出てくるまで空白を挿入
                                 if search_finish == self.MAX_index[linenum]:
                                     if  keep_txts[0] == 'finish':
                                         txt += '] '
@@ -546,6 +564,7 @@ class SetPrint:
                                         txt += air + str(keep_txts[1]) + ' '
                                     break
                                 else:
+                                    # 穴埋め時に他次元の情報が見つかったら、格納状況が異なる箇所として扱う
                                     if self.MAX_index[linenum][-1] == -1:
                                         
                                         S_onlylist_index.add(len(txt))
@@ -555,6 +574,7 @@ class SetPrint:
                                         noput_point.append(self.MAX_index.index(key_index))
                                         txt += (self.MAX_indexlen[linenum] * ' ') + ' '
                                     else:
+                                        # 穴埋め時、格納状況が異なる箇所だった場合、空白ではなく '-' を挿入。
                                         if (linenum in noput_point) != True:
                                             txt += (self.MAX_indexlen[linenum] * '-') + ' '
                                         else:
@@ -566,6 +586,9 @@ class SetPrint:
                                 linenum += 1
                         linenum += 1
 
+                    # 余った配列の穴埋め
+                    # [[~~~],[~~~], [========] ]
+                    # [[~~~],[~~~]] ^--------^
                     for i in range(len(self.MAX_index) - linenum):
                         i_index = self.MAX_index[linenum + i]
             
@@ -589,6 +612,7 @@ class SetPrint:
 
                     self.keep_linetxts.append(txt)
 
+                # 格納状況が異なる箇所の [] を　{) に変更しわかりやすくする。
                 for linenum in range(len(self.keep_linetxts)-1):
                     linenum += 1
                     for S_index in S_onlylist_index:
@@ -609,6 +633,7 @@ class SetPrint:
             txt_keep_index = self.now_index.copy()
             txt_keep_index[-1] = 'n'
 
+            # pick_guideprintで引き継ぐ 配列情報データから リストの '[', "]" 部分の情報を削除する
             total = self.MAX_indexlen[0] + 1
             x_lens = [0]
             for datanum in range(len(self.MAX_indexlen)-1):
@@ -633,6 +658,7 @@ class SetPrint:
 
             self.keep_txts_data[insert_index] = [txt_keep_index,del_MAXindex,self.MAX_indexlen,x_lens]       
 
+        # キープ範囲内にある次元のリスト配列から情報を取得する。
         elif self.keep_start < self.now_deep <= self.keep_finish:
 
             self.keep_index.append(-1)
@@ -668,13 +694,9 @@ class SetPrint:
 
                     self.keep_linetxts.append([insert_index,self.list_txt_image])
 
-                    '''
-                    ここに '[' を入れるプログラムを作成する。
-                    '''
                     self.search_index(line) 
                 else:
                     txt_line = str(line)
-                    #テキストの場合、中身の長さを入れ
                     
                     insert_index = self.keep_index.copy()
 
@@ -697,6 +719,7 @@ class SetPrint:
                 if self.MAX_indexlen[self.MAX_index.index(insert_index)] < 1:
                     self.MAX_indexlen[self.MAX_index.index(insert_index)] = 1
 
+            # リストの末端部分は他の行と揃えるため、配列の順番を変える。
             self.keep_linetxts.append(['finish',insert_index,'finish'])
 
             key = str(insert_index[:-1])
@@ -705,10 +728,6 @@ class SetPrint:
             else:
                 if self.finish_index[key] < insert_index[-1]:
                     self.finish_index[key] = insert_index[-1]
-
-            '''
-            ここに ']' を 入れるプログラムを作成する。
-            '''
 
             del self.keep_index[-1]
         
@@ -752,6 +771,7 @@ class SetPrint:
         self.now_deep -= 1
 
     #リストを整列する際の条件を整理したり、１次元毎にブロックを一段ずらす為、１次元までこの関数で処理し、以降は search_index で調査。
+    #中身はsearch_indexとほぼ同じ
     def set_list(self, guide,keep_start,keeplen):
         
         datas = self.input_list
@@ -845,7 +865,7 @@ class SetPrint:
                 self.MAX_index,self.MAX_indexlen = sort_MAX_index,sort_MAX_indexlen
 
                 linenum = 0
-                self.keep_linetxts = ['[]'] #ガイド
+                self.keep_linetxts = ['{n}'] #ガイド
 
                 S_onlylist_index = set()
                 F_onlylist_index = set()
@@ -1153,7 +1173,7 @@ class SetPrint:
                 # ESC キーが押された場合に終了
                 return False
 
-    def pick_guidePrint(self, output_path):
+    def pick_guideprint(self, output_path):
 
         # リスト内包表記を使って、キーに対応する値を取り出す
         try:
