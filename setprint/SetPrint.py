@@ -295,6 +295,8 @@ class SetPrint:
     '''
 
     def blocks_border_print(self, **kwargs):
+
+        #引数チェック
         key_list = ['All_blocks','line_title','guide']
         diff_key = list(kwargs.keys())
         for key in key_list:
@@ -318,17 +320,18 @@ class SetPrint:
         else:
             guide = False
 
+        # ボックス状の配列をスライスする。
         slice_data = slice_blocks(All_blocks,0)
         printlist = []
         linelen0 = 0
 
         if guide == True:
-            max_leny = 0
+            maxlen_ytitle = 0
             for line in line_title:
-                if max_leny < len(str(line)):
-                    max_leny = len(str(line))
-            max_leny += 2
-            sample_guide = f" {max_leny * ' '} |  "
+                if maxlen_ytitle < len(str(line)):
+                    maxlen_ytitle = len(str(line))
+            maxlen_ytitle += 2
+            sample_guide = f" {maxlen_ytitle * ' '} |  "
         else:
             sample_guide = "|  "
 
@@ -380,14 +383,10 @@ class SetPrint:
         if len(slice_data[-1]) != 0:
             printlist.append(f"{'='*linelen1}\n")
 
-        #print(f'[SET_border, border] time: {finish - start}')
-
         #ガイド(index)を追加する場合の処理
         if guide == True:
 
-            read = 0
-
-            sample_guide = f" {max_leny * ' '} "
+            sample_guide = f" {maxlen_ytitle * ' '} "
             set_index = 1
             for linenum in range(len(slice_data)):
                 line = slice_data[linenum]
@@ -399,7 +398,7 @@ class SetPrint:
                     else:
                         txt = '{}'
 
-                    air = (max_leny - len(txt)) * ' '
+                    air = (maxlen_ytitle - len(txt)) * ' '
                     guidex0 = ' ' + air + str(txt) + ' |  '
                     
                     guidex1 = sample_guide + '|--'
@@ -422,8 +421,6 @@ class SetPrint:
                 else: #データがない時は1文で表示される為、例外処理
                     set_index += 1 +3
 
-            #print(f'[SET_border, guide ] time: {finish - start}')
-
         return printlist
 
     '''
@@ -440,7 +437,7 @@ class SetPrint:
         for i in self.now_index:
             txt_index += '['+str(i)+']'
         txt_index += '{n}' 
-        txtline = [txt_index]
+        keep_liens_data = [txt_index]
         insert_index = len(self.Xline_blocks)-1
 
         # キープする次元と現在の次元が同じなら、キープ用の処理に移る。
@@ -449,9 +446,9 @@ class SetPrint:
             # 格納情報、次元情報、文字数を取得する為の処理
 
             # 格納情報の初期化
-            txtline = []
+            keep_liens_data = [] # 1列毎の配列情報を格納するリスト
 
-            self.MAX_index = []    #存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
+            self.MAX_index    = [] #存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
             self.MAX_indexlen = [] #インデックスに格納されている配列の文字数を格納する。
             self.finish_index = {} #リスト配列の最後尾のインデックスを格納
 
@@ -471,8 +468,8 @@ class SetPrint:
 
                 if datatype == list or datatype == np.ndarray:
 
-                    self.keep_linetxts = [] #1列毎の配列情報を格納するリスト
-                    
+                    self.keep_1line_data = [] #1列の配列情報を格納するリスト
+
                     #存在するインデックスの情報の新規作成/更新
                     if (self.keep_index in self.MAX_index) == False:
                         self.MAX_index.append(self.keep_index.copy())
@@ -481,12 +478,12 @@ class SetPrint:
                         if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < 5:
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = 5
 
-                    self.keep_linetxts.append([self.keep_index,self.list_txt_image])
+                    self.keep_1line_data.append([self.keep_index,self.list_txt_image])
 
                     #リストだった場合、またこのメソッドが呼び出される。
                     self.search_index(line)
          
-                    txtline.append(self.keep_linetxts)
+                    keep_liens_data.append(self.keep_1line_data)
                 else:
                     txt_line = str(line)
 
@@ -498,7 +495,7 @@ class SetPrint:
                         if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = len(txt_line)
 
-                    txtline.append([[self.keep_index,txt_line]])
+                    keep_liens_data.append([[self.keep_index,txt_line]])
             
 
             # 取得し終えた、配列情報を、場所や長さで整える処理
@@ -516,7 +513,7 @@ class SetPrint:
                 self.MAX_index,self.MAX_indexlen = sort_MAX_index,sort_MAX_indexlen
 
                 linenum = 0
-                self.keep_linetxts = [txt_index] #ガイド
+                self.keep_1line_data = [txt_index] #ガイド
 
                 # 格納情報の中には リストである事を表す為に '[', "]" の情報が格納されており、pick_guideprint関数では扱われないようにする為、それらサブで調べる。
 
@@ -525,10 +522,10 @@ class SetPrint:
                 F_onlylist_index = set() # ']'  →  "}"
 
                 
-                for keep_linenum in range(len(txtline)):
-                    keep_line = txtline[keep_linenum]
+                for keep_linenum in range(len(keep_liens_data)):
+                    keep_line = keep_liens_data[keep_linenum]
                     txt = ''
-                    #a = 0
+                    
                     linenum = 0
                     for keep_txtnum in range(len(keep_line)):
                         keep_txts = keep_line[keep_txtnum]
@@ -610,25 +607,25 @@ class SetPrint:
                                 del noput_point[noput_point.index(linenum + i)]
                                 txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
 
-                    self.keep_linetxts.append(txt)
+                    self.keep_1line_data.append(txt)
 
                 # 格納状況が異なる箇所の [] を　{) に変更しわかりやすくする。
-                for linenum in range(len(self.keep_linetxts)-1):
+                for linenum in range(len(self.keep_1line_data)-1):
                     linenum += 1
                     for S_index in S_onlylist_index:
-                        line = self.keep_linetxts[linenum]
+                        line = self.keep_1line_data[linenum]
 
                         if line[S_index] == '[':
-                            self.keep_linetxts[linenum] = line[:S_index] + '{' + line[S_index+1:]
+                            self.keep_1line_data[linenum] = line[:S_index] + '{' + line[S_index+1:]
 
                     for F_index in F_onlylist_index:
-                        line = self.keep_linetxts[linenum]
+                        line = self.keep_1line_data[linenum]
 
                         if line[F_index] == ']':
-                            self.keep_linetxts[linenum] = line[:F_index] + ')' + line[F_index+1:]
+                            self.keep_1line_data[linenum] = line[:F_index] + ')' + line[F_index+1:]
                     
             #中身のリスト作成
-            self.Xline_blocks[insert_index] = self.keep_linetxts
+            self.Xline_blocks[insert_index] = self.keep_1line_data
 
             txt_keep_index = self.now_index.copy()
             txt_keep_index[-1] = 'n'
@@ -672,7 +669,7 @@ class SetPrint:
                 if self.MAX_indexlen[self.MAX_index.index(insert_index)] < 1:
                     self.MAX_indexlen[self.MAX_index.index(insert_index)] = 1
 
-            self.keep_linetxts.append([insert_index,'['])
+            self.keep_1line_data.append([insert_index,'['])
 
 
             for linenum in range(len(datas)):
@@ -692,7 +689,7 @@ class SetPrint:
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)] < 5:
                             self.MAX_indexlen[self.MAX_index.index(insert_index)] = 5
 
-                    self.keep_linetxts.append([insert_index,self.list_txt_image])
+                    self.keep_1line_data.append([insert_index,self.list_txt_image])
 
                     self.search_index(line) 
                 else:
@@ -707,7 +704,7 @@ class SetPrint:
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)] = len(txt_line)
 
-                    self.keep_linetxts.append([insert_index,txt_line])
+                    self.keep_1line_data.append([insert_index,txt_line])
             
             insert_index = self.keep_index.copy()
             insert_index[-1] += 1
@@ -720,7 +717,7 @@ class SetPrint:
                     self.MAX_indexlen[self.MAX_index.index(insert_index)] = 1
 
             # リストの末端部分は他の行と揃えるため、配列の順番を変える。
-            self.keep_linetxts.append(['finish',insert_index,'finish'])
+            self.keep_1line_data.append(['finish',insert_index,'finish'])
 
             key = str(insert_index[:-1])
             if (key in self.finish_index) == False:
@@ -752,17 +749,17 @@ class SetPrint:
                 if datatype == list or datatype == np.ndarray:
                     self.search_index(line)
 
-                    txtline.append(f'data_type: {datatype}')
+                    keep_liens_data.append(f'data_type: {datatype}')
                 else:
-                    txtline.append(str(line))
+                    keep_liens_data.append(str(line))
                     #リストの最下層の場合の処理
                 
-                if len(txtline[linenum+1]) > max_indexlen:
-                    max_indexlen = len(txtline[linenum+1])
+                if len(keep_liens_data[linenum+1]) > max_indexlen:
+                    max_indexlen = len(keep_liens_data[linenum+1])
                 
                 
             #中身のリスト作成
-            self.Xline_blocks[insert_index] = txtline
+            self.Xline_blocks[insert_index] = keep_liens_data
             txt_keep_index = self.now_index.copy()
             txt_keep_index[-1] = 'n'
             self.keep_txts_data[insert_index] = [txt_keep_index,max_indexlen]
@@ -783,14 +780,15 @@ class SetPrint:
         else:
             
             self.keep_finish = self.keep_start + keeplen
-
+        
+        #初期化
         self.now_deep = 1 #now_deepはインデックスの次元測定
         self.now_index = []
         self.Xline_blocks = []
         self.keep_txts_data = []
         self.keep_index = []
 
-        txtline = ['{n}']
+        keep_liens_data = ['{n}']
         All_blocks = []
         keep_Ylines_data = []
 
@@ -798,8 +796,7 @@ class SetPrint:
 
         if self.keep_start == self.now_deep:
 
-            # < self.MAX_indexlen > インデックス別整列をする為、linenumの値[リストのインデックス]は使わず、リストの一列毎の階層だげを調べる。
-            txtline = []
+            keep_liens_data = []
             self.MAX_index = []
             self.MAX_indexlen = []
             self.finish_index = {}
@@ -821,7 +818,7 @@ class SetPrint:
                 datatype = type(line)
 
                 if datatype == list or datatype == np.ndarray:
-                    self.keep_linetxts = []
+                    self.keep_1line_data = []
                     
                     if (copy_keep_index in self.MAX_index) == False:
                         self.MAX_index.append(copy_keep_index)
@@ -830,30 +827,26 @@ class SetPrint:
                         if self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] < 5:
                             self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] = 5
 
-                    self.keep_linetxts.append([copy_keep_index,self.list_txt_image])
+                    self.keep_1line_data.append([copy_keep_index,self.list_txt_image])
                     '''
                     ここに '[' を入れるプログラムを作成する。
                     '''
                     self.search_index(line)
             
-                    txtline.append(self.keep_linetxts)
+                    keep_liens_data.append(self.keep_1line_data)
                 else:
-                    #txtline.append(str(line))
-                    #リストの最下層の場合の処理
+
                     txt_line = str(line)
 
                     if (copy_keep_index in self.MAX_index) == False:
                         self.MAX_index.append(copy_keep_index)
                         self.MAX_indexlen.append(len(txt_line))
-                            #print(self.MAX_indexlen)
+
                     else:
                         if self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] = len(txt_line)
 
-                    txtline.append([[copy_keep_index,txt_line]])
-                
-            
-            #print('\n'+('-'*84)+'\n'+txt_index)
+                    keep_liens_data.append([[copy_keep_index,txt_line]])
             
             if len(datas) >= 1:
         
@@ -865,13 +858,13 @@ class SetPrint:
                 self.MAX_index,self.MAX_indexlen = sort_MAX_index,sort_MAX_indexlen
 
                 linenum = 0
-                self.keep_linetxts = ['{n}'] #ガイド
+                self.keep_1line_data = ['{n}']
 
                 S_onlylist_index = set()
                 F_onlylist_index = set()
 
-                for keep_linenum in range(len(txtline)):
-                    keep_line = txtline[keep_linenum]
+                for keep_linenum in range(len(keep_liens_data)):
+                    keep_line = keep_liens_data[keep_linenum]
                     txt = ''
 
                     linenum = 0
@@ -943,25 +936,24 @@ class SetPrint:
                                 del noput_point[noput_point.index(linenum + i)]
                                 txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
                                 
-                    self.keep_linetxts.append(txt)
+                    self.keep_1line_data.append(txt)
             
-                for linenum in range(len(self.keep_linetxts)-1):
+                for linenum in range(len(self.keep_1line_data)-1):
                     linenum += 1
                     for S_index in S_onlylist_index:
-                        line = self.keep_linetxts[linenum]
+                        line = self.keep_1line_data[linenum]
 
                         if line[S_index] == '[':
-                            self.keep_linetxts[linenum] = line[:S_index] + '{' + line[S_index+1:]
+                            self.keep_1line_data[linenum] = line[:S_index] + '{' + line[S_index+1:]
 
                     for F_index in F_onlylist_index:
-                        line = self.keep_linetxts[linenum]
+                        line = self.keep_1line_data[linenum]
 
                         if line[F_index] == ']':
-                            self.keep_linetxts[linenum] = line[:F_index] + ')' + line[F_index+1:]
+                            self.keep_1line_data[linenum] = line[:F_index] + ')' + line[F_index+1:]
 
                     
-            #中身のリスト作成
-            self.Xline_blocks[insert_index] = self.keep_linetxts
+            self.Xline_blocks[insert_index] = self.keep_1line_data
             All_blocks = [self.Xline_blocks]
 
             txt_keep_index = self.now_index.copy()
@@ -1011,30 +1003,27 @@ class SetPrint:
                     All_blocks.append(self.Xline_blocks)
                     keep_Ylines_data.append(self.keep_txts_data)
 
-                    txtline.append(f'data_type: {datatype}')
+                    keep_liens_data.append(f'data_type: {datatype}')
                     line_title.append(linenum)
 
                 else:
-                    txtline.append(str(line))
-                    #リストの最下層の場合の処理
+                    keep_liens_data.append(str(line))
                     All_blocks.append([[f'[{str(linenum)}]{{n}}','index_Err']])
                     keep_Ylines_data.append([[[linenum,0],9]])
 
                     line_title.append(linenum)
-                if len(txtline[linenum+1]) > max_indexlen:
-                    max_indexlen = len(txtline[linenum+1])
+                if len(keep_liens_data[linenum+1]) > max_indexlen:
+                    max_indexlen = len(keep_liens_data[linenum+1])
 
 
-            txtline = [txtline]
+            keep_liens_data = [keep_liens_data]
 
             txt_keep_index = self.now_index.copy()
             txt_keep_index[-1] = 'n'
             keep_Ylines_data.insert(0,[[txt_keep_index,max_indexlen]])
 
-            All_blocks.insert(0,txtline)
+            All_blocks.insert(0,keep_liens_data)
         
-        
-        #データを縦方向に合わせて整列し、結果をファイルに書き込む。
         self.All_blocks = All_blocks
         set_border_list = self.blocks_border_print(All_blocks = All_blocks, line_title = line_title, guide = guide)
 
