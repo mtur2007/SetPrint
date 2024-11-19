@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: setprint
-Version: 0.1.27
+Version: 0.1.28
 Summary: リストの中身を整理し、階層構造を可視化するモジュール
 Home-page: https://github.com/mtur2007/SetPrint
 Author: mtur
