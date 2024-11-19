@@ -1,11 +1,5 @@
 README.md
 setup.py
-SetPrint.egg-info/PKG-INFO
-SetPrint.egg-info/SOURCES.txt
-SetPrint.egg-info/dependency_links.txt
-SetPrint.egg-info/not-zip-safe
-SetPrint.egg-info/requires.txt
-SetPrint.egg-info/top_level.txt
 setprint/SetPrint.py
 setprint/__init__.py
 setprint.egg-info/PKG-INFO
