@@ -4,8 +4,7 @@ A module that organizes the contents of a list and visualizes its hierarchical s
 リストの中身を整理し、階層構造を可視化するモジュールです。  
 
 ## Documentation  
-- [English Documentation](README.md)
-- [日本語のドキュメント](README_ja.md)
+- [日本語のドキュメント](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)
 
 
 # Class: SetPrint

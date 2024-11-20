@@ -1,13 +1,13 @@
 Metadata-Version: 2.1
 Name: setprint
-Version: 0.1.28
-Summary: リストの中身を整理し、階層構造を可視化するモジュール
+Version: 0.1.12
+Summary: A module that organizes the contents of a list and visualizes its hierarchical structure.  
 Home-page: https://github.com/mtur2007/SetPrint
 Author: mtur
 Author-email: 2007helloworld@gmail.com
 Project-URL: Bug Reports, https://github.com/mtur2007/SetPrint/issues
 Project-URL: Source, https://github.com/mtur2007/SetPrint
-Keywords: list,formatting,printing,set
+Keywords: list,nested list,hierarchy,tree structure,data visualization,data organization,Python utilities,list visualization,nested data,structured data
 Classifier: Development Status :: 3 - Alpha
 Classifier: Intended Audience :: Developers
 Classifier: License :: OSI Approved :: MIT License
@@ -29,8 +29,7 @@ A module that organizes the contents of a list and visualizes its hierarchical s
 リストの中身を整理し、階層構造を可視化するモジュールです。  
 
 ## Documentation  
-- [English Documentation](README.md)
-- [日本語のドキュメント](README_ja.md)
+- [日本語のドキュメント](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)
 
 
 # Class: SetPrint

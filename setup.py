@@ -8,7 +8,7 @@ except FileNotFoundError:
 
 setup(
     name='setprint',
-    version='0.1.28',
+    version='0.1.12',
     packages=find_packages(),
     install_requires=[
         'numpy',
@@ -16,7 +16,7 @@ setup(
     ],
     author='mtur',  
     author_email='2007helloworld@gmail.com',
-    description='リストの中身を整理し、階層構造を可視化するモジュール',
+    description='A Python package for organizing and visualizing list hierarchies.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/mtur2007/SetPrint',
@@ -37,7 +37,18 @@ setup(
         'Operating System :: OS Independent',
     ],
     python_requires='>=3.6',
-    keywords='list, formatting, printing, set',
+    keywords=[
+        "list",                 # リスト
+        "nested list",          # ネストされたリスト（入れ子構造のリスト）
+        "hierarchy",            # 階層構造
+        "tree structure",       # ツリー構造
+        "data visualization",   # データの可視化
+        "data organization",    # データの整理
+        "Python utilities",     # Pythonのユーティリティ
+        "list visualization",   # リストの可視化
+        "nested data",          # 入れ子データ
+        "structured data"       # 構造化データ
+    ],
     include_package_data=True,
     zip_safe=False,
 )
