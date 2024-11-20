@@ -1,201 +1,179 @@
-# setprint
+# SetPrint - Simplify Formatting and Display of High-Dimensional Data!
+SetPrint is a Python library designed to easily format and display multi-dimensional data in lists.<br>
+Even for data structures with mixed dimensions, you no longer need to manually adjust spaces or formatting. It automatically achieves beautiful formatting!
 
-A module that organizes the contents of a list and visualizes its hierarchical structure.  
-リストの中身を整理し、階層構造を可視化するモジュールです。  
+- ## Features
+  - **Support for Flexible Data Structures**: Automatically formats multi-dimensional lists and mixed data structures.
+  - **Great for Debugging**: Organizes and displays the structure and contents of data during execution in an easy-to-understand way.
+  - **Flexible Formatting**: Visually organizes data hierarchy and content with guided formatting.
 
-## Documentation  
-- [日本語のドキュメント](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)
+## Methods
+- ## `set_list` Method
 
+   - The `set_list` method of the SetPrint class provides a feature to easily format and output multi-dimensional lists and complex data structures in a visually comprehensible format.<br>
+    Using this method enables optimal formatting tailored to the dimensions of the data.
 
-# Class: SetPrint
+   - #### Parameters
+        - **`guide`** (bool): Enables or disables the guide display.
+            - If `True`, outputs a guide containing dimension and index information.
+
+        - **`keep_start`** (int): The dimension where flattening begins.
+            - Example: `keep_start=1` expands the first dimension in the Y direction.
+
+        - **`keeplen`** (int): The range of dimensions to flatten.
+            - Dimensions outside the specified range are boxed in the X direction.
+
+   - #### Return Values
+
+        - `input_list`       : The original list before formatting.
+        - `grid_slice`       : A list containing the formatted text information, with each line stored individually. It can be written directly to a text file to check the results.
+        - `grid_block`       : A list maintaining the block-shaped format of the structured data.
+        - `block_Xlines_data`: Data used for displaying detailed indices with the `GuidePrint` function.
+
+     ### Relationship Between `keep_start` and Data Formatting
  
-The class organizes the target list based on its storage location (index) and storage information (string length).<br>
-It includes multiple functions that allow you to easily visualize storage information and facilitate access.<br>
-<br>
-This is particularly useful for debugging list arrays, inspecting storage locations or storage information,<br>
-and understanding the structure of the list at a glance by aligning the data for clarity.<br>
-<br>
-The result is effective when the output font is monospaced and uses half-width characters.
+     The `keep_start` parameter specifies the dimension where formatting begins and organizes data in the most suitable format based on its structure and use case. Below are examples of how `keep_start` values affect formatting and their corresponding data types.
 
-### Class Invocation
+     #### **Recommended Settings**
 
-`• python`
-```python
-from setprint import SetPrint
-list_data = setprint( ' list' )
-set_data = list_data. method
-```
-## **Methods**
+    1. **`keep_start=1`**
+        - **Use Case**: Data expanding in the Y direction (e.g., logs or image data).
+        - **Description**: Formats data along the first dimension in the Y direction while maintaining the X direction as-is.
+        - **Example** (Debug Log):
+            ```python
+            logs = [
+                ["Value", 30, "is", "less than", 50],
+                [["Action", "Process"], ["Details", "Valid range"]],
+                [["Value", 90], ["Condition", ["greater than", 50]], ["Action", "Alert"]],
+            ]
+            ```
+        - **Formatted Result**:
+            ```plaintext
+            Formatted Log:
+            =================================================================================================================================
 
-- ## SetPrint.set_list(guide,keep_start,keeplen)
+            |  ►list [ Value   ------ -------      30   --------- -----------   ------------ --        is   ------ -----   less than 50 ]   |
+            |  ►list [ ►list { Action Process ) ►list {   Details Valid range   ------------ --   ) -----   ------ -----   --------- -- ]   |
+            |  ►list [ ►list {  Value      90 ) ►list { Condition       ►list { greater than 50 ) ) ►list { Action Alert ) --------- -- ]   |
 
-    `set_list` is a function that supports lists of any dimension.
+            =================================================================================================================================
+            ```
+        - **Execution Example**:
+            ```python
+            from setprint import SetPrint
 
-    ### Notes
-    When handling horizontally long arrays (X-direction), the execution time may become significantly longer.  
-    Additionally, unintended line breaks may occur as a result, so caution is needed when working with horizontally long lists.
+            # Format and display the data
+            list_data = SetPrint(logs)
+            set_datas = list_data.set_list(guide=False, keep_start=1, keeplen=10)
 
-
-    ### Parameters
-
-    The `set_list` function accepts the following parameters:
-
-    - `guide`     : **(Required)** Specifies whether to add indexes to the boxes. Accepts `True` or `False`.
-    - `keep_start`: **(Required)** Specifies the dimension from which preservation should start.
-    - `keep_len`  : **(Required)** Specifies the range of dimensions to preserve. The end dimension is determined by `keep_start + keep_len`.
-
-    ### Return Value
-
-    `set_list` returns a dictionary containing the following information:
-
-    - `input_list`       : The original unorganized list.
-    - `grid_slice`       : A list containing the formatted text information. Each line is stored separately,  
-                        allowing it to be directly written to a text file for review.
-    - `grid_block`       : A list that maintains the block-like structure of the formatted information.
-    - `block_Xlines_data`: Data used by the `GuidePrint` function to display detailed indexes.
-
-    ## Display Method
-    - ## Normal Display
-        Normally, boxes are generated based on the data stored in the organized list,  
-        and the stored values are displayed in a vertically stacked format.
-        ### Execution Example
-        
-        `• python`
-        ```python
-
-        # from setprint import SetPrint
-        
-        '''
-        # 1D corresponds to the Y-direction (blocks: rows)
-        # 2D and beyond are added in the X-direction for each list array. The order follows the ascending index.
-        '''
-        test_list =  [
-                        ['[0][0]', '[0][1]', '[0][2]', '[0][3]'],
-                        ['[1][0]', '[1][1]', ['[1][2][1]', '[1][2][2]'], '[1][3]'],
-                        ['[2][0]', '[2][1]', '[2][2]', ['[2][3][1]', ['[2][3][2][1]', '[2][3][2][2]']], '[2][4]', '[2][5]'],
-                        ['[3][0]', '[3][1]', '[3][2]', '[3][3]', '[3][4]'],
-                        '[4]'
-                    ]
-
-        list_data = setprint(test_list)
-        answer = list_data.set_list(guide=True, keep_start=False, keeplen=False)
-
-        with open('output_path.txt', 'w') as f:
+            print("\nFormatted Log:")
             for line in set_datas['grid_slice']:
-                f.write(line)
+                print(line[:-1])  # Output formatted log
+            ```
 
-        ```
+    2. **`keep_start=2`**
+        - **Use Case**: Information divided in the X direction (e.g., tabular data).
+        - **Description**: Formats data along the second dimension in the X direction, emphasizing separation in the Y direction.
+        - **Example** (Tabular Data):
+            ```python
+            data = [
+                ["Name", "Age", "Country"],
+                ["Alice", 30, "USA"],
+                ["Bob", 25, "UK"]
+            ]
+            ```
+        - **Formatted Result**:
+            ```plaintext
+            Formatted Table:
+            ====================================
+              {} |  {n}                        |
+                 |-----------------------------|
+                 :                             :
+                 |  data_type: <class 'list'>  |
+                 |  data_type: <class 'list'>  |
+                 |  data_type: <class 'list'>  |
 
-        ### Execution Result
-        `• output_path.txt`
-        ```
-        ===================================
-            |  {n}                        |
-            |-----------------------------|
-            :                             :
-            |  data_type: <class 'list'>  |
-            |  data_type: <class 'list'>  |
-            |  data_type: <class 'list'>  |
-            |  data_type: <class 'list'>  |
-            |  [4]                        |
+            ====================================
+             {0} |  [0]{n}                     |
+                 |-----------------------------|
+                 :                             :
+                 |     Name                    |
+                 |      Age                    |
+                 |  Country                    |
 
-        ===================================
-         {0}|  [0]{n}                     |
-            |-----------------------------|
-            :                             :
-            |  [0][0]                     |
-            |  [0][1]                     |
-            |  [0][2]                     |
-            |  [0][3]                     |
+            ====================================
+             {1} |  [1]{n}                     |
+                 |-----------------------------|
+                 :                             :
+                 |  Alice                      |
+                 |     30                      |
+                 |    USA                      |
 
-         =================================================================
-         {1}|  [1]{n}                     |  [1][2]{n}                  |
-            |-----------------------------|-----------------------------|
-            :                             :                             :
-            |  [1][0]                     |  [1][2][0]                  |
-            |  [1][1]                     |  [1][2][1]                  |
-            |  data_type: <class 'list'>  |                             |
-            |  [1][3]                     |                             |
+            ====================================
+             {2} |  [2]{n}                     |
+                 |-----------------------------|
+                 :                             :
+                 |  Bob                        |
+                 |   25                        |
+                 |   UK                        |
 
-        ==================================================================================
-         {2}|  [2]{n}                     |  [2][3]{n}                  |  [2][3][1]{n}  |
-            |-----------------------------|-----------------------------|----------------|
-            :                             :                             :                :
-            |  [2][0]                     |  [2][3][0]                  |  [2][3][1][0]  |
-            |  [2][1]                     |  data_type: <class 'list'>  |  [2][3][1][1]  |
-            |  [2][2]                     |                             |                |
-            |  data_type: <class 'list'>  |                             |                |
-            |  [2][4]                     |                             |                |
-            |  [2][5]                     |                             |                |
+            ====================================
+            ```
+        - **Execution Example**:
+            ```python
+            list_data = SetPrint(data)
+            set_datas = list_data.set_list(guide=True, keep_start=2)
 
-        ==================================================================================
-         {3}|  [3]{n}                     |
-            |-----------------------------|
-            :                             :
-            |  [3][0]                     |
-            |  [3][1]                     |
-            |  [3][2]                     |
-            |  [3][3]                     |
-            |  [3][4]                     |
-
-        ===================================
-        ```
-
-
-    - ## Keep Display
-
-        The `set_list` function has the ability to display arrays stored in n-dimensions within a single box.<br>
-
-        For each array stored in n-dimensions, its contents up to f-dimensions are displayed in a single column, aligned with the indexes of other rows.  
-
-        - Simply put, the n-dimensional array parts are aligned in the order they are retrieved using a for loop (or a recursive function for multi-dimensional cases).  
-
-        If retrieving stored information using for loops or recursive functions is not successful, or if the relationships between the stored information are unclear, this function helps to clarify the structure.
-
-
-        ### Execution Example  
-
-        `• python`
-        ```python
-
-        # from setprint import SetPrint
-
-        test_list =  [
-                        ['[0][0]','[0][1]','[0][2]','[0][3]'],
-                        ['[1][0]','[1][1]',['[1][2][1]','[1][2][2]'],'[1][3]'],
-                        ['[2][0]','[2][1]','[2][2]',['[2][3][1]',['[2][3][2][1]','[2][3][2][2]']],'[2][4]','[2][5]'],
-                        ['[3][0]','[3][1]','[3][2]','[3][3]','[3][4]'],
-                        '[4]'
-                    ]
-
-        list_data = setprint(test_list)
-        answer = list_data.set_list(guide=True,keep_start=1,keeplen=10) 
-
-        '''
-        Currently, there is no functionality in `keep_len` to merge all arrays in the dimension specified by `keep_start` into a single column.  
-        To merge everything into a single column, set a large value for `keep_len`.
-        '''
-
-        with open('output_path.txt','w') as f:
             for line in set_datas['grid_slice']:
-                f.write(line)
+                print(line[:-1])
+            ```
 
-        ```
-        ### Execution Result  
-        `• output_path.txt`
-        ```
-        ========================================================================================================================================
-            |  {n}                                                                                                                             |
-            |----------------------------------------------------------------------------------------------------------------------------------|
-            :                                                                                                                                  :
-            |  ►list { [0][0] [0][1] [0][2]   --------- ---------   [0][3]   --------- -----   ------------ ------------     ------ ------ )   |
-            |  ►list { [1][0] [1][1]  ►list { [1][2][0] [1][2][1] ) [1][3]   --------- -----   ------------ ------------     ------ ------ )   |
-            |  ►list { [2][0] [2][1] [2][2]   --------- ---------    ►list { [2][3][0] ►list { [2][3][1][0] [2][3][1][1] ) ) [2][4] [2][5] )   |
-            |  ►list { [3][0] [3][1] [3][2]   --------- ---------   [3][3]   --------- -----   ------------ ------------     [3][4] ------ )   |
-            |    [4]   ------ ------ ------   --------- ---------   ------   --------- -----   ------------ ------------     ------ ------     |
+    3. **`keep_start=3`**
+        - **Use Case**: Data separated in both Y and X directions (e.g., matrices or 3D arrays).
+        - **Description**: Organizes data based on the third dimension, retaining overall structure while arranging information in both Y and X directions.
+        - **Example Input Data**:
+            ```python
+            data = [
+                [[1, 2], [3, 4]],
+                [[5, 6], [7, 8]]
+            ]
+            ```
+        - **Formatted Result**:
+            ```plaintext
+            Formatted Matrix:
+            ====================================
+              {} |  {n}                        |
+                 |-----------------------------|
+                 :                             :
+                 |  data_type: <class 'list'>  |
+                 |  data_type: <class 'list'>  |
 
-        =======================================================================================================================================
-        ```
+            ================================================================
+             {0} |  [0]{n}                     |  [0][0]{n}  |  [0][1]{n}  |
+                 |-----------------------------|-------------|-------------|
+                 :                             :             :             :
+                 |  data_type: <class 'list'>  |  1          |  3          |
+                 |  data_type: <class 'list'>  |  2          |  4          |
+   
+            ================================================================
+             {1} |  [1]{n}                     |  [1][0]{n}  |  [1][1]{n}  |
+                 |-----------------------------|-------------|-------------|
+                 :                             :             :             :
+                 |  data_type: <class 'list'>  |  5          |  7          |
+                 |  data_type: <class 'list'>  |  6          |  8          |
+
+            ================================================================
+            ```
+       
+        - **Execution Example**:
+            ```python
+            list_data = SetPrint(data)
+            set_datas = list_data.set_list(guide=False, keep_start=3, keeplen=10)
+
+            print("\nFormatted Log:")
+            for line in set_datas['grid_slice']:
+                print(line[:-1])  # Output formatted log
+            ```
 
 
 
