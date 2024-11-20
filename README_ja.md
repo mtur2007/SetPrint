@@ -148,7 +148,7 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
             keep_start=3
             ```
 
-        3. **`keep_start=3`**
+    3. **`keep_start=3`**
         - **用途**: Y方向とX方向の両方に分かれたデータ（例: マトリクスや3次元配列）。
         - **動作**: 3次元目を基準に、データの全体構造を保持しつつ、Y方向とX方向の情報を整理します。
         - **整形例**: 入力データ:
@@ -183,6 +183,19 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
                  |  data_type: <class 'list'>  |  6          |  8          |
 
             ================================================================
+            ```
+        - **実行例**
+
+            ```python
+            from setprint import SetPrint
+
+            # データを整形して表示
+            list_data = SetPrint(data)
+            set_datas = list_data.set_list(guide=False, keep_start=3, keeplen=10)
+
+            print("\n整形後のログ:")
+            for line in set_datas['grid_slice']:
+                print(line[:-1])  # 整形されたログを出力
             ```
 
 
