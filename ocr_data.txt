@@ -4,6 +4,8 @@
 
 # 入力データ(pickleファイル)
 https://github.com/mtur2007/SetPrint/blob/main/ocr_txtdata.pkl
+同じ階層にある ocr_txtdata.plk のことです。
+
 保存データ
 {
  "Alltxtdatas": txt_data   #テキストデータ
