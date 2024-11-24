@@ -1,8 +1,33 @@
 ```
-### Examples of Literacy Programs
-### 識字プログラムの実例
+# Examples of Literacy Programs
+# 識字プログラムの実例
+
+# 入力データ(pickleファイル)
+https://github.com/mtur2007/SetPrint/blob/main/ocr_txtdata.pkl
+
+******************************************************************
+
+# 実行コード
+import pickle
+# pickleファイルからデータを読み込む
+
+with open(file_name, "rb") as file:
+      loaded_data = pickle.load(file)
+
+# 保存されているのは文字の2値化データのみですが一応辞書型にしています。
+txt_data = loaded_data["Alltxtdatas"]
+
+
+list_data = SetPrint(txt_data)
+
+# ３次元目に各テキストデータが格納されているので、keep_start=3にして実行
+set_datas = list_data.set_list(guide=True,keep_start=3,keeplen=10) 
+
+# 整形結果をファイルへの書き込む
+with open('output_path.txt','w') as f:
+    for line in set_datas['grid_slice']:
+        f.write(line)
 ```
-# set_datas = list_data.set_list(guide=True, keep_start=3, keeplen=10)
 
 ==============================================
    {} |  {n}                                 |

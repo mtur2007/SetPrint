@@ -7,7 +7,7 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
   - **デバッグに便利**: 実行中のデータの構造や内容をわかりやすく整理して表示。
   - **柔軟なフォーマット**: データの階層や内容をガイド付きで視覚的に整形。
 
-### 識字プログラムの実例 https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
+### 識字プログラムの整形実例 https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
 
 ## メソッド
 - ## `set_list` メソッド
