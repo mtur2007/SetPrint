@@ -1,4 +1,4 @@
-# SetPrint - Simplify Formatting and Display of High-Dimensional Data!
+# SetPrint(ver, 0.2.0) - Simplify Formatting and Display of High-Dimensional Data!
 SetPrint is a Python library designed to easily format and display multi-dimensional data in lists.<br>
 Even for data structures with mixed dimensions, you no longer need to manually adjust spaces or formatting. It automatically achieves beautiful formatting!
 
@@ -9,6 +9,9 @@ Even for data structures with mixed dimensions, you no longer need to manually a
   - **Support for Flexible Data Structures**: Automatically formats multi-dimensional lists and mixed data structures.
   - **Great for Debugging**: Organizes and displays the structure and contents of data during execution in an easy-to-understand way.
   - **Flexible Formatting**: Visually organizes data hierarchy and content with guided formatting.
+
+### Examples of Literacy Programs
+https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
 
 ## Methods
 - ## `set_list` Method
