@@ -475,8 +475,8 @@ class SetPrint:
                         self.MAX_index.append(self.keep_index.copy())
                         self.MAX_indexlen.append(5)
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < 5:
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = 5
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < self.list_txt_len:
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = self.list_txt_len
 
                     self.keep_1line_data.append([self.keep_index,self.list_txt_image])
 
@@ -656,7 +656,10 @@ class SetPrint:
             self.keep_txts_data[insert_index] = [txt_keep_index,del_MAXindex,self.MAX_indexlen,x_lens]       
 
         # キープ範囲内にある次元のリスト配列から情報を取得する。
-        elif self.keep_start < self.now_deep <= self.keep_finish:
+        if self.show_all:
+            self.keep_finish = self.now_deep
+
+        elif self.keep_start < self.now_deep <= self.keep_finish:  
 
             self.keep_index.append(-1)
             self.now_index.append('')
@@ -686,8 +689,8 @@ class SetPrint:
                         self.MAX_index.append(insert_index)
                         self.MAX_indexlen.append(5)
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)] < 5:
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = 5
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)] < self.list_txt_len:
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = self.list_txt_len
 
                     self.keep_1line_data.append([insert_index,self.list_txt_image])
 
@@ -769,17 +772,24 @@ class SetPrint:
 
     #リストを整列する際の条件を整理したり、１次元毎にブロックを一段ずらす為、１次元までこの関数で処理し、以降は search_index で調査。
     #中身はsearch_indexとほぼ同じ
-    def set_list(self, guide,keep_start,keeplen):
-        
+    def set_list(self, guide,keep_start,keep_range):
+
         datas = self.input_list
+        
+        if keep_start == 'auto':
+            keep_start = len(datas.shape)  # 次元数を取得
+            self.show_all = True
+            keep_range = 0
+        
+        if keep_range == 'all':
+            self.show_all = True
 
         self.keep_start = keep_start
         if self.keep_start == False:
             self.keep_start = 0
             self.keep_finish = 0
         else:
-            
-            self.keep_finish = self.keep_start + keeplen
+            self.keep_finish = self.keep_start + keep_range
         
         #初期化
         self.now_deep = 1 #now_deepはインデックスの次元測定
@@ -792,7 +802,8 @@ class SetPrint:
         All_blocks = []
         keep_Ylines_data = []
 
-        self.list_txt_image = '►list'
+        self.list_txt_image = '►list' # list_design
+        self.list_txt_len = len(self.list_txt_image)
 
         if self.keep_start == self.now_deep:
 
@@ -824,13 +835,11 @@ class SetPrint:
                         self.MAX_index.append(copy_keep_index)
                         self.MAX_indexlen.append(5)
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] < 5:
-                            self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] = 5
+                        if self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] < self.list_txt_len:
+                            self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] = self.list_txt_len
 
                     self.keep_1line_data.append([copy_keep_index,self.list_txt_image])
-                    '''
-                    ここに '[' を入れるプログラムを作成する。
-                    '''
+
                     self.search_index(line)
             
                     keep_liens_data.append(self.keep_1line_data)
@@ -1040,6 +1049,11 @@ class SetPrint:
         self.set_data_dict = set_data_dict
 
         return set_data_dict
+
+    def set_text_style(self, symbol='►list'):
+        # 記号を動的に使用
+        formatted_data = f"{symbol} {data}"
+        return formatted_data
 
     '''
     =============================================================================================================================================================

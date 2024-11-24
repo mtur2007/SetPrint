@@ -44,6 +44,7 @@ Even for data structures with mixed dimensions, you no longer need to manually a
         - **Description**: Formats data along the first dimension in the Y direction while maintaining the X direction as-is.
         - **Example** (Debug Log):
             ```python
+            Debug-like log: A representation that adds dimensions to illustrate the variable behavior.
             logs = [
                 ["Value", 30, "is", "less than", 50],
                 [["Action", "Process"], ["Details", "Valid range"]],
@@ -52,7 +53,7 @@ Even for data structures with mixed dimensions, you no longer need to manually a
             ```
         - **Formatted Result**:
             ```plaintext
-            Formatted Log:
+            Formatted Log: Organized by index order, allowing blank spaces to be identified and formatted by adjusting array dimensions.
             =================================================================================================================================
 
             |  ►list [ Value   ------ -------      30   --------- -----------   ------------ --        is   ------ -----   less than 50 ]   |
