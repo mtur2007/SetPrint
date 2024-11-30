@@ -289,6 +289,27 @@ class SetPrint:
     def __init__(self, input_list):
         self.input_list = input_list
 
+        self.style_settings = {
+            "list"    : {'style': '►list'},
+            "empty"   : {'style': '-'},
+            "padding" : {'style': ' '}
+        }
+
+    def set_text_style(self, *style_updates):
+    
+        for style_name, new_style in style_updates:
+            if style_name in self.style_settings:
+                # 許可されたキーだけを更新
+                filtered_style = {k: v for k, v in new_style.items() if k in self.style_settings.get(style_name, [])}
+                self.style_settings[style_name].update(filtered_style)
+
+                # 許可されないキーがあった場合の警告
+                disallowed_keys = set(new_style.keys()) - set(self.style_settings.get(style_name, []))
+                if disallowed_keys:
+                    print(f"以下のキーは無視されました: {disallowed_keys}")
+            else:
+                print(f"スタイル名 '{style_name}' は存在しません。選択可能なスタイル: {list(self.style_settings.keys())}")
+
     '''
     =============================================================================================================================================================
     ブロック状の配列にボーダーをつけ見やすくする関数。
@@ -573,7 +594,7 @@ class SetPrint:
                                     else:
                                         # 穴埋め時、格納状況が異なる箇所だった場合、空白ではなく '-' を挿入。
                                         if (linenum in noput_point) != True:
-                                            txt += (self.MAX_indexlen[linenum] * '-') + ' '
+                                            txt += (self.MAX_indexlen[linenum] * self.empty_style) + ' '
                                         else:
                                             F_onlylist_index.add(len(txt))
 
@@ -599,7 +620,7 @@ class SetPrint:
                             txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
                         else:
                             if ((linenum + i) in noput_point) != True:
-                                txt += (self.MAX_indexlen[linenum + i] * '-') + ' '
+                                txt += (self.MAX_indexlen[linenum + i] * self.empty_style) + ' '
                             else:
 
                                 F_onlylist_index.add(len(txt))
@@ -802,8 +823,13 @@ class SetPrint:
         All_blocks = []
         keep_Ylines_data = []
 
-        self.list_txt_image = '►list' # list_design
+        #表示スタイルの更新
+        self.list_txt_image = self.style_settings["list"]['style']
         self.list_txt_len = len(self.list_txt_image)
+
+        self.empty_style = self.style_settings["empty"]['style']
+        self.padding_style = self.style_settings["padding"]['style']
+
 
         if self.keep_start == self.now_deep:
 
@@ -910,16 +936,16 @@ class SetPrint:
                                         a = self.MAX_index[linenum][:-1]
                                         a.append(self.finish_index[str(self.MAX_index[linenum][:-1])])
                                         noput_point.append(self.MAX_index.index(a))
-                                        txt += (self.MAX_indexlen[linenum] * ' ') + ' '
+                                        txt += (self.MAX_indexlen[linenum] * self.padding_style) + ' '
                                     else:
                                         if (linenum in noput_point) != True:
-                                            txt += (self.MAX_indexlen[linenum] * '-') + ' '
+                                            txt += (self.MAX_indexlen[linenum] * self.empty_style) + ' '
                                         else:
 
                                             F_onlylist_index.add(len(txt))
 
                                             del noput_point[noput_point.index(linenum)]
-                                            txt += (self.MAX_indexlen[linenum] * ' ') + ' '
+                                            txt += (self.MAX_indexlen[linenum] * self.padding_style) + ' '
 
                                 linenum += 1
                         linenum += 1
@@ -934,16 +960,16 @@ class SetPrint:
                             key_index = i_index[:-1]
                             key_index.append(self.finish_index[str(key_index)])
                             noput_point.append(self.MAX_index.index(key_index))
-                            txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
+                            txt += (self.MAX_indexlen[linenum + i] * self.padding_style) + ' '
                         else:
                             if ((linenum + i) in noput_point) != True:
-                                txt += (self.MAX_indexlen[linenum + i] * '-') + ' '
+                                txt += (self.MAX_indexlen[linenum + i] * self.empty_style) + ' '
                             else:
 
                                 F_onlylist_index.add(len(txt))
 
                                 del noput_point[noput_point.index(linenum + i)]
-                                txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
+                                txt += (self.MAX_indexlen[linenum + i] * self.padding_style) + ' '
                                 
                     self.keep_1line_data.append(txt)
             
@@ -1049,11 +1075,6 @@ class SetPrint:
         self.set_data_dict = set_data_dict
 
         return set_data_dict
-
-    def set_text_style(self, symbol='►list'):
-        # 記号を動的に使用
-        formatted_data = f"{symbol} {data}"
-        return formatted_data
 
     '''
     =============================================================================================================================================================
