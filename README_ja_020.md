@@ -1,62 +1,69 @@
-# SetPrint(ver, 0.1.13) - Simplify Formatting and Display of High-Dimensional Data!
-SetPrint is a Python library designed to easily format and display multi-dimensional data in lists.<br>
-Even for data structures with mixed dimensions, you no longer need to manually adjust spaces or formatting. It automatically achieves beautiful formatting!
+# SetPrint(ver, 0.2.0) - 高次元データを簡単に整形・表示！
+setprintは、リストの多次元データを簡単に整形し、わかりやすく表示するためのPythonライブラリです。<br>
+次元が混在するデータ構造でも、手動で空白やフォーマットを調整する必要はありません。自動で美しい整形を実現します！
 
-## Documentation  
-- [日本語のドキュメント](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)
+## 特徴
+  - **可変的なデータ構造に対応**: 多次元リストや混在するデータ構造を自動で整形。
+  - **デバッグに便利**: 実行中のデータの構造や内容をわかりやすく整理して表示。
+  - **柔軟なフォーマット**: データの階層や内容をガイド付きで視覚的に整形。
 
-## Features
-  - **Support for Flexible Data Structures**: Automatically formats multi-dimensional lists and mixed data structures.
-  - **Great for Debugging**: Organizes and displays the structure and contents of data during execution in an easy-to-understand way.
-  - **Flexible Formatting**: Visually organizes data hierarchy and content with guided formatting.
+### 識字プログラムの実例 https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
 
-### Examples of Literacy Programs
-https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
+## メソッド
+- ## `set_list` メソッド
 
-## Methods
-- ## `set_list` Method
+   - SetPrintクラスのset_listメソッドは、多次元リストや複雑なデータ構造を簡単に整列し、視覚的にわかりやすい形式で出力する機能を提供します。<br>
+    このメソッドを使用することで、データの次元に応じた最適な整形が可能です。
 
-   - The `set_list` method of the SetPrint class provides a feature to easily format and output multi-dimensional lists and complex data structures in a visually comprehensible format.<br>
-    Using this method enables optimal formatting tailored to the dimensions of the data.
+   - #### 引数
+        - **`guide`** (bool): ガイド表示を有効にするかどうか。
+            - `True`の場合、次元やインデックス情報を含むガイドを出力します。
 
-   - #### Parameters
-        - **`guide`** (bool): Enables or disables the guide display.
-            - If `True`, outputs a guide containing dimension and index information.
+        - **`keep_start`** (int or str): フラット化を開始する次元を指定します。
+            - 数値の場合: 指定した次元からフラット化を開始します。
+                - 例: `keep_start=1`で1次元目をY方向に展開。
+            - 特別指定: `'auto'`を指定すると、データの構造を解析して最適な開始次元を自動的に決定します。
 
-        - **`keep_start`** (int): The dimension where flattening begins.
-            - Example: `keep_start=1` expands the first dimension in the Y direction.
+        - **`keep_range`** (int or str): フラット化する次元の範囲を指定します。
+            - 数値の場合: フラット化する次元の範囲を明示的に指定します。
+              - 例: `keep_range=2`の場合、`keep_start`から2次元分をフラット化します。
+            - 特別指定: `'all'`を指定すると、`keep_start`の要素毎にすべてをフラット化します。
 
-        - **`keeplen`** (int): The range of dimensions to flatten.
-            - Dimensions outside the specified range are boxed in the X direction.
 
-   - #### Return Values
+   - #### 戻り値
 
-        - `input_list`       : The original list before formatting.
-        - `grid_slice`       : A list containing the formatted text information, with each line stored individually. It can be written directly to a text file to check the results.
-        - `grid_block`       : A list maintaining the block-shaped format of the structured data.
-        - `block_Xlines_data`: Data used for displaying detailed indices with the `GuidePrint` function.
+        - `input_list`       : 整列元のリスト。
+        - `grid_slice`       : 整列後のテキスト情報が格納されたリスト。各行毎に格納されており、そのままテキストファイルなどに書き込むことで結果を確認できます。
+        - `grid_block`       : ブロック状の形状を維持したまま整列情報が格納されているリスト。
+        - `block_Xlines_data`: `GuidePrint` 関数で詳細なインデックスを表示する際に使用するデータ。
 
-     ### Relationship Between `keep_start` and Data Formatting
- 
-     The `keep_start` parameter specifies the dimension where formatting begins and organizes data in the most suitable format based on its structure and use case. Below are examples of how `keep_start` values affect formatting and their corresponding data types.
+    ---
+    ### ・ keep_startとデータ整列の関係
+    ---
 
-     #### **Recommended Settings**
+    keep_startは、整列を開始する次元を指定する引数で、データの構造や用途に応じた最適なフォーマットで整形を行います。
+    以下に、keep_startの値による動作の違いと、適したデータ形式を説明します。
+
+    #### **推奨設定例**
 
     1. **`keep_start=1`**
-        - **Use Case**: Data expanding in the Y direction (e.g., logs or image data).
-        - **Description**: Formats data along the first dimension in the Y direction while maintaining the X direction as-is.
-        - **Example** (Debug Log):
-            ```python
-            Debug-like log: A representation that adds dimensions to illustrate the variable behavior.
+        - **用途**: Y方向に展開されるデータ（例: ログや写真データ）。
+        - **説明**: 1次元目を基準にY方向にデータを整形。X方向はそのままの形を維持。
+        
+        - **デバッグログの整形例**
+
+            ```python 
+            デバックログ的なログ: 可変的な動作をする部分に次元を追加して表したもの。
             logs = [
                 ["Value", 30, "is", "less than", 50],
                 [["Action", "Process"], ["Details", "Valid range"]],
                 [["Value", 90], ["Condition", ["greater than", 50]], ["Action", "Alert"]],
             ]
             ```
-        - **Formatted Result**:
+
+        - **整形結果**:
             ```plaintext
-            Formatted Log: Organized by index order, allowing blank spaces to be identified and formatted by adjusting array dimensions.
+            整形後のログ: インデックスの昇降順で整えられるので、配列の次元を変えるだけで空白部分が判別され整形されます。
             =================================================================================================================================
 
             |  ►list [ Value   ------ -------      30   --------- -----------   ------------ --        is   ------ -----   less than 50 ]   |
@@ -65,33 +72,36 @@ https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
 
             =================================================================================================================================
             ```
-        - **Execution Example**:
+        - **実行例**
+
             ```python
             from setprint import SetPrint
 
-            # Format and display the data
+            # データを整形して表示
             list_data = SetPrint(logs)
-            set_datas = list_data.set_list(guide=False, keep_start=1, keeplen=10)
+            set_datas = list_data.set_list(guide=False, keep_start=1, keep_range='all')
 
-            print("\nFormatted Log:")
+            print("\n整形後のログ:")
             for line in set_datas['grid_slice']:
-                print(line[:-1])  # Output formatted log
+                print(line[:-1])  # 整形されたログを出力
             ```
 
+
     2. **`keep_start=2`**
-        - **Use Case**: Information divided in the X direction (e.g., tabular data).
-        - **Description**: Formats data along the second dimension in the X direction, emphasizing separation in the Y direction.
-        - **Example** (Tabular Data):
-            ```python
-            data = [
+        - **用途**: X方向に分かれた情報（例: テーブル形式のデータ）。
+        - **説明**: 2次元目を基準にX方向に整形し、Y方向の区切りを強調。
+        - **例**（テーブルデータ）:
+            ```
+            [
                 ["Name", "Age", "Country"],
                 ["Alice", 30, "USA"],
                 ["Bob", 25, "UK"]
             ]
             ```
-        - **Formatted Result**:
+
+        - **整形結果**:
             ```plaintext
-            Formatted Table:
+            整形後のテーブル:
             ====================================
               {} |  {n}                        |
                  |-----------------------------|
@@ -126,28 +136,36 @@ https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
 
             ====================================
             ```
-        - **Execution Example**:
+
+        - **コード例**:
             ```python
+            data = [
+                ["Name", "Age", "Country"],
+                ["Alice", 30, "USA"],
+                ["Bob", 25, "UK"]
+            ]
+
             list_data = SetPrint(data)
             set_datas = list_data.set_list(guide=True, keep_start=2)
 
             for line in set_datas['grid_slice']:
                 print(line[:-1])
+            keep_start=3
             ```
 
     3. **`keep_start=3`**
-        - **Use Case**: Data separated in both Y and X directions (e.g., matrices or 3D arrays).
-        - **Description**: Organizes data based on the third dimension, retaining overall structure while arranging information in both Y and X directions.
-        - **Example Input Data**:
+        - **用途**: Y方向とX方向の両方に分かれたデータ（例: マトリクスや3次元配列）。
+        - **動作**: 3次元目を基準に、データの全体構造を保持しつつ、Y方向とX方向の情報を整理します。
+        - **整形例**: 入力データ:
             ```python
             data = [
                 [[1, 2], [3, 4]],
                 [[5, 6], [7, 8]]
             ]
             ```
-        - **Formatted Result**:
-            ```plaintext
-            Formatted Matrix:
+        - **整形結果**:
+            ```python
+            整形後のマトリックス:
             ====================================
               {} |  {n}                        |
                  |-----------------------------|
@@ -161,7 +179,7 @@ https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
                  :                             :             :             :
                  |  data_type: <class 'list'>  |  1          |  3          |
                  |  data_type: <class 'list'>  |  2          |  4          |
-   
+
             ================================================================
              {1} |  [1]{n}                     |  [1][0]{n}  |  [1][1]{n}  |
                  |-----------------------------|-------------|-------------|
@@ -171,48 +189,54 @@ https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
 
             ================================================================
             ```
-       
-        - **Execution Example**:
-            ```python
-            list_data = SetPrint(data)
-            set_datas = list_data.set_list(guide=False, keep_start=3, keeplen=10)
+        - **実行例**
 
-            print("\nFormatted Log:")
+            ```python
+            from setprint import SetPrint
+
+            # データを整形して表示
+            list_data = SetPrint(data)
+            set_datas = list_data.set_list(guide=False, keep_start=3, keepl_range='all')
+
+            print("\n整形後のログ:")
             for line in set_datas['grid_slice']:
-                print(line[:-1])  # Output formatted log
+                print(line[:-1])  # 整形されたログを出力
             ```
 
-
-
 - ## SetPrint.pick_guideprint(output_path)
-      
-    `pick_guideprint` operates as follows:  
-    - **Move between blocks**: Use the `f`, `h`, `g`, and `t` keys to navigate between different blocks.  
-    - **Move within a block**: Use the `a`, `d`, `s`, and `w` keys to navigate within the current block.  
-    - **Directions**:  ← → ↓ ↑  
 
-    **Displayed Information**:  
-    - `index`: The index of the currently selected data (e.g., `{y}[x0][x1][x2]`).  
-    - `value`: The value stored in the currently selected index. The value is displayed in green, and the data type is displayed in blue.  
+    **`pick_guideprint`**
+    set_list(guide = True)で、各ブロックの親元のインデックタイトルが表示されますが、
+    存在するブロック内の格納情報にアクセスし、詳細な情報を確認する事ができる、set_listの拡張機能です。
 
-    ### Parameters  
+    **表示される情報**:
+    - `index`: 現在選択されているデータのインデックス（例: `{y}[x0][x1][x2]`）。
+    - `value`: 現在選択されているインデックスに格納されているデータの値。データの値は緑色で表示され、データ型は青色で表示されます。
+    ### 引数
 
-    The `pick_guideprint` function accepts the following parameter:  
-    - `output_path`: **(Required)** The path to the linked text file.  
+    `pick_guideprint` には以下の引数を指定します：
 
-    ### Execution Example  
+    - `output_path`  : **(必須)** 連動先のテキストファイルのパス。
+
+   
+    - **ブロック間の移動**: `f`, `h`, `g`, `t` キーを使用して、異なるブロック間を移動します。
+    - **ブロック内の移動**: `a`, `d`, `s`, `w` キーを使用して、現在のブロック内を移動します。
+    - **方向**:  ←    →    ↓    ↑  
+    - **処理終了**: escキー 
+    ### 実行例
     `• python`
     ```python
 
     # from setprint import SetPrint
-    # list_data = setprint( `list` )
-    # list_data.SET_list(guide=True,keep_start=1,keeplen=10)
+    # list_data = SetPrint(test_list)
+    # list_data.set_list(guide=True,keep_start=1,keeplen=10)
 
-    list_data.pick_guideprint( 'output_path' )
+    list_data.pick_guideprint(output_path)
+
 
     ```
 
-    ### Execution Result  
+    ### 実行結果 
     `• txt_file`
     ```
         ►list { [0][0] [0][1] [0][2]    ---------  ---------   [0][3]   --------- -----   ------------ ------------     ------ ------ ) 
@@ -231,41 +255,41 @@ https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
 
 - ## SetPrint.bloks_border_print()
 
-    A function that allows you to create boxes, like the output result of `setlist`, and input strings into them.  
+    `setlist`の出力結果のような、ボックスを生成し、文字列を記入できる機能を、利用できる関数。
 
-    ### Parameters  
+    ### 引数
 
-    - `All_blocks`: **(Required)** A list array containing the content to be displayed.  
-    - `line_title`: **(Required)** The titles of the blocks in the Y-direction.  
-    - `guide`    : **(Required)** Specifies whether to include titles. Accepts `True` or `False`.  
+    - `All_blocks`: **(必須)** 表示したい内容を格納したリスト配列。
+    - `line_tilte`: **(必須)** y方向のブロックのタイトル
+    - `guide`     : **(必須)** タイトル表記の有無。`True` または `False` を指定します。
 
-    ### Example of `All_blocks` Storage  
+
+    ### `All_blocks` 格納例
     ```python
         '''
-        # 1D corresponds to the Y-direction (blocks: rows)
-        # 2D corresponds to the X-direction
-        # 3D corresponds to the Y-direction (content: rows)
-        ! All storage locations must be in the third dimension.
+        # 1次元は、Y方向(ブロック:段)
+        # 2次元は、X方向
+        # 3次元は、Y方向(内容:行)
+        ! 格納場所はすべて ３次元目 である必要があります
         '''
         
-                                            Column 1                        Column 2                        Column 3
-        All_blocks = [  
-                        1step[ ['block_title','1line','2line'], ['1_2','1_txt','2_txt'] ]
-                        2step[ ['2_1','1_data','2_data'],       ['2_2','1_line','2_line','3_line'], ['2_3','1_txt','2_txt']]
-                        3step[ ['3_1','1_txt','2_txt']]
+                                            1列目                            2列目                            3列目
+        All_blocks = [ 
+                        [ ['block_title','1line','2line'], ['1_2','1_txt','2_txt'] ],                                      #1step
+                        [ ['2_1','1_data','2_data'],       ['2_2','1_line','2_line','3_line'], ['2_3','1_txt','2_txt'] ],  #2step
+                        [ ['3_1','1_txt','2_txt'] ]                                                                        #3step
 
                     ]
 
         line_title = ['1step','2step','3step']
     ```
     ```
-
-                A visual representation of the relationship    　　　　  |
-                between the output result and `All_blocks`       　　　　|                       Output Result  
+        
+            出力結果とAll_blocksの関係性を視覚的に表したもの                  |　　　　　　　　            出力結果
                                                                      　 |
         [                                                            　 |
                                                                      　 |
-                         Column 1       Column 2  　   Column 3         |            
+                           1列目          2列目                          |            
            ========================================                   　|      =====================================
             _____ [ ｜["block_title",｜["1_2",     ｜           　       |       {1step} |  block_title  |  1_2     |
                     ｜---------------｜------------｜           　       |               |---------------|----------|
@@ -291,18 +315,19 @@ https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
            ===========================                                　|      ==========================
         ]  
     ```
-    ### Return Value  
 
-    - `grid_slice`: A list containing the formatted text information. Each line is stored individually, allowing it to be directly written to a text file for review.  
+    ### 戻り値
 
-    ### Execution Example  
+    - `grid_slice`: 整列後のテキスト情報が格納されたリスト。各行毎に格納されており、そのままテキストファイルなどに書き込むことで結果を確認できます。
+
+    ### 実行例
     `• python`
     ```python
 
-    # from setprint import SetPrint
+    #from setprint import SetPrint
 
-    list_data = setprint( `All_blocks` )
-    grid_slice = blocks_border_print(line_title = line_title,　guide=True):
+    list_data = SetPrint( `All_blocks` )
+    grid_slice = list_data.blocks_border_print(line_title =  `line_title` , guide=True):
 
     with open('output_path','w') as f:
         for line in grid_slice:
