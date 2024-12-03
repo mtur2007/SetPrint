@@ -830,6 +830,11 @@ class SetPrint:
         self.empty_style = self.style_settings["empty"]['style']
         self.padding_style = self.style_settings["padding"]['style']
 
+        ber_len = 20
+        line_ber_len = ber_len//len(datas)
+        print()
+        print('{ '+'-'*ber_len+' }')
+
 
         if self.keep_start == self.now_deep:
 
@@ -882,7 +887,10 @@ class SetPrint:
                             self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] = len(txt_line)
 
                     keep_liens_data.append([[copy_keep_index,txt_line]])
-            
+                
+                now_len = line_ber_len*linenum
+                print('\033[K{ '+'='*now_len+'-'*(ber_len-now_len)+' }')
+
             if len(datas) >= 1:
         
                 sort_MAX_index = sorted(self.MAX_index)
@@ -1049,6 +1057,10 @@ class SetPrint:
                     line_title.append(linenum)
                 if len(keep_liens_data[linenum+1]) > max_indexlen:
                     max_indexlen = len(keep_liens_data[linenum+1])
+
+
+                now_len = line_ber_len*linenum
+                print('\033[K{ '+'='*now_len+'-'*(ber_len-now_len)+' }')
 
 
             keep_liens_data = [keep_liens_data]
