@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: setprint
-Version: 0.1.13
+Version: 0.2.0
 Summary: A Python package for organizing and visualizing list hierarchies.
 Home-page: https://github.com/mtur2007/SetPrint
 Author: mtur
@@ -23,7 +23,7 @@ Description-Content-Type: text/markdown
 Requires-Dist: numpy
 Requires-Dist: pynput
 
-# SetPrint - Simplify Formatting and Display of High-Dimensional Data!
+# SetPrint(ver, 0.1.13) - Simplify Formatting and Display of High-Dimensional Data!
 SetPrint is a Python library designed to easily format and display multi-dimensional data in lists.<br>
 Even for data structures with mixed dimensions, you no longer need to manually adjust spaces or formatting. It automatically achieves beautiful formatting!
 
@@ -34,6 +34,9 @@ Even for data structures with mixed dimensions, you no longer need to manually a
   - **Support for Flexible Data Structures**: Automatically formats multi-dimensional lists and mixed data structures.
   - **Great for Debugging**: Organizes and displays the structure and contents of data during execution in an easy-to-understand way.
   - **Flexible Formatting**: Visually organizes data hierarchy and content with guided formatting.
+
+### Examples of Literacy Programs
+https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
 
 ## Methods
 - ## `set_list` Method
@@ -69,6 +72,7 @@ Even for data structures with mixed dimensions, you no longer need to manually a
         - **Description**: Formats data along the first dimension in the Y direction while maintaining the X direction as-is.
         - **Example** (Debug Log):
             ```python
+            Debug-like log: A representation that adds dimensions to illustrate the variable behavior.
             logs = [
                 ["Value", 30, "is", "less than", 50],
                 [["Action", "Process"], ["Details", "Valid range"]],
@@ -77,7 +81,7 @@ Even for data structures with mixed dimensions, you no longer need to manually a
             ```
         - **Formatted Result**:
             ```plaintext
-            Formatted Log:
+            Formatted Log: Organized by index order, allowing blank spaces to be identified and formatted by adjusting array dimensions.
             =================================================================================================================================
 
             |  ►list [ Value   ------ -------      30   --------- -----------   ------------ --        is   ------ -----   less than 50 ]   |

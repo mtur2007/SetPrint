@@ -218,6 +218,40 @@ def set_numbers(numberslist,mode):
 
     return numberslist
 
+#------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#リストに格納されている最大要素数とその次元を求める関数
+def find_max_elements_and_level(data, depth=0, level_counts=None):
+    """
+    Find the maximum number of elements and the corresponding depth in a nested list.
+
+    Args:
+        data (list): The nested list to analyze.
+        depth (int): The current depth in the recursion (default is 0).
+        level_counts (dict): A dictionary to track the number of elements at each depth.
+
+    Returns:
+        tuple: (max_count, max_depth) where:
+               - max_count is the maximum number of elements.
+               - max_depth is the depth at which max_count was found.
+    """
+    if level_counts is None:
+        level_counts = {}
+
+    if isinstance(data, list):
+        # Count elements at the current depth
+        level_counts[depth] = level_counts.get(depth, 0) + len(data)
+
+        # Recursively check sublists
+        for item in data:
+            find_max_elements_and_level(item, depth + 1, level_counts)
+
+    # Find the depth with the maximum count
+    max_depth = max(level_counts, key=level_counts.get)
+    max_count = level_counts[max_depth]
+
+    return max_count, max_depth
+
 '''
 =============================================================================================================================================================
 ブロック状の配列にボーダーをつけ見やすくする関数。
@@ -288,6 +322,29 @@ class SetPrint:
 
     def __init__(self, input_list):
         self.input_list = input_list
+
+        self.style_settings = {
+            "list"    : {'style': '►list'},
+            "empty"   : {'style': '-'},
+            "padding" : {'style': ' '},
+            "bracket" : {'partially':('{',')'),'not':(' ',' ')},
+            "progress": {'len'  : 20}
+        }
+
+    def set_text_style(self, *style_updates):
+    
+        for style_name, new_style in style_updates:
+            if style_name in self.style_settings:
+                # 許可されたキーだけを更新
+                filtered_style = {k: v for k, v in new_style.items() if k in self.style_settings.get(style_name, [])}
+                self.style_settings[style_name].update(filtered_style)
+
+                # 許可されないキーがあった場合の警告
+                disallowed_keys = set(new_style.keys()) - set(self.style_settings.get(style_name, []))
+                if disallowed_keys:
+                    print(f"以下のキーは無視されました: {disallowed_keys}")
+            else:
+                print(f"スタイル名 '{style_name}' は存在しません。選択可能なスタイル: {list(self.style_settings.keys())}")
 
     '''
     =============================================================================================================================================================
@@ -473,10 +530,10 @@ class SetPrint:
                     #存在するインデックスの情報の新規作成/更新
                     if (self.keep_index in self.MAX_index) == False:
                         self.MAX_index.append(self.keep_index.copy())
-                        self.MAX_indexlen.append(5)
+                        self.MAX_indexlen.append(self.list_txt_len)
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < 5:
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = 5
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < self.list_txt_len:
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = self.list_txt_len
 
                     self.keep_1line_data.append([self.keep_index,self.list_txt_image])
 
@@ -535,7 +592,7 @@ class SetPrint:
                         # 両者のインデックスが同じだった場合。
                         if keep_txts[0] == index_line:
                             index_len = self.MAX_indexlen[linenum]
-                            air = (index_len - len(keep_txts[1])) * ' '
+                            air = (index_len - len(keep_txts[1])) * self.padding_style
                             txt += air + str(keep_txts[1]) + ' '
 
                         else:
@@ -557,7 +614,7 @@ class SetPrint:
                                     if  keep_txts[0] == 'finish':
                                         txt += '] '
                                     else:
-                                        air = (self.MAX_indexlen[linenum] - len(keep_txts[1])) * ' '
+                                        air = (self.MAX_indexlen[linenum] - len(keep_txts[1])) * self.padding_style
                                         txt += air + str(keep_txts[1]) + ' '
                                     break
                                 else:
@@ -569,16 +626,16 @@ class SetPrint:
                                         key_index = self.MAX_index[linenum][:-1]
                                         key_index.append(self.finish_index[str(key_index)])
                                         noput_point.append(self.MAX_index.index(key_index))
-                                        txt += (self.MAX_indexlen[linenum] * ' ') + ' '
+                                        txt += (self.MAX_indexlen[linenum] * self.bracket_n[0]) + ' '
                                     else:
                                         # 穴埋め時、格納状況が異なる箇所だった場合、空白ではなく '-' を挿入。
                                         if (linenum in noput_point) != True:
-                                            txt += (self.MAX_indexlen[linenum] * '-') + ' '
+                                            txt += (self.MAX_indexlen[linenum] * self.empty_style) + ' '
                                         else:
                                             F_onlylist_index.add(len(txt))
 
                                             del noput_point[noput_point.index(linenum)]
-                                            txt += (self.MAX_indexlen[linenum] * ' ') + ' '
+                                            txt += (self.MAX_indexlen[linenum] * self.bracket_n[1]) + ' '
                             
                                 linenum += 1
                         linenum += 1
@@ -596,16 +653,16 @@ class SetPrint:
                             key_index = i_index[:-1]
                             key_index.append(self.finish_index[str(key_index)])
                             noput_point.append(self.MAX_index.index(key_index))
-                            txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
+                            txt += (self.MAX_indexlen[linenum + i] * self.bracket_n[0]) + ' '
                         else:
                             if ((linenum + i) in noput_point) != True:
-                                txt += (self.MAX_indexlen[linenum + i] * '-') + ' '
+                                txt += (self.MAX_indexlen[linenum + i] * self.empty_style) + ' '
                             else:
 
                                 F_onlylist_index.add(len(txt))
 
                                 del noput_point[noput_point.index(linenum + i)]
-                                txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
+                                txt += (self.MAX_indexlen[linenum + i] * self.bracket_n[1]) + ' '
 
                     self.keep_1line_data.append(txt)
 
@@ -616,13 +673,13 @@ class SetPrint:
                         line = self.keep_1line_data[linenum]
 
                         if line[S_index] == '[':
-                            self.keep_1line_data[linenum] = line[:S_index] + '{' + line[S_index+1:]
+                            self.keep_1line_data[linenum] = line[:S_index] + self.bracket_p[0] + line[S_index+1:]
 
                     for F_index in F_onlylist_index:
                         line = self.keep_1line_data[linenum]
 
                         if line[F_index] == ']':
-                            self.keep_1line_data[linenum] = line[:F_index] + ')' + line[F_index+1:]
+                            self.keep_1line_data[linenum] = line[:F_index] + self.bracket_p[1] + line[F_index+1:]
                     
             #中身のリスト作成
             self.Xline_blocks[insert_index] = self.keep_1line_data
@@ -656,7 +713,7 @@ class SetPrint:
             self.keep_txts_data[insert_index] = [txt_keep_index,del_MAXindex,self.MAX_indexlen,x_lens]       
 
         # キープ範囲内にある次元のリスト配列から情報を取得する。
-        elif self.keep_start < self.now_deep <= self.keep_finish:
+        elif self.keep_start < self.now_deep <= self.now_deep if self.show_all else self.keep_finish:
 
             self.keep_index.append(-1)
             self.now_index.append('')
@@ -684,10 +741,10 @@ class SetPrint:
                     insert_index = self.keep_index.copy()
                     if (insert_index in self.MAX_index) == False:
                         self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append(5)
+                        self.MAX_indexlen.append(self.list_txt_len)
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)] < 5:
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = 5
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)] < self.list_txt_len:
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = self.list_txt_len
 
                     self.keep_1line_data.append([insert_index,self.list_txt_image])
 
@@ -769,18 +826,36 @@ class SetPrint:
 
     #リストを整列する際の条件を整理したり、１次元毎にブロックを一段ずらす為、１次元までこの関数で処理し、以降は search_index で調査。
     #中身はsearch_indexとほぼ同じ
-    def set_list(self, guide,keep_start,keeplen):
-        
-        datas = self.input_list
+    def set_list(self, guide,keep_start,keep_range):
 
-        self.keep_start = keep_start
-        if self.keep_start == False:
+        datas = self.input_list
+        
+
+        if keep_start == False:
             self.keep_start = 0
             self.keep_finish = 0
-        else:
-            
-            self.keep_finish = self.keep_start + keeplen
+            self.show_all = False
         
+        else:
+            if type(keep_start) != int:
+                if keep_start == 'auto':
+                    max_count, max_depth = find_max_elements_and_level(datas)  # 次元数を取得
+                    self.keep_start = max_depth
+                    self.show_all = True
+
+                else:
+                    return
+            else:
+                self.keep_start = keep_start
+            if type(keep_range) != int:
+                if keep_range == 'all':
+                    self.show_all = True
+                else:
+                    return
+            else:
+                self.show_all = False
+                self.keep_finish = self.keep_start + keep_range
+            
         #初期化
         self.now_deep = 1 #now_deepはインデックスの次元測定
         self.now_index = []
@@ -792,7 +867,22 @@ class SetPrint:
         All_blocks = []
         keep_Ylines_data = []
 
-        self.list_txt_image = '►list'
+        #表示スタイルの更新
+        self.list_txt_image = self.style_settings["list"]['style']
+        self.list_txt_len = len(self.list_txt_image)
+
+        self.empty_style = self.style_settings["empty"]['style']
+        self.padding_style = self.style_settings["padding"]['style']
+
+        # self.bracket_e = self.style_settings['bracket']['exists']
+        self.bracket_p = self.style_settings['bracket']['partially']
+        self.bracket_n = self.style_settings['bracket']['not']
+
+        ber_len = self.style_settings["progress"]['len']
+        line_ber_len = ber_len//len(datas)
+        print()
+        print('{ '+'-'*ber_len+' }')
+
 
         if self.keep_start == self.now_deep:
 
@@ -822,15 +912,13 @@ class SetPrint:
                     
                     if (copy_keep_index in self.MAX_index) == False:
                         self.MAX_index.append(copy_keep_index)
-                        self.MAX_indexlen.append(5)
+                        self.MAX_indexlen.append(self.list_txt_len)
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] < 5:
-                            self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] = 5
+                        if self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] < self.list_txt_len:
+                            self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] = self.list_txt_len
 
                     self.keep_1line_data.append([copy_keep_index,self.list_txt_image])
-                    '''
-                    ここに '[' を入れるプログラムを作成する。
-                    '''
+
                     self.search_index(line)
             
                     keep_liens_data.append(self.keep_1line_data)
@@ -847,7 +935,10 @@ class SetPrint:
                             self.MAX_indexlen[self.MAX_index.index(copy_keep_index)] = len(txt_line)
 
                     keep_liens_data.append([[copy_keep_index,txt_line]])
-            
+                
+                now_len = line_ber_len*(linenum+1)
+                print('\033[F\033[K{ '+'='*now_len+'-'*(ber_len-now_len)+' }')
+
             if len(datas) >= 1:
         
                 sort_MAX_index = sorted(self.MAX_index)
@@ -875,7 +966,7 @@ class SetPrint:
 
                         if keep_txts[0] == index_line:
                             index_len = self.MAX_indexlen[linenum]
-                            air = (index_len - len(keep_txts[1])) * ' '
+                            air = (index_len - len(keep_txts[1])) * self.padding_style
                             txt += air + str(keep_txts[1]) + ' '
 
                         else:
@@ -890,7 +981,7 @@ class SetPrint:
                                     if  keep_txts[0] == 'finish':
                                         txt += '] '
                                     else:
-                                        air = (self.MAX_indexlen[linenum] - len(keep_txts[1])) * ' '
+                                        air = (self.MAX_indexlen[linenum] - len(keep_txts[1])) * self.padding_style
                                         txt += air + str(keep_txts[1]) + ' '
                                     break
                                 else:
@@ -901,16 +992,16 @@ class SetPrint:
                                         a = self.MAX_index[linenum][:-1]
                                         a.append(self.finish_index[str(self.MAX_index[linenum][:-1])])
                                         noput_point.append(self.MAX_index.index(a))
-                                        txt += (self.MAX_indexlen[linenum] * ' ') + ' '
+                                        txt += (self.MAX_indexlen[linenum] * self.bracket_n[0]) + ' '
                                     else:
                                         if (linenum in noput_point) != True:
-                                            txt += (self.MAX_indexlen[linenum] * '-') + ' '
+                                            txt += (self.MAX_indexlen[linenum] * self.empty_style) + ' '
                                         else:
 
                                             F_onlylist_index.add(len(txt))
 
                                             del noput_point[noput_point.index(linenum)]
-                                            txt += (self.MAX_indexlen[linenum] * ' ') + ' '
+                                            txt += (self.MAX_indexlen[linenum] * self.bracket_n[1]) + ' '
 
                                 linenum += 1
                         linenum += 1
@@ -925,16 +1016,16 @@ class SetPrint:
                             key_index = i_index[:-1]
                             key_index.append(self.finish_index[str(key_index)])
                             noput_point.append(self.MAX_index.index(key_index))
-                            txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
+                            txt += (self.MAX_indexlen[linenum + i] * self.bracket_n[0]) + ' '
                         else:
                             if ((linenum + i) in noput_point) != True:
-                                txt += (self.MAX_indexlen[linenum + i] * '-') + ' '
+                                txt += (self.MAX_indexlen[linenum + i] * self.empty_style) + ' '
                             else:
 
                                 F_onlylist_index.add(len(txt))
 
                                 del noput_point[noput_point.index(linenum + i)]
-                                txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
+                                txt += (self.MAX_indexlen[linenum + i] * self.bracket_n[1]) + ' '
                                 
                     self.keep_1line_data.append(txt)
             
@@ -944,13 +1035,13 @@ class SetPrint:
                         line = self.keep_1line_data[linenum]
 
                         if line[S_index] == '[':
-                            self.keep_1line_data[linenum] = line[:S_index] + '{' + line[S_index+1:]
+                            self.keep_1line_data[linenum] = line[:S_index] + self.bracket_p[0] + line[S_index+1:]
 
                     for F_index in F_onlylist_index:
                         line = self.keep_1line_data[linenum]
 
                         if line[F_index] == ']':
-                            self.keep_1line_data[linenum] = line[:F_index] + ')' + line[F_index+1:]
+                            self.keep_1line_data[linenum] = line[:F_index] + self.bracket_p[1] + line[F_index+1:]
 
                     
             self.Xline_blocks[insert_index] = self.keep_1line_data
@@ -1014,6 +1105,10 @@ class SetPrint:
                     line_title.append(linenum)
                 if len(keep_liens_data[linenum+1]) > max_indexlen:
                     max_indexlen = len(keep_liens_data[linenum+1])
+
+
+                now_len = line_ber_len*(linenum+1)
+                print('\033[F\033[K{ '+'='*now_len+'-'*(ber_len-now_len)+' }')
 
 
             keep_liens_data = [keep_liens_data]
