@@ -126,8 +126,8 @@ def update_data_with_arguments(data, arguments, constraints, current_index=()):
 # 入力データ('#'は引数の受け取り箇所)
 data = [
     ("list", {'style': '#'}),
-    ("empty", {'style': '#'}),
     ("padding", {'style': '#'}),
+    ("empty", {'style': '#'}),
     ("bracket", {'partially': ('#', '#'), 'not': ('#', '#')}),
     ("progress", {'len': '#'}),
 ]
@@ -180,8 +180,8 @@ constraints = {
 
 arguments = (
     ("list"    , {'style': '►'}),
-    ("empty"   , {'style': ' '}),
     ("padding" , {'style': ' '}),
+    ("empty"   , {'style': '-'}),
     ("bracket" , {'partially':('{',')'),'not':(' ','  ')}),
     ("progress", {'len'  : 100})
 )
