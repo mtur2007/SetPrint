@@ -1,4 +1,3 @@
-
 import numpy as np
 from pynput import keyboard
 
@@ -331,18 +330,52 @@ class SetPrint:
             "progress": {'len'  : 20}
         }
 
+        self.int_point = {
+            "progress": (0)
+        }
+
+
     def set_text_style(self, *style_updates):
     
         for style_name, new_style in style_updates:
             if style_name in self.style_settings:
+                
+                exist_style = {k for k, v in new_style.items()}
+                missing_keys = []          # 存在しなかったキー
+                invalid_type_keys = []     # データ型が違ったキー
+                length_violation_keys = [] # 文字数が違ったキー
+
                 # 許可されたキーだけを更新
                 filtered_style = {k: v for k, v in new_style.items() if k in self.style_settings.get(style_name, [])}
+                missing_keys = set(exist_style) - set(self.style_settings[style_name].keys())
+                exist_style = [x for x in exist_style if x not in missing_keys]
+                
+                if style_name not in {"list", "progress","bracket"}:
+                    filtered_style = {k: str(v) for k, v in filtered_style.items() if len(str(v)) == 1}
+                    length_violation_keys = set(exist_style) - set(filtered_style.keys())
+                    exist_style = [x for x in exist_style if x not in length_violation_keys]
+                    # print(length_violation_keys)
+                else:
+                    if style_name == 'list':
+                        filtered_style = {k: str(v) for k, v in filtered_style.items() if type(v) == str}
+                    elif style_name == 'bracket':
+                        pass
+                    else:
+                        filtered_style = {k: int(v) for k, v in filtered_style.items() if type(v) == int}
+                    invalid_type_keys =  set(exist_style) - set(filtered_style.keys())
+
                 self.style_settings[style_name].update(filtered_style)
 
-                # 許可されないキーがあった場合の警告
-                disallowed_keys = set(new_style.keys()) - set(self.style_settings.get(style_name, []))
-                if disallowed_keys:
-                    print(f"以下のキーは無視されました: {disallowed_keys}")
+                if missing_keys or invalid_type_keys or length_violation_keys:
+                    print(f"スタイル名 '{style_name}'")
+                    if missing_keys:
+                        print(f"Missing keys: {', '.join(missing_keys)}")
+                    if invalid_type_keys:
+                        print(f"Invalid type keys: {', '.join(invalid_type_keys)}")
+                    if length_violation_keys:
+                        print(f"Keys with length violations: {', '.join(length_violation_keys)}")
+                    print()
+
             else:
                 print(f"スタイル名 '{style_name}' は存在しません。選択可能なスタイル: {list(self.style_settings.keys())}")
 
@@ -1284,4 +1317,3 @@ class SetPrint:
         #キーボードのリスナーを開始
         with keyboard.Listener(on_press=self.on_press) as listener:
             listener.join()
- 
