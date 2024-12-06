@@ -135,12 +135,12 @@ data = [
 # 制限('#'の箇所をまとめて管理)
 constraints = {
     (0, 1, 'style')        : {'type': str},
-    (1, 1, 'style')        : {'type': str, 'min_length':1},
-    (2, 1, 'style')        : {'type': str, 'min_length':1},
-    (3, 1, 'partially', 0) : {'type': str, 'min_length':1},
-    (3, 1, 'partially', 1) : {'type': str, 'min_length':1},
-    (3, 1, 'not', 0)       : {'type': str, 'min_length':1},
-    (3, 1, 'not', 1)       : {'type': str, 'min_length':1},
+    (1, 1, 'style')        : {'type': str, 'min_length':1, 'max_length':1},
+    (2, 1, 'style')        : {'type': str, 'min_length':1, 'max_length':1},
+    (3, 1, 'partially', 0) : {'type': str, 'min_length':1, 'max_length':1},
+    (3, 1, 'partially', 1) : {'type': str, 'min_length':1, 'max_length':1},
+    (3, 1, 'not', 0)       : {'type': str, 'min_length':1, 'max_length':1},
+    (3, 1, 'not', 1)       : {'type': str, 'min_length':1, 'max_length':1},
     (4, 1, 'len')          : {'type': int, 'min':0},
 }
 
@@ -182,7 +182,7 @@ arguments = (
     ("list"    , {'style': '►'}),
     ("empty"   , {'style': ' '}),
     ("padding" , {'style': ' '}),
-    ("bracket" , {'partially':('{',')'),'not':(' ',' ')}),
+    ("bracket" , {'partially':('{',')'),'not':(' ','  ')}),
     ("progress", {'len'  : 100})
 )
 
