@@ -333,51 +333,83 @@ class SetPrint:
         self.int_point = {
             "progress": (0)
         }
+        
+        # 制限('#'の箇所をまとめて管理)
+        self.constraints = {
+            (0, 1, 'style')        : {'type': str},
+            (1, 1, 'style')        : {'type': str, 'min_length':1, 'max_length':1},
+            (2, 1, 'style')        : {'type': str, 'min_length':1, 'max_length':1},
+            (3, 1, 'partially', 0) : {'type': str, 'min_length':1, 'max_length':1},
+            (3, 1, 'partially', 1) : {'type': str, 'min_length':1, 'max_length':1},
+            (3, 1, 'not', 0)       : {'type': str, 'min_length':1, 'max_length':1},
+            (3, 1, 'not', 1)       : {'type': str, 'min_length':1, 'max_length':1},
+            (4, 1, 'len')          : {'type': int, 'min':0},
+        }
 
 
-    def set_text_style(self, *style_updates):
-    
-        for style_name, new_style in style_updates:
-            if style_name in self.style_settings:
+    def update_data_with_arguments(self, data, arguments, current_index=()):
+
+        if isinstance(arguments, dict):
+            # 辞書を探索
+            for key, value in arguments.items():
+                new_index = current_index + (key,)
+                self.update_data_with_arguments(data, value, new_index)
+        elif isinstance(arguments, (list, tuple)):
+            # リストやタプルを探索
+            for i, value in enumerate(arguments):
+                new_index = current_index + (i,)
+                self.update_data_with_arguments(data, value, new_index)
+        else:
+            # 値がplaceholderと一致する場合
+            if current_index in self.constraints:
                 
-                exist_style = {k for k, v in new_style.items()}
-                missing_keys = []          # 存在しなかったキー
-                invalid_type_keys = []     # データ型が違ったキー
-                length_violation_keys = [] # 文字数が違ったキー
-
-                # 許可されたキーだけを更新
-                filtered_style = {k: v for k, v in new_style.items() if k in self.style_settings.get(style_name, [])}
-                missing_keys = set(exist_style) - set(self.style_settings[style_name].keys())
-                exist_style = [x for x in exist_style if x not in missing_keys]
+                target = data
+                # 最後のキー以外でデータ構造を掘り下げる
+                for key in current_index[:-1]:
+                    target = target[key]
                 
-                if style_name not in {"list", "progress","bracket"}:
-                    filtered_style = {k: str(v) for k, v in filtered_style.items() if len(str(v)) == 1}
-                    length_violation_keys = set(exist_style) - set(filtered_style.keys())
-                    exist_style = [x for x in exist_style if x not in length_violation_keys]
-                    # print(length_violation_keys)
-                else:
-                    if style_name == 'list':
-                        filtered_style = {k: str(v) for k, v in filtered_style.items() if type(v) == str}
-                    elif style_name == 'bracket':
-                        pass
-                    else:
-                        filtered_style = {k: int(v) for k, v in filtered_style.items() if type(v) == int}
-                    invalid_type_keys =  set(exist_style) - set(filtered_style.keys())
+                new_value = arguments
+                constraint = self.constraints[current_index]
 
-                self.style_settings[style_name].update(filtered_style)
+                update_True = True
 
-                if missing_keys or invalid_type_keys or length_violation_keys:
-                    print(f"スタイル名 '{style_name}'")
-                    if missing_keys:
-                        print(f"Missing keys: {', '.join(missing_keys)}")
-                    if invalid_type_keys:
-                        print(f"Invalid type keys: {', '.join(invalid_type_keys)}")
-                    if length_violation_keys:
-                        print(f"Keys with length violations: {', '.join(length_violation_keys)}")
-                    print()
+                # データ型のチェック
+                if 'type' in constraint and not isinstance(new_value, constraint['type']):
+                    print(f"Value '{new_value}' at index {current_index} must be of type {constraint['type'].__name__}.")
+                    update_True = False
 
-            else:
-                print(f"スタイル名 '{style_name}' は存在しません。選択可能なスタイル: {list(self.style_settings.keys())}")
+                # 許可された値のチェック
+                if 'allowed_values' in constraint and new_value not in constraint['allowed_values']:
+                    print(f"Value '{new_value}' at index {current_index} is not in allowed values {constraint['allowed_values']}.")
+                    update_True = False
+
+                # 範囲チェック
+                if isinstance(new_value, int):  # 数列型の場合のみ適用
+                    if 'min' in constraint and new_value < constraint['min']:
+                        print(f"Value '{new_value}' at index {current_index} is less than the minimum value {constraint['min']}.")
+                        update_True = False
+                    if 'max' in constraint and new_value > constraint['max']:
+                        print(f"Value '{new_value}' at index {current_index} is greater than the maximum value {constraint['max']}.")
+                        update_True = False
+
+                # 文字列の長さチェック
+                if isinstance(new_value, str):  # 文字列型の場合のみ適用
+                    if 'max_length' in constraint and len(new_value) > constraint['max_length']:
+                        print(f"Value '{new_value}' at index {current_index} exceeds maximum length of {constraint['max_length']}.")
+                        update_True = False
+                    if 'min_length' in constraint and len(new_value) < constraint['min_length']:
+                        print(f"Value '{new_value}' at index {current_index} is shorter than minimum length of {constraint['min_length']}.")
+                        update_True = False
+
+                if update_True:
+                    target = data
+                    # 最後のキー以外でデータ構造を掘り下げる
+                    for key in current_index[:-1]:
+                        target = target[key]
+                    
+                    # 最後のキーで値を更新
+                    target[current_index[-1]] = new_value
+
 
     '''
     =============================================================================================================================================================
