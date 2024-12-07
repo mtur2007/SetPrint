@@ -91,12 +91,13 @@ def update_data_with_arguments(data, arguments, constraints, current_index=()):
                 update_True = False
 
             # 範囲チェック
-            if 'min' in constraint and new_value < constraint['min']:
-                print(f"Value '{new_value}' at index {current_index} is less than the minimum value {constraint['min']}.")
-                update_True = False
-            if 'max' in constraint and new_value > constraint['max']:
-                print(f"Value '{new_value}' at index {current_index} is greater than the maximum value {constraint['max']}.")
-                update_True = False
+            if isinstance(new_value, int):  # 数列型の場合のみ適用
+                if 'min' in constraint and new_value < constraint['min']:
+                    print(f"Value '{new_value}' at index {current_index} is less than the minimum value {constraint['min']}.")
+                    update_True = False
+                if 'max' in constraint and new_value > constraint['max']:
+                    print(f"Value '{new_value}' at index {current_index} is greater than the maximum value {constraint['max']}.")
+                    update_True = False
 
             # 文字列の長さチェック
             if isinstance(new_value, str):  # 文字列型の場合のみ適用
@@ -182,9 +183,17 @@ arguments = (
     ("list"    , {'style': '►'}),
     ("padding" , {'style': ' '}),
     ("empty"   , {'style': '-'}),
-    ("bracket" , {'partially':('{',')'),'not':(' ','  ')}),
-    ("progress", {'len'  : 100})
+    ("bracket" , {'partially':('[',']'),'not':(' ',' ')}),
+    ("progress", {'len'  : "-"})
 )
+
+data_air_len = 9
+constraints_air_len = 23
+
+print()
+for k,v in data:
+    print(f'{k}{(data_air_len-len(k))*' '}: {v}')
+print()
 
 # constraintsテンプレートを生成
 constraints_template = generate_constraints_recursive(data)
@@ -194,11 +203,14 @@ print("Generated constraints template:")
 print()
 print('constraints = {')
 for key, value in constraints_template.items():
-    print(f"    {key}: {value},")
+    print(f"    {key}{(constraints_air_len-len(str(key)))*' '}: {value},")
 print('}')
+print()
 
 data = convert_tuple_to_list(data)
 update_data_with_arguments(data, arguments, constraints, current_index=())
 
-for line in data:
-    print(line)
+print()
+for k,v in data:
+    print(f'{k}{(data_air_len-len(k))*' '}: {v}')
+print()
