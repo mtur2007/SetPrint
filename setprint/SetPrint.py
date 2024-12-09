@@ -1,5 +1,3 @@
-# setprint (ver 0.2.0)
-
 import numpy as np
 from pynput import keyboard
 
@@ -379,37 +377,37 @@ class SetPrint:
 
         # 入力データ('#'は引数の受け取り箇所)
         self.style_settings = (
-            (("Collections" , {'list'  : '►list',
-                            'tuple' : '►tuple',
-                            'ndarry': '►ndarry'}),
+           (("Collections" , { 'list'  : '►list',
+                               'tuple' : '▷tuple',
+                              'ndarray': '>numpy'}),
 
-            ("empty"       , {'style' : ' '}),
-            ("padding"     , {'style' : '-'}),
+            ("empty"       , { 'style' : ' '}),
+            ("padding"     , { 'style' : '-'}),
 
-            ("bracket"     , {'list'  :{'partially':('{',')')},
-                            'tuple' :{'partially':('<','>')},
-                            'ndarry':{'partially':('(','}')},
-                            'not'   :('`','`')}),
+            ("bracket"     , { 'list'  :{'partially':('{',')')},
+                               'tuple' :{'partially':('<','>')},
+                              'ndarray':{'partially':('(','}')},
+                               'not'   :('`','`')}),
 
-            ("progress"    , {'len'   : 100}))
+            ("progress"    , { 'len'   : 20}))
         )
         
         # 制限('#'の箇所をまとめて管理)
         self.constraints = {
-            ( 0, 1,   'list'                 ) : {'type': str},
-            ( 0, 1,  'tuple'                 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 0, 1, 'ndarry'                 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1,  'style'                 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 2, 1,  'style'                 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,   'list', 'partially', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,   'list', 'partially', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,  'tuple', 'partially', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,  'tuple', 'partially', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1, 'ndarry', 'partially', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1, 'ndarry', 'partially', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,    'not',           0    ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,    'not',           1    ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 4, 1,    'len'                 ) : {'type': int, 'min':0},
+            ( 0, 1,      'list'                 ) : {'type': str},
+            ( 0, 1,     'tuple'                 ) : {'type': str},
+            ( 0, 1,   'ndarray'                 ) : {'type': str},
+            ( 1, 1,     'style'                 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 2, 1,     'style'                 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,      'list', 'partially', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,      'list', 'partially', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,     'tuple', 'partially', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,     'tuple', 'partially', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,   'ndarray', 'partially', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,   'ndarray', 'partially', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,       'not',           0    ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,       'not',           1    ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 4, 1,       'len'                 ) : {'type': int, 'min':0},
         }
 
     def set_text_style(self,arguments):
@@ -662,15 +660,16 @@ class SetPrint:
         keep_Ylines_data = []
 
         #表示スタイルの更新
-        self.list_txt_image = self.style_settings[0][1]['list']
-        self.list_txt_len = len(self.list_txt_image)
-
+        self.collections = self.style_settings[0][1]
+        
+        # 値を (値, 値の文字数) に変更
+        self.collections = {key: (value, len(value)) for key, value in self.collections.items()}
+        
         self.padding_style = self.style_settings[1][1]['style']
         self.empty_style = self.style_settings[2][1]['style']
 
         # self.bracket_e = self.style_settings['bracket']['exists']
-        self.bracket_p = self.style_settings[3][1]['list']['partially']
-        self.bracket_n = self.style_settings[3][1]['not']
+        self.bracket = self.style_settings[3][1]
 
         ber_len = self.style_settings[4][1]['len']
         line_ber_len = ber_len//len(datas)
@@ -781,14 +780,16 @@ class SetPrint:
 
                 if isinstance(line, (list, tuple, np.ndarray)):
                     insert_index = self.keep_index.copy()
+                    collections_txt = self.collections[str(type(line).__name__)]
+
                     if (insert_index in self.MAX_index) == False:
                         self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append(self.list_txt_len)
+                        self.MAX_indexlen.append(collections_txt[1])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)] < self.list_txt_len:
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = self.list_txt_len
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)] < collections_txt[1]:
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = collections_txt[1]
 
-                    self.keep_1line_data.append([insert_index,self.list_txt_image])
+                    self.keep_1line_data.append([insert_index,collections_txt[0]])
 
                     self.search_index(line) 
                 else:
@@ -917,15 +918,16 @@ class SetPrint:
 
                 self.keep_1line_data = [] #1列の配列情報を格納するリスト
 
+                collections_txt = self.collections[str(type(line).__name__)]
                 #存在するインデックスの情報の新規作成/更新
                 if (self.keep_index in self.MAX_index) == False:
                     self.MAX_index.append(self.keep_index.copy())
-                    self.MAX_indexlen.append(self.list_txt_len)
+                    self.MAX_indexlen.append(collections_txt[1])
                 else:
-                    if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < self.list_txt_len:
-                        self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = self.list_txt_len
+                    if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < collections_txt[1]:
+                        self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = collections_txt[1]
 
-                self.keep_1line_data.append([self.keep_index,self.list_txt_image])
+                self.keep_1line_data.append([self.keep_index,collections_txt[0]])
 
                 #リストだった場合、またこのメソッドが呼び出される。
                 self.search_index(line)
@@ -975,18 +977,24 @@ class SetPrint:
                         value = access_nested_list(self.input_list,search_index)
                         if not isinstance(value, (list, tuple, np.ndarray)):
                             print('    line_hit : '+str(search_index))
-
-                            txt_line = format_txtdata[txt_linenum]
-
-                            S_index = x_lens[del_MAXindex.index(line)]
-                            format_txtdata[txt_linenum] = txt_line[:S_index] + self.bracket_n[0] + txt_line[S_index+1:]
-
-                            search_line = line[:-1]
-                            search_line.append(self.finish_index[str(search_line)])
-                            F_index = x_lens[del_MAXindex.index(search_line)]
-                            format_txtdata[txt_linenum] = txt_line[:F_index] + self.bracket_n[1] + txt_line[F_index+1:]
+                            bracket_image = self.bracket['not']
                         else:
+
                             print('     not_hit : '+str(search_index))
+                            print(type(value).__name__)
+                            bracket_image = self.bracket[str(type(value).__name__)]['partially']
+                            
+
+                        txt_line = format_txtdata[txt_linenum]
+
+                        S_index = x_lens[del_MAXindex.index(line)]
+                        txt_line = txt_line[:S_index] + bracket_image[0] + txt_line[S_index+1:]
+
+                        search_line = line[:-1]
+                        search_line.append(self.finish_index[str(search_line)])
+                        F_index = x_lens[del_MAXindex.index(search_line)]
+                        format_txtdata[txt_linenum] = txt_line[:F_index] + bracket_image[1] + txt_line[F_index+1:]
+                        
 
                 del_index = del_MAXindex.index(line)
                 del del_MAXindex[del_index]
@@ -1028,8 +1036,6 @@ class SetPrint:
         # 格納情報の中には リストである事を表す為に '[', "]" の情報が格納されており、pick_guideprint関数では扱われないようにする為、それらサブで調べる。
 
         # 他の列と格納状況が異なる箇所を格納する変数。存在だけを確認するのでset()。結果を用いて、見た目を変更する。
-        S_onlylist_index = set() # '['  →  "{"
-        F_onlylist_index = set() # ']'  →  "}"
         mismatch_indices = set()
 
         
@@ -1077,24 +1083,20 @@ class SetPrint:
                         else:
                             # 穴埋め時に他次元の情報が見つかったら、格納状況が異なる箇所として扱う
                             if self.MAX_index[linenum][-1] == -1:
-                                
-                                S_onlylist_index.add(len(txt))
-                                
+                            
                                 mismatch_indices.add(tuple(self.MAX_index[linenum][:-1]))
 
                                 key_index = self.MAX_index[linenum][:-1]
                                 key_index.append(self.finish_index[str(key_index)])
                                 noput_point.append(self.MAX_index.index(key_index))
-                                txt += (self.MAX_indexlen[linenum] * self.bracket_n[0]) + ' '
+                                txt += (self.MAX_indexlen[linenum] * ' ') + ' '
                             else:
                                 # 穴埋め時、格納状況が異なる箇所だった場合、空白ではなく '-' を挿入。
                                 if (linenum in noput_point) != True:
                                     txt += (self.MAX_indexlen[linenum] * self.empty_style) + ' '
                                 else:
-                                    F_onlylist_index.add(len(txt))
-
                                     del noput_point[noput_point.index(linenum)]
-                                    txt += (self.MAX_indexlen[linenum] * self.bracket_n[1]) + ' '
+                                    txt += (self.MAX_indexlen[linenum] * ' ') + ' '
                     
                         linenum += 1
                 linenum += 1
@@ -1106,22 +1108,18 @@ class SetPrint:
                 i_index = self.MAX_index[linenum + i]
 
                 if i_index[-1] == -1:
-                    
-                    S_onlylist_index.add(len(txt))
 
                     key_index = i_index[:-1]
                     key_index.append(self.finish_index[str(key_index)])
                     noput_point.append(self.MAX_index.index(key_index))
-                    txt += (self.MAX_indexlen[linenum + i] * self.bracket_n[0]) + ' '
+                    txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
                 else:
                     if ((linenum + i) in noput_point) != True:
                         txt += (self.MAX_indexlen[linenum + i] * self.empty_style) + ' '
                     else:
 
-                        F_onlylist_index.add(len(txt))
-
                         del noput_point[noput_point.index(linenum + i)]
-                        txt += (self.MAX_indexlen[linenum + i] * self.bracket_n[1]) + ' '
+                        txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
 
             format_txtdata.append(txt)
 
