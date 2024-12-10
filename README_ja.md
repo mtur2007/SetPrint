@@ -249,14 +249,14 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
             arguments = (
             
                 (("Collections" , 
-                { 'image'   : {'list'   :'►list',
-                                'tuple'  :'▷tuple',
-                                'ndarray':'>numpy'}}),
+                   { 'image'   : {'list'   :'►list',
+                                  'tuple'  :'▷tuple',
+                                  'ndarray':'>numpy'}}),
                 ("bracket"     , 
-                { 'partially': {'list'   :('{',')'),                 
-                                'tuple'  :('<','>'),
-                                'ndarray':('(','}'),
-                                'None'   :('`','`')}}),
+                  { 'partially': {'list'   :('{',')'),                 
+                                  'tuple'  :('<','>'),
+                                  'ndarray':('(','}'),
+                                  'None'   :('`','`')}}),
                                                     
                 ("empty"       , { 'style' : ' '}),
                 ("padding"     , { 'style' : '-'}),
