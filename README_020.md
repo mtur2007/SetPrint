@@ -140,7 +140,7 @@ https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
         - **Execution Example**:
             ```python
             list_data = SetPrint(data)
-            set_datas = list_data.set_list(guide=True, keep_start=2)
+            set_datas = list_data.set_list(guide=True, keep_start=2, keep_range='all')
 
             for line in set_datas['grid_slice']:
                 print(line[:-1])
@@ -203,8 +203,8 @@ https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
         |    ``           | ``         | tuple     | '▷tuple'                       | Same as above                                    | type: str                |
         |    ``           | ``         | ndarray   | '>ndarray'                     | Same as above                                    | type: str                |
         | -------------   | --------   | --------  | ----------                     | ------------------------------------------------ | ------------------------ |
-        | "bracket"       | partially  | list      | '<' ・ '>'                     | Dimension elements different from other arrays   | type: str, len: 0<l      |
-        |    ``           | ``         | tuple     | '{' ・ '}'                     | Same as above                                    | type: str, len: 0<l      |
+        | "bracket"       | partially  | list      | '{' ・ ')'                     | Dimension elements different from other arrays   | type: str, len: 0<l      |
+        |    ``           | ``         | tuple     | '<' ・ '>'                     | Same as above                                    | type: str, len: 0<l      |
         |    ``           | ``         | ndarray   | '(' ・ '}'                     | Same as above                                    | type: str, len: 0<l      |
         |    ``           | ``         | None      | '`' ・ "``"                     | Non-existent dimension elements                  | type: str, len: l=1      |
         | -------------   | --------   | --------  | ----------                     | ------------------------------------------------ | ------------------------ |
