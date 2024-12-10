@@ -20,28 +20,24 @@ def access_nested_list(nested_list,indices):
         
         if (0 <= index < len(nested_list)):             
             # int または str の場合、最後のインデックスでない場合はNoneを返す
-            if not isinstance(nested_list[index], (list, np.ndarray)):
+            if not isinstance(nested_list[index], (list, tuple, np.ndarray)):
                 if i == len(indices) - 1:
                     value = nested_list[index]
                     return value
-                    return '\033[1;32m'+str(value).replace('\n', '').replace(', ', ',')+'\033[30m : \033[1;34m'+ type(value).__name__ +'\033[0m'
+               
                 else:
-                    return None
-                    return '\033[31mNone\033[0m'  # インデックスが範囲外の場合はNoneを返す
-                
+                    return None # インデックスが範囲外の場合はNoneを返す
+                  
             nested_list = nested_list[index]
 
         else:
-            return None
-            return '\033[31mNone\033[0m'  # インデックスが範囲外の場合はNoneを返す
-    
+            return None # インデックスが範囲外の場合はNoneを返す
     
     # 最終的な要素がリストまたは配列の場合
     else:
         value = nested_list
         return value
-        return '\033[1;32m'+str(value).replace('\n', '').replace(' ', '')+'\033[30m : \033[1;34m'+ type(value).__name__ +'\033[0m'
-
+      
 def convert_tuple_to_list(data):
     """
     ネストされたデータ構造内のタプルをリストに変換し、
@@ -289,7 +285,7 @@ def find_max_elements_and_level(data, depth=0, level_counts=None):
     if level_counts is None:
         level_counts = {}
 
-    if isinstance(data, list):
+    if isinstance(data, (list,tuple,np.ndarray)):
         # Count elements at the current depth
         level_counts[depth] = level_counts.get(depth, 0) + len(data)
 
@@ -671,16 +667,17 @@ class SetPrint:
         # self.bracket_e = self.style_settings['bracket']['exists']
         self.bracket = self.style_settings[3][1]
 
-        ber_len = self.style_settings[4][1]['len']
-        line_ber_len = ber_len//len(datas)
+        self.ber_len = self.style_settings[4][1]['len']
+        self.line_ber_len = self.ber_len/len(datas)
         print()
-        print('{ '+'-'*ber_len+' }')
+        print('seach_collection...')
+        print('{ '+'-'*self.ber_len+' }')
 
 
         if self.keep_start == self.now_deep:
 
             self.keep_setup(datas,'{n}')
-
+            keep_Ylines_data = [self.keep_txts_data]
             All_blocks = [self.Xline_blocks]
             line_title = ['']
             
@@ -713,8 +710,8 @@ class SetPrint:
                     max_indexlen = len(keep_liens_data[linenum+1])
 
 
-                # now_len = line_ber_len*(linenum+1)
-                # print('\033[F\033[K{ '+'='*now_len+'-'*(ber_len-now_len)+' }')
+                now_len = int(self.line_ber_len*(linenum+1))
+                print('\033[F\033[K{ '+'='*now_len+'-'*(self.ber_len-now_len)+' }')
 
 
             keep_liens_data = [keep_liens_data]
@@ -724,6 +721,8 @@ class SetPrint:
             keep_Ylines_data.insert(0,[[txt_keep_index,max_indexlen]])
 
             All_blocks.insert(0,keep_liens_data)
+        
+        print('\033[F\033[F\033[KThe search_collection process has been successfully completed.\n' + '{ '+'='*self.ber_len+' }')
         
         self.All_blocks = All_blocks
         set_border_list = self.blocks_border_print(All_blocks = All_blocks, line_title = line_title, guide = guide)
@@ -945,6 +944,11 @@ class SetPrint:
                         self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = len(txt_line)
 
                 keep_liens_data.append([[self.keep_index,txt_line]])
+            
+            if self.keep_start == 1:
+                now_len = int(self.line_ber_len*(linenum+1))
+                print('\033[F\033[K{ '+'='*now_len+'-'*(self.ber_len-now_len)+' }')
+
 
         # 取得し終えた、配列情報を、場所や長さで整える処理
         format_txtdata = ['']
@@ -967,8 +971,6 @@ class SetPrint:
                 if tuple(line[:-1]) in mismatch_indices:
                     
                     search_index = now_index + ['n'] +line[:-1]
-
-                    print('hit! : '+str(search_index))
                     input_point = len(now_index)
                     
                     # 格納状況が異なる箇所の [] を　{) に変更しわかりやすくする。
@@ -976,12 +978,8 @@ class SetPrint:
                         search_index[input_point] = txt_linenum
                         value = access_nested_list(self.input_list,search_index)
                         if not isinstance(value, (list, tuple, np.ndarray)):
-                            print('    line_hit : '+str(search_index))
                             bracket_image = self.bracket['not']
                         else:
-
-                            print('     not_hit : '+str(search_index))
-                            print(type(value).__name__)
                             bracket_image = self.bracket[str(type(value).__name__)]['partially']
                             
 
@@ -1156,31 +1154,40 @@ class SetPrint:
         gy = abs(gy%y_lens)
 
         guide_index = ''
+        no_color_ver = ''
         for line in class_index:
             guide_index += f'[\033[38;2;127;82;0m{str(line)}\033[0m]'
+            no_color_ver += '['+str(line)+']'
         
         guide_index += f'{{\033[38;2;255;165;0m\033[1m{str(gy)}\033[0m}}'
+        no_color_ver += '{'+str(gy)+'}'
         for line in indexs[gx]:
             guide_index += f'[\033[1;34m{str(line)}\033[0m]'
+            no_color_ver += '['+str(line)+']'
 
         this = class_index+[gy]+indexs[gx]
         value = access_nested_list(self.input_list,this)
-
+        
+        value_txt = str(value).replace(', ', ',').replace('\n', ',')
+        value_txt = value_txt if len(value_txt) < 140 else value_txt[:140] + ' ~'
+        
+        if isinstance(value,(list,tuple,np.ndarray)):
+            in_data_txt = '\033[1;32m'+value_txt+'\033[30m : \033[1;34m'+ type(value).__name__ +'\033[0m'
+        else:
+            in_data_txt = '\033[1;32m'+value_txt+'\033[30m : \033[1;34m'+ type(value).__name__ +'\033[0m'
+        
         # 行1を更新
         print("\033[F\033[F\033[Kindex \\ " + guide_index)
         # 行2を更新
-        if len(value) >= 195:
-            print(' value \\ \033[K'+value[:150]+'\033[0m')
-        else:
-            print(' value \\ \033[K'+value)
-
+        print(' value \\ \033[K'+in_data_txt+'\033[0m')
+        
         guide = ' '
         for line in range(gx):
             guide += (positions[line]+1 - len(guide)) * ' '
             line = x_lens[line]
             guide += (line//2) * ' ' + '>'
         
-        guide += (positions[gx]+1 - len(guide)) * ' '+ (x_lens[gx]//2)*' ' + ' ▼' + guide_index
+        guide += (positions[gx]+1 - len(guide)) * ' '+ (x_lens[gx]//2)*' ' + ' ▼' + no_color_ver
         data = self.block[y][x]
         write_txt = []
 
@@ -1212,8 +1219,14 @@ class SetPrint:
                 f.write('       ' + line + '\n')
 
             f.write('\n')
-            for line in self.block_keep_data[y][x]:
-                f.write(str(line) + '\n')
+            keep_data = self.block_keep_data[y][x]
+            if len(keep_data) == 4:
+                f.write((keep_data[3][gx]+8)*' '+str(keep_data[0])+'\n')
+                for line in keep_data[1:]:
+                    f.write((keep_data[3][gx]+8)*' '+str(line[gx]) + '\n')
+            else:
+                for line in keep_data:
+                    f.write(str(line)+'\n')
 
     def on_press(self, key):
         try:
