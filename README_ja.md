@@ -1,46 +1,69 @@
-# SetPrint(ver, 0.1.13) - 高次元データを簡単に整形・表示！
+# SetPrint(ver, 0.2.0) - 高次元データを簡単に整形・表示！
 setprintは、リストの多次元データを簡単に整形し、わかりやすく表示するためのPythonライブラリです。<br>
 次元が混在するデータ構造でも、手動で空白やフォーマットを調整する必要はありません。自動で美しい整形を実現します！
 
-- ## 特徴
+## 特徴
   - **可変的なデータ構造に対応**: 多次元リストや混在するデータ構造を自動で整形。
   - **デバッグに便利**: 実行中のデータの構造や内容をわかりやすく整理して表示。
   - **柔軟なフォーマット**: データの階層や内容をガイド付きで視覚的に整形。
 
-### 識字プログラムの整形実例 https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
+### 識字プログラムの実例 https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
+---
+### ver 0.2.0の新規機能/修正
+- `set_list`
+
+   <新規>
+   - 処理状況を簡易的なプログレスバーで表現<br>
+   - 自動でリストを整形する機能の追加などのkeep機能の引数拡張<br>
+   - 表示スタイルのカスタマイズ性の拡張<br>
+   - タプル型への対応
+
+- `pick_guideprint`
+
+   <修正>
+   - 表示バグの解消
+---
 
 ## メソッド
 - ## `set_list` メソッド
 
    - SetPrintクラスのset_listメソッドは、多次元リストや複雑なデータ構造を簡単に整列し、視覚的にわかりやすい形式で出力する機能を提供します。<br>
-    このメソッドを使用することで、データの次元に応じた最適な整形が可能です。
+    このメソッドを使用することで、データの次元に応じた最適な整形が可能です。<br>
 
    - #### 引数
         - **`guide`** (bool): ガイド表示を有効にするかどうか。
             - `True`の場合、次元やインデックス情報を含むガイドを出力します。
 
-        - **`keep_start`** (int): フラット化を開始する次元。
-            - 例: `keep_start=1`で1次元目をY方向に展開。
-            
-        - **`keeplen`** (int): フラット化する次元の範囲。
-            - 指定範囲外の次元はX方向にボックス化されます。
+        - **`keep_start`** (int or str): フラット化を開始する次元を指定します。
+            - 数値の場合: 指定した次元からフラット化を開始します。<br>
+                例: `keep_start=1`で1次元目をY方向に展開。
+
+            - 特別指定: `'auto'`を指定すると、データの構造を解析して最適な開始次元を自動的に決定します。<br>
+                ※データ数が多い次元を調べるだけなので、例外な設定については、お手数ですが手動でお願いします。
+
+        - **`keep_range`** (int or str): フラット化する次元の範囲を指定します。
+            - 数値の場合: フラット化する次元の範囲を明示的に指定します。<br>
+              例: `keep_range=2`の場合、`keep_start`から2次元分をフラット化します。
+
+            - 特別指定: `'all'`を指定すると、`keep_start`の要素毎にすべてをフラット化します。
 
 
    - #### 戻り値
 
         - `input_list`       : 整列元のリスト。
-        - `grid_slice`       : 整列後のテキスト情報が格納されたリスト。各行毎に格納されており、そのままテキストファイルなどに書き込むことで結果を確認できます。
+        - `grid_slice`       : 整列後のテキスト情報が各行毎に格納されたリスト。
         - `grid_block`       : ブロック状の形状を維持したまま整列情報が格納されているリスト。
-        - `block_Xlines_data`: `GuidePrint` 関数で詳細なインデックスを表示する際に使用するデータ。
+        - `block_Xlines_data`: `GuidePrint` 関数で詳細な格納情報を表示する際に使用するデータ。
 
-
-    ### keep_startとデータ整列の関係
+    ---
+    ### ・ keep_startとデータ整列の関係
+    ---
 
     keep_startは、整列を開始する次元を指定する引数で、データの構造や用途に応じた最適なフォーマットで整形を行います。
     以下に、keep_startの値による動作の違いと、適したデータ形式を説明します。
 
     #### **推奨設定例**
-
+    
     1. **`keep_start=1`**
         - **用途**: Y方向に展開されるデータ（例: ログや写真データ）。
         - **説明**: 1次元目を基準にY方向にデータを整形。X方向はそのままの形を維持。
@@ -74,13 +97,12 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
 
             # データを整形して表示
             list_data = SetPrint(logs)
-            set_datas = list_data.set_list(guide=False, keep_start=1, keeplen=10)
+            set_datas = list_data.set_list(guide=False, keep_start=1, keep_range='all')
 
             print("\n整形後のログ:")
             for line in set_datas['grid_slice']:
                 print(line[:-1])  # 整形されたログを出力
             ```
-
 
     2. **`keep_start=2`**
         - **用途**: X方向に分かれた情報（例: テーブル形式のデータ）。
@@ -141,11 +163,10 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
             ]
 
             list_data = SetPrint(data)
-            set_datas = list_data.set_list(guide=True, keep_start=2)
+            set_datas = list_data.set_list(guide=True, keep_start=2, keep_range='all')
 
             for line in set_datas['grid_slice']:
                 print(line[:-1])
-            keep_start=3
             ```
 
     3. **`keep_start=3`**
@@ -191,14 +212,66 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
 
             # データを整形して表示
             list_data = SetPrint(data)
-            set_datas = list_data.set_list(guide=False, keep_start=3, keeplen=10)
+            set_datas = list_data.set_list(guide=False, keep_start=3, keep_range='all')
 
             print("\n整形後のログ:")
             for line in set_datas['grid_slice']:
                 print(line[:-1])  # 整形されたログを出力
             ```
+    ---
+    - ### 表示スタイルの詳細と変更
+        #### set_listで表現される特殊な要素をまとめた表<br>
+        (記号の部分はデフォルトです)
+        
+        | スタイル名      | 用途      | タイプ    　| 記号/数値<br>(変更可能) | 説明　            | 指定制限             |
+        |:-------------:|:----------|:----------|:-------------|--------------------------|---------------------|
+        | "Collections" | image     | list      | '►list'      | 配列の格納を表す            | type: str           |
+        |    ``         | ``        | tuple     | '▷tuple'     | ``                       | type: str,          |
+        |    ``         | ``        | ndarray   | '>ndarray'   | ``                       | type: str,          |
+        | ------------- | --------  | --------  | ----------   | ------------------------ | ------------------- |
+        | "bracket"     | partially | list      | '{' ・ ")"   | 他の配列と違う次元要素       | type: str, len: 0<l |
+        |    ``         | ``        | tuple     | '<' ・ ">'   | ``                       | type: str, len: 0<l |
+        |    ``         | ``        | ndarray   | '(' ・ "}'   | ``                       | type: str, len: 0<l |
+        |    ``         | ``        | None      | '`' ・ "``"  | 存在しない次元要素　　       | type: str, len: l=1 |
+        | ------------- | --------  | --------  | ----------   | ------------------------ | ------------------- |
+        | "padding"     | style     |           | ' '          | 字数の穴埋め               | type: str, len: l=1 |
+        | "empty"       | style     |           | '-'          | 存在しない要素             | type: str, len: l=1 |
+        | ------------- | --------  | --------  | ----------   | ------------------------ | ------------------- |
+        | "progress"    | len       |           | int: 20      | プログレスバーの長さ　     　| type: int, num: 0<n |
+        
+        **`set_text_style`**
 
+        スタイル変更として'記号'の部分を変更することができます。
+        - **実行例**
+            ```python
+            #list_data = SetPrint(list)
+            
+            arguments = (
+            
+                (("Collections" , 
+                { 'image'   : {'list'   :'►list',
+                                'tuple'  :'▷tuple',
+                                'ndarray':'>numpy'}}),
+                ("bracket"     , 
+                { 'partially': {'list'   :('{',')'),                 
+                                'tuple'  :('<','>'),
+                                'ndarray':('(','}'),
+                                'None'   :('`','`')}}),
+                                                    
+                ("empty"       , { 'style' : ' '}),
+                ("padding"     , { 'style' : '-'}),
 
+                ("progress"    , { 'len'   : 20}))
+            )
+            
+            list_data.set_text_style(arguments) # set_listの前
+
+            # インデックスで引数のチェックを行う為、この配列の通りに指定してください。
+            # 制限の範囲内ではなかった値は表示され、デフォルトの値が代入されます。
+            
+            # set_datas = list_data.set_list(guide=True, keep_start=1, keep_range='all')
+            ```
+---
 - ## SetPrint.pick_guideprint(output_path)
 
     **`pick_guideprint`**
@@ -218,18 +291,15 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
     - **ブロック間の移動**: `f`, `h`, `g`, `t` キーを使用して、異なるブロック間を移動します。
     - **ブロック内の移動**: `a`, `d`, `s`, `w` キーを使用して、現在のブロック内を移動します。
     - **方向**:  ←    →    ↓    ↑  
-
+    - **処理終了**: escキー 
     ### 実行例
     `• python`
     ```python
-
     # from setprint import SetPrint
     # list_data = SetPrint(test_list)
     # list_data.set_list(guide=True,keep_start=1,keeplen=10)
 
     list_data.pick_guideprint(output_path)
-
-
     ```
 
     ### 実行結果 
@@ -246,9 +316,9 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
     `• terminal`
     ```
     index \ {1}[2][0]
-    value \ [1][2][0] : str
+     value \ [1][2][0] : str
     ```
-
+---
 - ## SetPrint.bloks_border_print()
 
     `setlist`の出力結果のような、ボックスを生成し、文字列を記入できる機能を、利用できる関数。
@@ -319,7 +389,6 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
     ### 実行例
     `• python`
     ```python
-
     #from setprint import SetPrint
 
     list_data = SetPrint( `All_blocks` )
@@ -328,5 +397,4 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
     with open('output_path','w') as f:
         for line in grid_slice:
             f.write(line)
-
     ```
