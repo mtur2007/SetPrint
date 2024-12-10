@@ -373,39 +373,41 @@ class SetPrint:
 
         # 入力データ('#'は引数の受け取り箇所)
         self.style_settings = (
-           (("Collections" , { 'list'  : '►list',
-                               'tuple' : '▷tuple',
-                              'ndarray': '>numpy'}),
-
+            
+            (("Collections" , 
+              { 'image'   : {'list'   :'►list',
+                             'tuple'  :'▷tuple',
+                             'ndarray':'>numpy'}}),
+            ("bracket"     , 
+             { 'partially': {'list'   :('{',')'),                 
+                             'tuple'  :('<','>'),
+                             'ndarray':('(','}'),
+                             'None'   :('`','`')}}),
+                                                
             ("empty"       , { 'style' : ' '}),
             ("padding"     , { 'style' : '-'}),
-
-            ("bracket"     , { 'list'  :{'partially':('{',')')},
-                               'tuple' :{'partially':('<','>')},
-                              'ndarray':{'partially':('(','}')},
-                               'not'   :('`','`')}),
 
             ("progress"    , { 'len'   : 20}))
         )
         
         # 制限('#'の箇所をまとめて管理)
         self.constraints = {
-            ( 0, 1,      'list'                 ) : {'type': str},
-            ( 0, 1,     'tuple'                 ) : {'type': str},
-            ( 0, 1,   'ndarray'                 ) : {'type': str},
-            ( 1, 1,     'style'                 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 2, 1,     'style'                 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,      'list', 'partially', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,      'list', 'partially', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,     'tuple', 'partially', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,     'tuple', 'partially', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,   'ndarray', 'partially', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,   'ndarray', 'partially', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,       'not',           0    ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,       'not',           1    ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 4, 1,       'len'                 ) : {'type': int, 'min':0},
+            ( 0, 1,     'image',    'list'    ) : {'type': str},
+            ( 0, 1,     'image',   'tuple'    ) : {'type': str},
+            ( 0, 1,     'image', 'ndarray'    ) : {'type': str},
+            ( 1, 1, 'partially',    'list', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',    'list', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',   'tuple', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',   'tuple', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially', 'ndarray', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially', 'ndarray', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',    'None', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',    'None', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 2, 1,     'style'               ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,     'style'               ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 4, 1,       'len'               ) : {'type': int, 'min':0},
         }
-
+   
     def set_text_style(self,arguments):
         self.style_settings = convert_tuple_to_list(self.style_settings)
         self.update_data_with_arguments(arguments, current_index=())
@@ -656,17 +658,17 @@ class SetPrint:
         keep_Ylines_data = []
 
         #表示スタイルの更新
-        self.collections = self.style_settings[0][1]
+        self.collections = self.style_settings[0][1]['image']
         
         # 値を (値, 値の文字数) に変更
         self.collections = {key: (value, len(value)) for key, value in self.collections.items()}
         
-        self.padding_style = self.style_settings[1][1]['style']
-        self.empty_style = self.style_settings[2][1]['style']
+        self.bracket = self.style_settings[1][1]['partially']
+
+        self.padding_style = self.style_settings[2][1]['style']
+        self.empty_style = self.style_settings[3][1]['style']
 
         # self.bracket_e = self.style_settings['bracket']['exists']
-        self.bracket = self.style_settings[3][1]
-
         self.ber_len = self.style_settings[4][1]['len']
         self.line_ber_len = self.ber_len/len(datas)
         print()
@@ -978,9 +980,9 @@ class SetPrint:
                         search_index[input_point] = txt_linenum
                         value = access_nested_list(self.input_list,search_index)
                         if not isinstance(value, (list, tuple, np.ndarray)):
-                            bracket_image = self.bracket['not']
+                            bracket_image = self.bracket['None']
                         else:
-                            bracket_image = self.bracket[str(type(value).__name__)]['partially']
+                            bracket_image = self.bracket[str(type(value).__name__)]
                             
 
                         txt_line = format_txtdata[txt_linenum]

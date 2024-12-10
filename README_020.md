@@ -2,10 +2,28 @@
 SetPrint is a Python library designed to easily format and display multi-dimensional data in lists.<br>
 Even for data structures with mixed dimensions, you no longer need to manually adjust spaces or formatting. It automatically achieves beautiful formatting!
 
-- ## Features
+## Features
   - **Support for Flexible Data Structures**: Automatically formats multi-dimensional lists and mixed data structures.
   - **Great for Debugging**: Organizes and displays the structure and contents of data during execution in an easy-to-understand way.
   - **Flexible Formatting**: Visually organizes data hierarchy and content with guided formatting.
+
+### Examples of Literacy Programs
+https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
+---
+### New Features/Fixes in ver 0.2.0
+- `set_list`
+
+   <New Features>
+   - Simplified progress bar to represent processing status<br>
+   - Added keep functionality with argument extensions for automatic list formatting<br>
+   - Enhanced customizability of display styles<br>
+   - Support for tuple types
+
+- `pick_guideprint`
+
+   <Fixes>
+   - Resolved display bugs
+---
 
 ## Methods
 - ## `set_list` Method
@@ -168,13 +186,65 @@ Even for data structures with mixed dimensions, you no longer need to manually a
         - **Execution Example**:
             ```python
             list_data = SetPrint(data)
-            set_datas = list_data.set_list(guide=False, keep_start=3, keeplen='all')
+            set_datas = list_data.set_list(guide=False, keep_start=3, keep_range='all')
 
             print("\nFormatted Log:")
             for line in set_datas['grid_slice']:
                 print(line[:-1])  # Output formatted log
             ```
 
+    - ### Detailed Description and Style Modification
+        #### Table Summarizing Special Elements Represented in `set_list`<br>
+        (Symbols shown are default)
+
+        | Style Name      | Use Case   | Type      | Symbol/Value<br>(Customizable) | Description                                      | Specification Limits     |
+        |:---------------:|:-----------|:----------|:-------------------------------|:-------------------------------------------------|:-------------------------|
+        | "Collections"   | image      | list      | '►list'                        | Represents stored arrays                         | type: str                |
+        |    ``           | ``         | tuple     | '▷tuple'                       | Same as above                                    | type: str                |
+        |    ``           | ``         | ndarray   | '>ndarray'                     | Same as above                                    | type: str                |
+        | -------------   | --------   | --------  | ----------                     | ------------------------------------------------ | ------------------------ |
+        | "bracket"       | partially  | list      | '<' ・ '>'                     | Dimension elements different from other arrays   | type: str, len: 0<l      |
+        |    ``           | ``         | tuple     | '{' ・ '}'                     | Same as above                                    | type: str, len: 0<l      |
+        |    ``           | ``         | ndarray   | '(' ・ '}'                     | Same as above                                    | type: str, len: 0<l      |
+        |    ``           | ``         | None      | '`' ・ "``"                     | Non-existent dimension elements                  | type: str, len: l=1      |
+        | -------------   | --------   | --------  | ----------                     | ------------------------------------------------ | ------------------------ |
+        | "padding"       | style      |           | ' '                            | Fills gaps in character count                    | type: str, len: l=1      |
+        | "empty"         | style      |           | '-'                            | Represents non-existent elements                 | type: str, len: l=1      |
+        | -------------   | --------   | --------  | ----------                     | ------------------------------------------------ | ------------------------ |
+        | "progress"      | len        |           | int: 20                        | Sets progress bar length                         | type: int, num: 0<n      |
+
+        **`set_text_style`**
+
+        You can customize the 'symbol' part of the styles.
+        - **Example Execution**
+            ```python
+            #list_data = SetPrint(list)
+
+            arguments = (
+            
+                (("Collections" , 
+                { 'image'   : {'list'   :'►list',
+                                'tuple'  :'▷tuple',
+                                'ndarray':'>numpy'}}),
+                ("bracket"     , 
+                { 'partially': {'list'   :('{',')'),                 
+                                'tuple'  :('<','>'),
+                                'ndarray':('(','}'),
+                                'None'   :('`','`')}}),
+                                                    
+                ("empty"       , { 'style' : ' '}),
+                ("padding"     , { 'style' : '-'}),
+
+                ("progress"    , { 'len'   : 20}))
+            )
+
+            list_data.set_text_style(arguments) # Before `set_list`
+
+            # To check arguments by index, specify them in the same order as this array.
+            # Values outside the acceptable range will be displayed, and default values will be assigned.
+
+            # set_datas = list_data.set_list(guide=True, keep_start=1, keep_range='all')
+            ```
 
 
 - ## SetPrint.pick_guideprint(output_path)
