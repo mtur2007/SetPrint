@@ -4,13 +4,13 @@
 - `set_list`
 
    <新規>
-   - 数値を値で整える機能の追加
-   - 辞書型への対応
-   - プログレスバーや、表示スタイル設定の格納状況の表示のon.offの指定<br>
+   - [未完成] 数値を値で整える機能の追加
+   - [未完成] 辞書型への対応
+   - [未完成] プログレスバーや、表示スタイル設定の格納状況の表示のon.offの指定<br>
    
    <修正>
-   - 表示スタイル設定の格納情報の可動性向上
-   - 表示スタイルのカスタマイズ性の拡張(辞書型項目の追加)<br>
+   - [完成]　 表示スタイル設定の格納情報の可読性向上
+   - [未完成] 表示スタイルのカスタマイズ性の拡張(辞書型項目の追加)<br>
 ---
 
 # 詳細な変更要素
@@ -74,6 +74,34 @@
         # 制限の範囲内ではなかった値は表示され、デフォルトの値が代入されます。
         
         # set_datas = list_data.set_list(guide=True, keep_start=1, keep_range='all')
+        ```
+        表示スタイルの表示方法
+        ```python
+        print(list_data.set_text_style(arguments))
+        ^^^^^*-----------------------------------*
+
+        表示内容
+
+        # style_settings = (
+        #    (("Collections" , 
+        #         { 'image'   : {'list'       : '►list' ,
+        #                         'tuple'     : '▷tuple' ,
+        #                         'ndarray'   : '>numpy' ,
+        #                         'dictionary': '◆dict' }}),
+        #     ("bracket"     , 
+        #         { 'partially': {'list'      :( '{'・')' ),                 
+        #                         'tuple'     :( '<'・'>' ),
+        #                         'ndarray'   :( '('・'}' ),
+        #                         'dictionary':( '/'・'/' ),
+        #                         'None'      :( '`'・'`' )}}),
+        #                                        
+        #     ("empty"       , { 'style' : ' '}),
+        #     ("padding"     , 
+        #         {'sequence': { 'style' : '-'}
+        #          'mapping' : { 'style' : '*'}}),
+        #
+        #     ("progress"    , { 'len'   : 20}))
+        # )
         ```
 - ### 辞書型_整形イメージ
     格納例_python
