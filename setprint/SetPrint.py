@@ -302,8 +302,11 @@ class SetPrint:
             ("empty"       , { 'style' : ' '}),
             ("padding"     , { 'style' : '-'}),
 
+            ("settings"    , { 'print' : True }),
+
             ("progress"    , { 'print' : True ,
                                'len'   : 20}))
+
         )
         
         # 制限('#'の箇所をまとめて管理)
@@ -320,9 +323,10 @@ class SetPrint:
             ( 1, 1, 'partially',    'None', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
             ( 1, 1, 'partially',    'None', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
             ( 2, 1,     'style'               ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,     'style'               ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,     'style'               ) : {'type': str, 'min_length':1, 'max_length':1},    
             ( 4, 1,     'print'               ) : {'type': bool,},
-            ( 4, 1,       'len'               ) : {'type': int, 'min':0},
+            ( 5, 1,     'print'               ) : {'type': bool,},
+            ( 5, 1,       'len'               ) : {'type': int, 'min':0}
         
         }
    
@@ -331,50 +335,43 @@ class SetPrint:
         self.update_data_with_arguments(arguments, current_index=())
         self.style_settings = convert_list_to_tuple(self.style_settings)
 
-        # '(橙色)
-        r = '\033[0m'
-        # ANSIエスケープコードを色ごとに変数で定義
-        r = "\033[38;5;196m"  # 赤 (Red)
-        g = "\033[38;5;46m"   # 緑 (Green)
-        b = "\033[38;5;27m"   # 青 (Blue)
-        y = "\033[38;5;226m"  # 黄色 (Yellow)
-        m = "\033[38;5;201m"  # マゼンタ (Magenta)
-        c = "\033[38;5;51m"   # シアン (Cyan)
-        o = "\033[38;5;208m"  # 橙色 (Orange)
-        w = "\033[38;5;15m"   # 白 (White)
-        l = "\033[38;5;45m"
-        R = "\033[0m"         # 色のリセット
+        if self.style_settings[4][1]['print']:
+            # ANSIエスケープコードを色ごとに変数で定義
+            g = "\033[38;5;46m"   # 緑 (Green)
+            b = "\033[38;5;27m"   # 青 (Blue)
+            y = "\033[38;5;226m"  # 黄色 (Yellow)
+            c = "\033[38;5;51m"   # シアン (Cyan)
+            w = "\033[38;5;15m"   # 白 (White)
+            l = "\033[38;5;45m"
+            R = "\033[0m"         # 色のリセット
+            quote = w+"'"+R
 
-
-        quote = w+"'"+R
-
-
-        list_settings = [
-            'style_settings = (\n',
-            '\n',
-            f'   (({g}"Collections"{R} ,\n',
-            "     {  'image'   : { "+f"'list'    {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['list']}{quote} ,\n",
-               f"                      'tuple'   {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['tuple']}{quote} ,\n",
-               f"                      'ndarray' {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['ndarray']}{quote} ,\n",
-            '\n',
-            f'    ({g}"bracket"{R}     ,\n',
-            "     { 'partially': { "+f"'list'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially'][   'list'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially'][   'list'][1]}{quote} ),\n",
-               f"                      'tuple'   {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially'][  'tuple'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially'][  'tuple'][1]}{quote} ),\n",
-               f"                      'ndarray' {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['ndarray'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially']['ndarray'][1]}{quote} ),\n",
-               f"                      'None'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially'][   'None'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially'][   'None'][1]}{quote} ),\n",
-            '\n'                                       
-            f'    ({g}"empty"{R}       ,'+" { 'style' "+f" {g}:{R} {quote}{l}{self.style_settings[2][1]['style']}{quote} ),\n",
-            f'    ({g}"padding"{R}     ,'+" { 'style' "+f" {g}:{R} {quote}{l}{self.style_settings[3][1]['style']}{quote} ),\n",
-            '\n',
-            f'    ({g}"progress"{R}    ,'+" { 'print'  "+g+":"+R+"  \033[34m" + str(self.style_settings[4][1]['print']) + "\033[0m  ,\n",
-                   '                    '+"   'len'    "+g+":"+R+"  \033[34m" + str(self.style_settings[4][1]['len'])   + "\033[0m  }))\n",
-            ')',
-        ]
-        text_settings = ''
-        for line in list_settings:
-            text_settings += line
-        return text_settings #print(list_data.set_text_style(arguments))で実行すると変更後の設定が表示されるように改良。
-    
+            list_settings = [
+                'style_settings = (',
+                '',
+                f'   (({g}"Collections"{R} ,',
+                "     {  'image'   : { "+f"'list'    {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['list']}{quote} ,",
+                f"                      'tuple'   {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['tuple']}{quote} ,",
+                f"                      'ndarray' {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['ndarray']}{quote} ,",
+                '',
+                f'    ({g}"bracket"{R}     ,',
+                "     { 'partially': { "+f"'list'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially'][   'list'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially'][   'list'][1]}{quote} ),",
+                f"                      'tuple'   {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially'][  'tuple'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially'][  'tuple'][1]}{quote} ),",
+                f"                      'ndarray' {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['ndarray'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially']['ndarray'][1]}{quote} ),",
+                f"                      'None'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially'][   'None'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially'][   'None'][1]}{quote} ),",
+                ''                                       
+                f'    ({g}"empty"{R}       ,'+" { 'style' "+f" {g}:{R} {quote}{l}{self.style_settings[2][1]['style']}{quote} ),",
+                f'    ({g}"padding"{R}     ,'+" { 'style' "+f" {g}:{R} {quote}{l}{self.style_settings[3][1]['style']}{quote} ),",
+                '',
+                f'    ({g}"settings"{R}    ,'+" { 'print'  "+g+":"+R+" \033[34m" + str(self.style_settings[4][1]['print']) + "\033[0m }),",
+                '',
+                f'    ({g}"progress"{R}    ,'+" { 'print'  "+g+":"+R+" \033[34m" + str(self.style_settings[5][1]['print']) + "\033[0m  ,",
+                       '                    '+"   'len'    "+g+":"+R+" \033[34m" + str(self.style_settings[5][1]['len'])   + "\033[0m  }))",
+                ')',
+            ]
+            for line in list_settings:
+                print(line)
+        
     def update_data_with_arguments(self, arguments, current_index=()):
 
         if isinstance(arguments, dict):
@@ -627,10 +624,10 @@ class SetPrint:
         self.empty_style = self.style_settings[3][1]['style']
 
         # self.bracket_e = self.style_settings['bracket']['exists']
-        self.ber_print = self.style_settings[4][1]['print']
+        self.ber_print = self.style_settings[5][1]['print']
         # ber_print(1)
         if self.ber_print:
-            self.ber_len = self.style_settings[4][1]['len']
+            self.ber_len = self.style_settings[5][1]['len']
             self.line_ber_len = self.ber_len/len(datas)
             print()
             print('seach_collection...')

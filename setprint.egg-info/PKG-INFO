@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: setprint
-Version: 0.2.0
+Version: 0.2.2
 Summary: A Python package for organizing and visualizing list hierarchies.
 Home-page: https://github.com/mtur2007/SetPrint
 Author: mtur
@@ -23,7 +23,7 @@ Description-Content-Type: text/markdown
 Requires-Dist: numpy
 Requires-Dist: pynput
 
-# SetPrint(ver, 0.2.0) - Simplify Formatting and Display of High-Dimensional Data!
+# SetPrint(ver, 0.2.1) - Simplify Formatting and Display of High-Dimensional Data!
 SetPrint is a Python library designed to easily format and display multi-dimensional data in lists.<br>
 Even for data structures with mixed dimensions, you no longer need to manually adjust spaces or formatting. It automatically achieves beautiful formatting!
 
@@ -38,7 +38,7 @@ Even for data structures with mixed dimensions, you no longer need to manually a
 ### Examples of Literacy Programs
 - https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
 ---
-### New Features/Fixes in ver 0.2.0
+## New Features/Fixes in ver 0.2.0
 - `set_list`
 
    <New Features>
@@ -51,6 +51,16 @@ Even for data structures with mixed dimensions, you no longer need to manually a
 
    <Fixes>
    - Resolved display bugs
+
+- ## ver 0.2.1 Fixes  
+- `set_list`  
+
+   **<Fixes>**  
+   - Added the ability to toggle the display of progress bars and storage status of display style settings.  
+     `{ ======= } on / off`
+
+   - Improved the readability of storage information in display style settings.
+
 ---
 
 ## Methods
@@ -239,7 +249,9 @@ Even for data structures with mixed dimensions, you no longer need to manually a
         | "padding"       | style      |           | ' '                            | Fills gaps in character count                    | type: str, len: l=1      |
         | "empty"         | style      |           | '-'                            | Represents non-existent elements                 | type: str, len: l=1      |
         | -------------   | --------   | --------  | ----------                     | ------------------------------------------------ | ------------------------ |
-        | "progress"      | len        |           | int: 20                        | Sets progress bar length                         | type: int, num: 0<n      |
+        | "settings"      | print      |           | True                           | Show or hide style setting values                | type: bool               |
+        | "progress"      | print      |           | True                           | Display or hide the progress bar                 | type: bool               |
+        |    ``           | len        |           | int: 20                        | Sets progress bar length                         | type: int, num: 0<n      |
 
         **`set_text_style`**
 
@@ -247,23 +259,27 @@ Even for data structures with mixed dimensions, you no longer need to manually a
         - **Example Execution**
             ```python
             #list_data = SetPrint(list)
-
-            arguments = (
             
-                (("Collections" , 
-                  { 'image'    : {'list'   :'►list',
-                                  'tuple'  :'▷tuple',
-                                  'ndarray':'>numpy'}}),
+            arguments = (
+                    
+            　　(("Collections" , 
+                    { 'image'    : {'list'   :'►list',
+                                    'tuple'  :'▷tuple',
+                                    'ndarray':'>numpy'}}),
                 ("bracket"     , 
-                 { 'partially' : {'list'   :('{',')'),                 
-                                  'tuple'  :('<','>'),
-                                  'ndarray':('(','}'),
-                                  'None'   :('`','`')}}),
+                    { 'partially': {'list'   :('{',')'),                 
+                                    'tuple'  :('<','>'),
+                                    'ndarray':('(','}'),
+                                    'None'   :('`','`')}}),
                                                     
                 ("empty"       , { 'style' : ' '}),
                 ("padding"     , { 'style' : '-'}),
 
-                ("progress"    , { 'len'   : 20}))
+                ("settings"    , { 'print' : True }), # <- New  True (display) / False (hide)
+
+                ("progress"    , { 'print' : True ,   # <- New  True (display) / False (hide)
+                                   'len'   : 20 }))
+
             )
 
             list_data.set_text_style(arguments) # Before `set_list`
@@ -272,6 +288,74 @@ Even for data structures with mixed dimensions, you no longer need to manually a
             # Values outside the acceptable range will be displayed, and default values will be assigned.
 
             # set_datas = list_data.set_list(guide=True, keep_start=1, keep_range='all')
+            ```
+            Display/Hide Style Setting Values
+            ```python
+            [ Display ]
+
+            arguments = (
+                ~ omitted ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                ("settings"    , { 'print' : True })
+            )
+            list_data.set_text_style(arguments)
+
+
+            Display Content_terminal
+
+            # style_settings = (
+
+            #    (("Collections" ,
+            #      {  'image'   : { 'list'    : '►list' ,
+            #                       'tuple'   : '▷tuple' ,
+            #                       'ndarray' : '>numpy' ,
+
+            #     ("bracket"     ,
+            #      { 'partially': { 'list'    : ( '{' ・ ')' ),
+            #                       'tuple'   : ( '<' ・ '>' ),
+            #                       'ndarray' : ( '(' ・ '}' ),
+            #                       'None'    : ( '`' ・ '`' ),
+
+            #     ("empty"       , { 'style'  : ' ' ),
+            #     ("padding"     , { 'style'  : '-' ),
+
+            #     ("progress"    , { 'print'  :  False  ,
+            #                        'len'    :  20  }))
+            # )
+            
+            '''
+            [ Hide ]
+
+            arguments = (
+                ~ omitted ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                ("settings"    , { 'print' : False })
+            )
+            list_data.set_text_style(arguments)
+            '''
+            ```
+
+            Display/Hide Progress Bar
+            ```python
+            [ Display ]
+            arguments = (
+                ~ omitted ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                ("progress"    , { 'print' : True })
+            )
+            list_data.set_text_style(arguments)
+
+
+            Display Content_terminal
+
+            # ~~~~~~~~~~(processing content)
+            # { =============        } (progress)
+
+            '''
+            [ Hide ]
+            arguments = (
+                ~ omitted ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                ("progress"    , { 'print' : False })
+            )
+            list_data.set_text_style(arguments)
+            '''
             ```
 
 

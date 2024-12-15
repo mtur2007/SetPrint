@@ -1,4 +1,4 @@
-# SetPrint(ver, 0.2.0) - 高次元データを簡単に整形・表示！
+# SetPrint(ver, 0.2.2) - 高次元データを簡単に整形・表示！
 setprintは、リストの多次元データを簡単に整形し、わかりやすく表示するためのPythonライブラリです。<br>
 次元が混在するデータ構造でも、手動で空白やフォーマットを調整する必要はありません。自動で美しい整形を実現します！
 
@@ -9,7 +9,7 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
 
 ### 識字プログラムの実例 https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
 ---
-### ver 0.2.0の新規機能/修正
+## ver 0.2.0の新規機能/修正
 - `set_list`
 
    <新規>
@@ -22,6 +22,16 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
 
    <修正>
    - 表示バグの解消
+   ---
+
+- ## ver 0.2.2の修正
+- `set_list`
+
+   <修正>
+   - プログレスバーや、スタイル設定の格納状況を 表示/非表示:on.off の指定<br>
+     { ======= } on / off
+
+   - スタイル設定値の表示時の可読性向上
 ---
 
 ## メソッド
@@ -223,23 +233,26 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
         #### set_listで表現される特殊な要素をまとめた表<br>
         (記号の部分はデフォルトです)
         
-        | スタイル名      | 用途      | タイプ    　| 記号/数値<br>(変更可能) | 説明　            | 指定制限             |
-        |:-------------:|:----------|:----------|:-------------|--------------------------|---------------------|
-        | "Collections" | image     | list      | '►list'      | 配列の格納を表す            | type: str           |
-        |    ``         | ``        | tuple     | '▷tuple'     | ``                       | type: str,          |
-        |    ``         | ``        | ndarray   | '>ndarray'   | ``                       | type: str,          |
-        | ------------- | --------  | --------  | ----------   | ------------------------ | ------------------- |
-        | "bracket"     | partially | list      | '{' ・ ")"   | 他の配列と違う次元要素       | type: str, len: 0<l |
-        |    ``         | ``        | tuple     | '<' ・ ">'   | ``                       | type: str, len: 0<l |
-        |    ``         | ``        | ndarray   | '(' ・ "}'   | ``                       | type: str, len: 0<l |
-        |    ``         | ``        | None      | '`' ・ "``"  | 存在しない次元要素　　       | type: str, len: l=1 |
-        | ------------- | --------  | --------  | ----------   | ------------------------ | ------------------- |
-        | "padding"     | style     |           | ' '          | 字数の穴埋め               | type: str, len: l=1 |
-        | "empty"       | style     |           | '-'          | 存在しない要素             | type: str, len: l=1 |
-        | ------------- | --------  | --------  | ----------   | ------------------------ | ------------------- |
-        | "progress"    | len       |           | int: 20      | プログレスバーの長さ　     　| type: int, num: 0<n |
-        
-        **`set_text_style`**
+        | スタイル名      | 用途      | タイプ     　| 記号/数値<br>(変更可能) | 説明　            | 指定制限             |
+        |:-------------:|:----------|:-----------|:-------------|--------------------------|---------------------|
+        | "Collections" | image     | list       | '►list'      | 配列の格納を表す            | type: str           |
+        |    ``         | ``        | tuple      | '▷tuple'     | ``                       | type: str,          |
+        |    ``         | ``        | ndarray    | '>ndarray'   | ``                       | type: str,          |
+        | ------------- | --------  | ---------  | ----------   | ------------------------ | ------------------- |
+        | "bracket"     | partially | list       | '{' ・ ")"   | 他の配列と違う次元要素       | type: str, len: 0<l |
+        |    ``         | ``        | tuple      | '<' ・ ">'   | ``                       | type: str, len: 0<l |
+        |    ``         | ``        | ndarray    | '(' ・ "}'   | ``                       | type: str, len: 0<l |
+        |    ``         | ``        | None       | '`' ・ "``"  | 存在しない次元要素　　       | type: str, len: l=1 |
+        | ------------- | --------  | ---------  | ----------   | ------------------------ | ------------------- |
+        | "padding"     | style     |            | ' '          | 字数の穴埋め               | type: str, len: l=1 |
+        | ------------- | --------  | ---------  | ----------   | ------------------------ | ------------------- |
+        | "empty"       | style     |            | '-'          | 存在しない要素　　          | type: str, len: l=1 |
+        | ------------- | --------  | ---------  | ----------   | ------------------------ | ------------------- |
+        | "settings"    | print     |            | True         | スタイル設定値の表示,非表示　 | type: bool          |
+        | "progress"    | print     |            | True         | プログレスバーの表示,非表示　 | type: bool          |
+        | ``            | len       |            | int: 20      | プログレスバーの長さ　     　| type: int, num: 0<n |
+
+        **`set_text_style`メソット**
 
         スタイル変更として'記号'の部分を変更することができます。
         - **実行例**
@@ -247,23 +260,28 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
             #list_data = SetPrint(list)
             
             arguments = (
-            
-                (("Collections" , 
-                   { 'image'   : {'list'   :'►list',
-                                  'tuple'  :'▷tuple',
-                                  'ndarray':'>numpy'}}),
+                                
+               (("Collections" , 
+                    { 'image'    : {'list'   :'►list',
+                                    'tuple'  :'▷tuple',
+                                    'ndarray':'>numpy'}}),
                 ("bracket"     , 
-                  { 'partially': {'list'   :('{',')'),                 
-                                  'tuple'  :('<','>'),
-                                  'ndarray':('(','}'),
-                                  'None'   :('`','`')}}),
+                    { 'partially': {'list'   :('{',')'),                 
+                                    'tuple'  :('<','>'),
+                                    'ndarray':('(','}'),
+                                    'None'   :('`','`')}}),
                                                     
                 ("empty"       , { 'style' : ' '}),
                 ("padding"     , { 'style' : '-'}),
 
-                ("progress"    , { 'len'   : 20}))
+                ("settings"    , { 'print' : True }), # <- New  True (display) / False (hide)
+
+                ("progress"    , { 'print' : True ,   # <- New  True (display) / False (hide)
+                                    'len'   : 20 }))
+
+                
             )
-            
+
             list_data.set_text_style(arguments) # set_listの前
 
             # インデックスで引数のチェックを行う為、この配列の通りに指定してください。
@@ -271,6 +289,75 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
             
             # set_datas = list_data.set_list(guide=True, keep_start=1, keep_range='all')
             ```
+            スタイル設定値の表示/非表示
+            ```python
+            [ 表示 ]
+
+            arguments = (
+                ~ 省略 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                ("settings"    , { 'print' : True })
+            )
+            list_data.set_text_style(arguments)
+
+
+            表示内容_terminal
+
+            # style_settings = (
+
+            #    (("Collections" ,
+            #      {  'image'   : { 'list'    : '►list' ,
+            #                       'tuple'   : '▷tuple' ,
+            #                       'ndarray' : '>numpy' ,
+
+            #     ("bracket"     ,
+            #      { 'partially': { 'list'    : ( '{' ・ ')' ),
+            #                       'tuple'   : ( '<' ・ '>' ),
+            #                       'ndarray' : ( '(' ・ '}' ),
+            #                       'None'    : ( '`' ・ '`' ),
+
+            #     ("empty"       , { 'style'  : ' ' ),
+            #     ("padding"     , { 'style'  : '-' ),
+
+            #     ("progress"    , { 'print'  :  False  ,
+            #                        'len'    :  20  }))
+            # )
+            
+            '''
+            [非表示]
+
+            arguments = (
+                ~ 省略 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                ("settings"    , { 'print' : False })
+            )
+            list_data.set_text_style(arguments)
+            '''
+            ```
+
+            プログレスバーの表示/非表示
+            ```python
+            [ 表示 ]
+            arguments = (
+                ~ 省略 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                ("progress"    , { 'print' : True })
+            )
+            list_data.set_text_style(arguments)
+
+
+            表示内容_terminal
+
+            # ~~~~~~~~~~(処理内容)
+            # { =============        } (進捗)
+
+            '''
+            [ 非表示 ]
+            arguments = (
+                ~ 省略 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                ("progress"    , { 'print' : False })
+            )
+            list_data.set_text_style(arguments)
+            '''
+            ```
+
 ---
 - ## SetPrint.pick_guideprint(output_path)
 
