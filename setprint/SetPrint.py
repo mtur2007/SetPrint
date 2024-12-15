@@ -302,7 +302,8 @@ class SetPrint:
             ("empty"       , { 'style' : ' '}),
             ("padding"     , { 'style' : '-'}),
 
-            ("progress"    , { 'len'   : 20}))
+            ("progress"    , { 'print' : True ,
+                               'len'   : 20}))
         )
         
         # 制限('#'の箇所をまとめて管理)
@@ -320,7 +321,9 @@ class SetPrint:
             ( 1, 1, 'partially',    'None', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
             ( 2, 1,     'style'               ) : {'type': str, 'min_length':1, 'max_length':1},
             ( 3, 1,     'style'               ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 4, 1,     'print'               ) : {'type': bool,},
             ( 4, 1,       'len'               ) : {'type': int, 'min':0},
+        
         }
    
     def set_text_style(self,arguments):
@@ -328,10 +331,50 @@ class SetPrint:
         self.update_data_with_arguments(arguments, current_index=())
         self.style_settings = convert_list_to_tuple(self.style_settings)
 
-        print()
-        for k,v in self.style_settings:
-            print(f'{k}{(9-len(k))*' '}: {v}')
+        # '(橙色)
+        r = '\033[0m'
+        # ANSIエスケープコードを色ごとに変数で定義
+        r = "\033[38;5;196m"  # 赤 (Red)
+        g = "\033[38;5;46m"   # 緑 (Green)
+        b = "\033[38;5;27m"   # 青 (Blue)
+        y = "\033[38;5;226m"  # 黄色 (Yellow)
+        m = "\033[38;5;201m"  # マゼンタ (Magenta)
+        c = "\033[38;5;51m"   # シアン (Cyan)
+        o = "\033[38;5;208m"  # 橙色 (Orange)
+        w = "\033[38;5;15m"   # 白 (White)
+        l = "\033[38;5;45m"
+        R = "\033[0m"         # 色のリセット
 
+
+        quote = w+"'"+R
+
+
+        list_settings = [
+            'style_settings = (\n',
+            '\n',
+            f'   (({g}"Collections"{R} ,\n',
+            "     {  'image'   : { "+f"'list'    {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['list']}{quote} ,\n",
+               f"                      'tuple'   {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['tuple']}{quote} ,\n",
+               f"                      'ndarray' {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['ndarray']}{quote} ,\n",
+            '\n',
+            f'    ({g}"bracket"{R}     ,\n',
+            "     { 'partially': { "+f"'list'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially'][   'list'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially'][   'list'][1]}{quote} ),\n",
+               f"                      'tuple'   {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially'][  'tuple'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially'][  'tuple'][1]}{quote} ),\n",
+               f"                      'ndarray' {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['ndarray'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially']['ndarray'][1]}{quote} ),\n",
+               f"                      'None'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially'][   'None'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially'][   'None'][1]}{quote} ),\n",
+            '\n'                                       
+            f'    ({g}"empty"{R}       ,'+" { 'style' "+f" {g}:{R} {quote}{l}{self.style_settings[2][1]['style']}{quote} ),\n",
+            f'    ({g}"padding"{R}     ,'+" { 'style' "+f" {g}:{R} {quote}{l}{self.style_settings[3][1]['style']}{quote} ),\n",
+            '\n',
+            f'    ({g}"progress"{R}    ,'+" { 'print'  "+g+":"+R+"  \033[34m" + str(self.style_settings[4][1]['print']) + "\033[0m  ,\n",
+                   '                    '+"   'len'    "+g+":"+R+"  \033[34m" + str(self.style_settings[4][1]['len'])   + "\033[0m  }))\n",
+            ')',
+        ]
+        text_settings = ''
+        for line in list_settings:
+            text_settings += line
+        return text_settings #print(list_data.set_text_style(arguments))で実行すると変更後の設定が表示されるように改良。
+    
     def update_data_with_arguments(self, arguments, current_index=()):
 
         if isinstance(arguments, dict):
@@ -584,11 +627,14 @@ class SetPrint:
         self.empty_style = self.style_settings[3][1]['style']
 
         # self.bracket_e = self.style_settings['bracket']['exists']
-        self.ber_len = self.style_settings[4][1]['len']
-        self.line_ber_len = self.ber_len/len(datas)
-        print()
-        print('seach_collection...')
-        print('{ '+'-'*self.ber_len+' }')
+        self.ber_print = self.style_settings[4][1]['print']
+        # ber_print(1)
+        if self.ber_print:
+            self.ber_len = self.style_settings[4][1]['len']
+            self.line_ber_len = self.ber_len/len(datas)
+            print()
+            print('seach_collection...')
+            print('{ '+' '*self.ber_len+' }')
 
 
         if self.keep_start == self.now_deep:
@@ -625,11 +671,12 @@ class SetPrint:
                     line_title.append(linenum)
                 if len(keep_liens_data[linenum+1]) > max_indexlen:
                     max_indexlen = len(keep_liens_data[linenum+1])
-
-
-                now_len = int(self.line_ber_len*(linenum+1))
-                print('\033[F\033[K{ '+'='*now_len+'-'*(self.ber_len-now_len)+' }')
-
+                
+                # ber_print(2)
+                if self.ber_print:
+                    now_len = int(self.line_ber_len*(linenum+1))
+                    if self.ber_print:
+                        print('\033[F\033[K{ '+'='*now_len+' '*(self.ber_len-now_len)+' }')
 
             keep_liens_data = [keep_liens_data]
 
@@ -638,8 +685,10 @@ class SetPrint:
             keep_Ylines_data.insert(0,[[txt_keep_index,max_indexlen]])
 
             All_blocks.insert(0,keep_liens_data)
-        
-        print('\033[F\033[F\033[KThe search_collection process has been successfully completed.\n' + '{ '+'='*self.ber_len+' }')
+
+        # ber_print(3)
+        if self.ber_print:
+            print('\033[F\033[F\033[KThe search_collection process has been successfully completed.\n' + '{ '+'='*self.ber_len+' }')
         
         self.All_blocks = All_blocks
         set_border_list = self.blocks_border_print(All_blocks = All_blocks, line_title = line_title, guide = guide)
@@ -862,10 +911,16 @@ class SetPrint:
 
                 keep_liens_data.append([[self.keep_index,txt_line]])
             
+            # ber_print(2)
+            if self.ber_print:
+                if self.keep_start == 1:
+                    now_len = int(self.line_ber_len*(linenum+1))
+                    print('\033[F\033[K{ '+'-'*now_len+' '*(self.ber_len-now_len)+' }')
+        
+        # ber_print(2)
+        if self.ber_print:
             if self.keep_start == 1:
-                now_len = int(self.line_ber_len*(linenum+1))
-                print('\033[F\033[K{ '+'='*now_len+'-'*(self.ber_len-now_len)+' }')
-
+                print('\033[F\033[F\033[Kformat_keep_data...\n' + '{ '+'-'*self.ber_len+' }')
 
         # 取得し終えた、配列情報を、場所や長さで整える処理
         format_txtdata = ['']
@@ -933,6 +988,7 @@ class SetPrint:
         self.keep_txts_data[insert_index] = [txt_keep_index,del_MAXindex,self.MAX_indexlen,x_lens]       
   
     def format_keep_data(self,keep_liens_data):
+            
         '''
         1列毎に調査された内容毎をfor構文で回し、
         存在したインデックスが格納された配列と比べて整えていく。
@@ -940,11 +996,12 @@ class SetPrint:
         # その為には、両者の格納を昇降順にソートする必要があるのでsorted関数を使用する。
         sort_MAX_index = sorted(self.MAX_index)
         sort_MAX_indexlen = []
-        for indexline in sort_MAX_index:
+        for linenum,indexline in enumerate(sort_MAX_index):
             a = self.MAX_index.index(indexline)
             sort_MAX_indexlen.append(self.MAX_indexlen[a])
-        self.MAX_index,self.MAX_indexlen = sort_MAX_index,sort_MAX_indexlen
 
+        self.MAX_index,self.MAX_indexlen = sort_MAX_index,sort_MAX_indexlen
+        
         linenum = 0
         format_txtdata = []
 
@@ -952,7 +1009,6 @@ class SetPrint:
 
         # 他の列と格納状況が異なる箇所を格納する変数。存在だけを確認するのでset()。結果を用いて、見た目を変更する。
         mismatch_indices = set()
-
         
         for keep_linenum in range(len(keep_liens_data)):
             keep_line = keep_liens_data[keep_linenum]
@@ -1037,6 +1093,12 @@ class SetPrint:
                         txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
 
             format_txtdata.append(txt)
+
+            # ber_print(3)
+            if self.ber_print:
+                if self.keep_start == 1:
+                    now_len = int(self.line_ber_len*(keep_linenum+1))
+                    print('\033[F\033[K{ '+'='*now_len+'-'*(self.ber_len-now_len)+' }')
 
         return format_txtdata,mismatch_indices
 
