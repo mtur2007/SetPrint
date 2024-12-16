@@ -1,3 +1,8 @@
+# / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test /
+print('\n'+'/ \033[38;2;255;165;0m\033[1mtest\033[0m / \033[38;5;27mtest\033[0m '*10+'/\n')
+
+# setpirnt (ver 0.3.0)
+
 import numpy as np
 from pynput import keyboard
 
@@ -371,7 +376,7 @@ class SetPrint:
             ]
             for line in list_settings:
                 print(line)
-    
+        
     def update_data_with_arguments(self, arguments, current_index=()):
 
         if isinstance(arguments, dict):
