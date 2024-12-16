@@ -41,7 +41,7 @@ arguments = (
 list_data.set_text_style(arguments) # set_listの前
 
 # ３次元目に各テキストデータが格納されているので、keep_start=3にして実行
-set_datas = list_data.set_list(guide=True,keep_start=3,keep_range='all') 
+set_datas = list_data.set_list(guide=True,keep_start=1,keep_range='all') 
 
 # スクリプトが存在するディレクトリを基準にする
 base_dir = os.path.dirname(os.path.abspath(__file__))
