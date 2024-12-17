@@ -295,16 +295,16 @@ class SetPrint:
         self.style_settings = (
             
            (("Collections" , 
-                { 'image'   : {'list'       :'►list',
-                                'tuple'     :'▷tuple',
-                                'ndarray'   :'>numpy',
-                                'dictionary':'◆dict'}}),
+                { 'image'   : {'list'     :'►list',
+                                'tuple'   :'▷tuple',
+                                'ndarray' :'>numpy',
+                                'dict'    :'◆dict'}}),
             ("bracket"     , 
-                { 'partially': {'list'      :('{',')'),                 
-                                'tuple'     :('<','>'),
-                                'ndarray'   :('(','}'),
-                                'dictionary':('/','/'),
-                                'None'      :('`','`')}}),
+                { 'partially': {'list'    :('{',')'),                 
+                                'tuple'   :('<','>'),
+                                'ndarray' :('(','}'),
+                                'dict'    :('/','/'),
+                                'None'    :('`','`')}}),
                                                 
             ("empty"       , { 'style' : ' '}),
             ("padding"     , { 'style' : '-'}),
@@ -318,25 +318,25 @@ class SetPrint:
         
         # 制限('#'の箇所をまとめて管理)
         self.constraints = {
-            ( 0, 1,     'image',       'list'    ) : {'type': str},
-            ( 0, 1,     'image',      'tuple'    ) : {'type': str},
-            ( 0, 1,     'image',    'ndarray'    ) : {'type': str},
-            ( 0, 1,     'image', 'dictionary'    ) : {'type': str},
-            ( 1, 1, 'partially',       'list', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',       'list', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',      'tuple', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',      'tuple', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',    'ndarray', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',    'ndarray', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially', 'dictionary', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially', 'dictionary', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',       'None', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',       'None', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 2, 1,     'style'                  ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,     'style'                  ) : {'type': str, 'min_length':1, 'max_length':1},    
-            ( 4, 1,     'print'                  ) : {'type': bool,},
-            ( 5, 1,     'print'                  ) : {'type': bool,},
-            ( 5, 1,       'len'                  ) : {'type': int, 'min':0}
+            ( 0, 1,     'image',    'list'    ) : {'type': str},
+            ( 0, 1,     'image',   'tuple'    ) : {'type': str},
+            ( 0, 1,     'image', 'ndarray'    ) : {'type': str},
+            ( 0, 1,     'image',    'dict'    ) : {'type': str},
+            ( 1, 1, 'partially',    'list', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',    'list', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',   'tuple', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',   'tuple', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially', 'ndarray', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially', 'ndarray', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',    'dict', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',    'dict', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',    'None', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',    'None', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 2, 1,     'style'               ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,     'style'               ) : {'type': str, 'min_length':1, 'max_length':1},    
+            ( 4, 1,     'print'               ) : {'type': bool,},
+            ( 5, 1,     'print'               ) : {'type': bool,},
+            ( 5, 1,       'len'               ) : {'type': int, 'min':0}
         
         }
    
@@ -715,6 +715,7 @@ class SetPrint:
         return set_data_dict
 
     def search_mapping(self, datas):
+
         self.now_deep += 1 #deepはインデックスの次元測定
 
         # キープ範囲内にある次元のリスト配列から情報を取得する。
@@ -738,29 +739,32 @@ class SetPrint:
                     self.MAX_indexlen[self.MAX_index.index(insert_index)] = 1
 
 
-            for linenum in range(len(datas)):
-
-                line = datas[linenum]
+            for linenum, (key, line) in enumerate(datas.items()):
 
                 self.keep_index[-1] = linenum
                 self.now_index[-1] = linenum
 
-                if isinstance(line, (list, tuple, np.ndarray)):
+                if isinstance(line, (list, tuple, np.ndarray, dict)):
                     insert_index = self.keep_index.copy()
-                    collections_txt = self.collections[str(type(line).__name__)]
+                    
+                    collections_txt = str(key) + ' : ' + self.collections[str(type(line).__name__)][0]
 
                     if (insert_index in self.MAX_index) == False:
                         self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append(collections_txt[1])
+                        self.MAX_indexlen.append(len(collections_txt))
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)] < collections_txt[1]:
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = collections_txt[1]
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)] < len(collections_txt):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = len(collections_txt)
 
-                    self.keep_1line_data.append([insert_index,collections_txt[0]])
+                    self.keep_1line_data.append([insert_index,collections_txt])
+                    
+                    if type(line) == dict:
+                        self.search_mapping(line)
+                    else:
+                        self.search_sequence(line)
 
-                    self.search_sequence(line) 
                 else:
-                    txt_line = str(line)
+                    txt_line = str(key) + ' : ' + str(line)
                     
                     insert_index = self.keep_index.copy()
 
@@ -776,11 +780,7 @@ class SetPrint:
             insert_index = self.keep_index.copy()
             insert_index[-1] += 1
 
-
-            if type(datas) == tuple:
-                self.keep_1line_data.append(['finish',insert_index,')'])
-            else:
-                self.keep_1line_data.append(['finish',insert_index,']'])
+            self.keep_1line_data.append(['finish',insert_index,'}'])
 
             if (insert_index in self.MAX_index) == False:
                 self.MAX_index.append(insert_index)
@@ -827,8 +827,7 @@ class SetPrint:
             max_indexlen = 0
             self.keep_txts_data.append('')
 
-            for linenum in range(len(datas)):
-                line = datas[linenum]
+            for linenum, (key, line) in enumerate(datas.items()):
 
                 self.now_index[-1] = linenum
 
@@ -836,12 +835,15 @@ class SetPrint:
                 for i in self.now_index:
                     txt += "[" + str(i) + "]"
                 
-                if isinstance(line, (list, tuple, np.ndarray)):
-                    self.search_sequence(line)
+                if isinstance(line, (list, tuple, np.ndarray, dict)):
+                    if type(line) == dict:
+                        self.search_mapping(line)
+                    else:
+                        self.search_sequence(line)
 
                     keep_liens_data.append(f'data_type: {type(line)}')
                 else:
-                    keep_liens_data.append(str(line))
+                    keep_liens_data.append(str(key) + ' : ' + str(line))
                     #リストの最下層の場合の処理
                 
                 if len(keep_liens_data[linenum+1]) > max_indexlen:
@@ -893,7 +895,7 @@ class SetPrint:
                 self.keep_index[-1] = linenum
                 self.now_index[-1] = linenum
 
-                if isinstance(line, (list, tuple, np.ndarray)):
+                if isinstance(line, (list, tuple, np.ndarray, dict)):
                     insert_index = self.keep_index.copy()
                     collections_txt = self.collections[str(type(line).__name__)]
 
@@ -905,8 +907,11 @@ class SetPrint:
                             self.MAX_indexlen[self.MAX_index.index(insert_index)] = collections_txt[1]
 
                     self.keep_1line_data.append([insert_index,collections_txt[0]])
-
-                    self.search_sequence(line)
+                    print(line)
+                    if type(line) == dict:
+                        self.search_mapping(line)
+                    else:
+                        self.search_sequence(line)
 
                 else:
                     txt_line = str(line)
@@ -985,8 +990,11 @@ class SetPrint:
                 for i in self.now_index:
                     txt += "[" + str(i) + "]"
                 
-                if isinstance(line, (list, tuple, np.ndarray)):
-                    self.search_sequence(line)
+                if isinstance(line, (list, tuple, np.ndarray, dict)):
+                    if type(line) == dict:
+                        self.search_mapping(line)
+                    else:
+                        self.search_sequence(line)
 
                     keep_liens_data.append(f'data_type: {type(line)}')
                 else:
@@ -1031,20 +1039,20 @@ class SetPrint:
         self.keep_txts_data.append('')
 
         insert_index = len(self.Xline_blocks)-1
-
+        print('run_setup')
         if type(datas) == dict:
-            keys = datas.keys()
-            for key in range(len(keys)):
-                line = datas[key]
+            print('setup_mapping')
+
+            for linenum, (key, line) in enumerate(datas.items()):
+
                 self.keep_index = []
                 
                 self.now_index[-1] = linenum
 
-                if isinstance(line, (list, tuple, np.ndarray)):
+                if isinstance(line, (list, tuple, np.ndarray, dict)):
 
                     self.keep_1line_data = [] #1列の配列情報を格納するリスト
-
-                    collections_txt = self.collections[str(type(line).__name__)]
+                    collections_txt = str(key) + ' : ' + self.collections[str(type(line).__name__)][0]
                     
                     #存在するインデックスの情報の新規作成/更新
                     """
@@ -1054,38 +1062,34 @@ class SetPrint:
                     """
                     if (self.keep_index in self.MAX_index) == False:
                         self.MAX_index.append(self.keep_index.copy())
-                        self.MAX_indexlen.append(collections_txt[1])
+                        self.MAX_indexlen.append(len(collections_txt))
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < collections_txt[1]:
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = collections_txt[1]
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < len(collections_txt):
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = len(collections_txt)
 
-                    self.keep_1line_data.append([self.keep_index,collections_txt[0]])
+                    self.keep_1line_data.append([self.keep_index,collections_txt])
 
-                    #リストだった場合、またこのメソッドが呼び出される。
-                    self.search_sequence(line)
-            
+                    if type(line) == dict:
+                        self.search_mapping(line)
+                    else:
+                        #リストだった場合、またこのメソッドが呼び出される。
+                        self.search_sequence(line)
+                
                     keep_liens_data.append(self.keep_1line_data)
                 
-                if type(line) == dict:
+                else:
+                    txt_line = str(key) + ' : ' + str(line)
 
-                    self.keep_1line_data = [] #1列の配列情報を格納するリスト
-
-                    collections_txt = self.collections[str(type(line).__name__)]
-                    
                     #存在するインデックスの情報の新規作成/更新
-                    """
-                    self.MAX_indexlen
-                    シーケンス型,   数列型の場合は int_len, flot_len
-                        ``    , 文字列型の場合は txt_len の更新
-                    """
                     if (self.keep_index in self.MAX_index) == False:
                         self.MAX_index.append(self.keep_index.copy())
-                        self.MAX_indexlen.append(collections_txt[1])
+                        self.MAX_indexlen.append(len(txt_line))
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < collections_txt[1]:
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = collections_txt[1]
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < len(txt_line):
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = len(txt_line)
 
-                    self.keep_1line_data.append([self.keep_index,collections_txt[0]])
+                    keep_liens_data.append([[self.keep_index,txt_line]])
+                
 
                 # ber_print(2)
                 if self.ber_print:
@@ -1095,12 +1099,13 @@ class SetPrint:
             
         else:
             for linenum in range(len(datas)):
+                print('seach_sequence')
                 self.keep_index = []
                 line = datas[linenum]
                 
                 self.now_index[-1] = linenum
 
-                if isinstance(line, (list, tuple, np.ndarray)):
+                if isinstance(line, (list, tuple, np.ndarray, dict)):
 
                     self.keep_1line_data = [] #1列の配列情報を格納するリスト
 
@@ -1121,8 +1126,12 @@ class SetPrint:
 
                     self.keep_1line_data.append([self.keep_index,collections_txt[0]])
 
-                    #リストだった場合、またこのメソッドが呼び出される。
-                    self.search_sequence(line)
+                    print(line)
+                    if type(line) == dict:
+                        self.search_mapping(line)
+                    else:
+                        #リストだった場合、またこのメソッドが呼び出される。
+                        self.search_sequence(line)
             
                     keep_liens_data.append(self.keep_1line_data)
 
@@ -1168,30 +1177,30 @@ class SetPrint:
             line = self.MAX_index[linenum+1]
             if line[-1] == -1:
                 
-                if tuple(line[:-1]) in mismatch_indices:
+                # if tuple(line[:-1]) in mismatch_indices:
                     
-                    search_index = now_index + ['n'] +line[:-1]
-                    input_point = len(now_index)
+                #     search_index = now_index + ['n'] +line[:-1]
+                #     input_point = len(now_index)
                     
-                    # 格納状況が異なる箇所の [] を　{) に変更しわかりやすくする。
-                    for txt_linenum in range(len(format_txtdata)):
-                        search_index[input_point] = txt_linenum
-                        value = access_nested_list(self.input_list,search_index)
-                        if not isinstance(value, (list, tuple, np.ndarray)):
-                            bracket_image = self.bracket['None']
-                        else:
-                            bracket_image = self.bracket[str(type(value).__name__)]
+                #     # 格納状況が異なる箇所の [] を　{) に変更しわかりやすくする。
+                #     for txt_linenum in range(len(format_txtdata)):
+                #         search_index[input_point] = txt_linenum
+                #         value = access_nested_list(self.input_list,search_index)
+                #         if not isinstance(value, (list, tuple, np.ndarray, dict)):
+                #             bracket_image = self.bracket['None']
+                #         else:
+                #             bracket_image = self.bracket[str(type(value).__name__)]
                             
 
-                        txt_line = format_txtdata[txt_linenum]
+                #         txt_line = format_txtdata[txt_linenum]
 
-                        S_index = x_lens[del_MAXindex.index(line)]
-                        txt_line = txt_line[:S_index] + bracket_image[0] + txt_line[S_index+1:]
+                #         S_index = x_lens[del_MAXindex.index(line)]
+                #         txt_line = txt_line[:S_index] + bracket_image[0] + txt_line[S_index+1:]
 
-                        search_line = line[:-1]
-                        search_line.append(self.finish_index[str(search_line)])
-                        F_index = x_lens[del_MAXindex.index(search_line)]
-                        format_txtdata[txt_linenum] = txt_line[:F_index] + bracket_image[1] + txt_line[F_index+1:]
+                #         search_line = line[:-1]
+                #         search_line.append(self.finish_index[str(search_line)])
+                #         F_index = x_lens[del_MAXindex.index(search_line)]
+                #         format_txtdata[txt_linenum] = txt_line[:F_index] + bracket_image[1] + txt_line[F_index+1:]
                         
 
                 del_index = del_MAXindex.index(line)

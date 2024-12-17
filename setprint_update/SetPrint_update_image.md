@@ -17,10 +17,14 @@ ver, 0.3.0 シーケンス型とマッピング型の実装が容易な状態
 
    <新規>
    - [未完成] 数値を値で整える機能の追加
-   - [未完成] 辞書型への対応
+
+   - [完成]　 辞書型への対応<br>
+        - デモ版  https://github.com/mtur2007/SetPrint/blob/main/setprint_update/demo_setprint_0_3_0.py
+
+   - [未完成] 辞書型に対応した次元要素の差分表示 ({),<>,(},//,``)
    
    <修正>
-   - [未完成] 表示スタイルのカスタマイズ性の拡張(辞書型項目の追加)<br>
+   - [完成] 表示スタイルのカスタマイズ性の拡張(辞書型項目の追加)<br>
 ---
 
 # 詳細な変更要素
@@ -34,12 +38,12 @@ ver, 0.3.0 シーケンス型とマッピング型の実装が容易な状態
     | "Collections" | image     | list       | '►list'      | 配列の格納を表す            | type: str           |
     |    ``         | ``        | tuple      | '▷tuple'     | ``                       | type: str,          |
     |    ``         | ``        | ndarray    | '>ndarray'   | ``                       | type: str,          |
-    |    ``         | ``        | dictionary | '◆dict'      | ``                       | type: str,          |
+    |    ``         | ``        | dict　　　  | '◆dict'      | ``                       | type: str,          |
     | ------------- | --------  | ---------  | ----------   | ------------------------ | ------------------- |
     | "bracket"     | partially | list       | '{' ・ ")"   | 他の配列と違う次元要素       | type: str, len: 0<l |
     |    ``         | ``        | tuple      | '<' ・ ">'   | ``                       | type: str, len: 0<l |
     |    ``         | ``        | ndarray    | '(' ・ "}'   | ``                       | type: str, len: 0<l |
-    |    ``         | ``        | dictionary | '/' ・ "/'   | ``                       | type: str, len: 0<l |
+    |    ``         | ``        | dict       | '/' ・ "/'   | ``                       | type: str, len: 0<l |
     |    ``         | ``        | None       | '`' ・ "``"  | 存在しない次元要素　　       | type: str, len: l=1 |
     | ------------- | --------  | ---------  | ----------   | ------------------------ | ------------------- |
     | "padding"     | style     |            | ' '          | 字数の穴埋め               | type: str, len: l=1 |
@@ -59,29 +63,27 @@ ver, 0.3.0 シーケンス型とマッピング型の実装が容易な状態
         #list_data = SetPrint(list)
         
         arguments = (
-        
-            (("Collections" , 
-                { 'image'   : {'list'       :'►list',
-                                'tuple'     :'▷tuple',
-                                'ndarray'   :'>numpy',
-                          New > 'dictionary':'◆dict'}}),
+            
+           (("Collections" , 
+                { 'image'   : {'list'     :'►list',
+                                'tuple'   :'▷tuple',
+                                'ndarray' :'>numpy',
+                                'dict'    :'◆dict'}}),  # < New
             ("bracket"     , 
-                { 'partially': {'list'      :('{',')'),                 
-                                'tuple'     :('<','>'),
-                                'ndarray'   :('(','}'),
-                          New > 'dictionary':('/','/'),
-                                'None'      :('`','`')}}),
+                { 'partially': {'list'    :('{',')'),                 
+                                'tuple'   :('<','>'),
+                                'ndarray' :('(','}'),
+                                'dict'    :('/','/'),   # < New
+                                'None'    :('`','`')}}),
                                                 
             ("empty"       , { 'style' : ' '}),
-            ("padding"     , 
-                {'sequence': { 'style' : '-'}
-           New > 'mapping' : { 'style' : '*'}}),
-
+            ("padding"     , { 'style' : '-'}),
 
             ("settings"    , { 'print' : True }),
 
             ("progress"    , { 'print' : True ,
-                               'len'   : 20 }))
+                               'len'   : 20}))
+
         )
         
         list_data.set_text_style(arguments) # set_listの前

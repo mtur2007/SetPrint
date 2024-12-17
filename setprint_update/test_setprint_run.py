@@ -1,7 +1,7 @@
 
 # 実行コード
 import pickle
-from test_setprint_0_3_0 import SetPrint
+from demo_setprint_0_3_0 import SetPrint
 
 import os
 
@@ -13,35 +13,44 @@ with open(file_name, "rb") as file:
 # keyを指定してテキストデータを取得
 txt_data = loaded_data["Alltxtdatas"]
 
-list_data = SetPrint(txt_data)
+# list_data = SetPrint(txt_data)
+#list_data = SetPrint(list)
 
 arguments = (
-                    
-    (("Collections" , 
-        { 'image'    : {'list'   :'►list',
-                        'tuple'  :'▷tuple',
-                        'ndarray':'>numpy'}}),
+    
+   (("Collections" , 
+        { 'image'   : {'list'     :'►list',
+                        'tuple'   :'▷tuple',
+                        'ndarray' :'>numpy',
+                        'dict'    :'◆dict'}}),  # < New
     ("bracket"     , 
-        { 'partially': {'list'   :('{',')'),                 
-                        'tuple'  :('<','>'),
-                        'ndarray':('(','}'),
-                        'None'   :('`','`')}}),
+        { 'partially': {'list'    :('{',')'),                 
+                        'tuple'   :('<','>'),
+                        'ndarray' :('(','}'),
+                        'dict'    :('/','/'),   # < New
+                        'None'    :('`','`')}}),
                                         
     ("empty"       , { 'style' : ' '}),
     ("padding"     , { 'style' : '-'}),
 
-    ("settings"    , { 'print' : True }), # <- New  True (display) / False (hide)
+    ("settings"    , { 'print' : False }),
 
-    ("progress"    , { 'print' : False ,   # <- New  True (display) / False (hide)
-                        'len'   : 20 }))
+    ("progress"    , { 'print' : False ,
+                       'len'   : 20}))
 
-    
 )
+
+# インデックスで引数のチェックを行う為、この配列の通りに指定してください。
+# 制限の範囲内ではなかった値は表示され、デフォルトの値が代入されます。
+
+# set_datas = list_data.set_list(guide=True, keep_start=1, keep_range='all')
+
+list_data = SetPrint(arguments)
 
 list_data.set_text_style(arguments) # set_listの前
 
 # ３次元目に各テキストデータが格納されているので、keep_start=3にして実行
-set_datas = list_data.set_list(guide=True,keep_start=3,keep_range='all') 
+set_datas = list_data.set_list(guide=True,keep_start=1,keep_range='all') 
 
 # スクリプトが存在するディレクトリを基準にする
 base_dir = os.path.dirname(os.path.abspath(__file__))
