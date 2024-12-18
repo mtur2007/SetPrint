@@ -291,6 +291,11 @@ class SetPrint:
 
         self.input_list = input_list
 
+        self.int_type = (int)
+        self.str_type = (str)
+        self.sequence_type = (list,tuple,np.ndarray)
+        self.mapping_type = (dict)
+
         # 入力データ('#'は引数の受け取り箇所)
         self.style_settings = (
             
@@ -384,12 +389,12 @@ class SetPrint:
         
     def update_data_with_arguments(self, arguments, current_index=()):
 
-        if isinstance(arguments, dict):
+        if isinstance(arguments, self.mapping_type):
             # 辞書を探索
             for key, value in arguments.items():
                 new_index = current_index + (key,)
                 self.update_data_with_arguments(value, new_index)
-        elif isinstance(arguments, (list, tuple)):
+        elif isinstance(arguments, self.sequence_type):
             # リストやタプルを探索
             for i, value in enumerate(arguments):
                 new_index = current_index + (i,)
@@ -414,7 +419,7 @@ class SetPrint:
                     update_True = False
 
                 # 範囲チェック
-                if isinstance(new_value, int):  # 数列型の場合のみ適用
+                if isinstance(new_value, self.int_type):  # 数列型の場合のみ適用
                     if 'min' in constraint and new_value < constraint['min']:
                         print(f"Value '{new_value}' at index {current_index} is less than the minimum value {constraint['min']}.")
                         update_True = False
@@ -423,7 +428,7 @@ class SetPrint:
                         update_True = False
 
                 # 文字列の長さチェック
-                if isinstance(new_value, str):  # 文字列型の場合のみ適用
+                if isinstance(new_value, self.str_type):  # 文字列型の場合のみ適用
                     if 'max_length' in constraint and len(new_value) > constraint['max_length']:
                         print(f"Value '{new_value}' at index {current_index} exceeds maximum length of {constraint['max_length']}.")
                         update_True = False
@@ -733,10 +738,10 @@ class SetPrint:
             
             if (insert_index in self.MAX_index) == False:
                 self.MAX_index.append(insert_index)
-                self.MAX_indexlen.append(1)
+                self.MAX_indexlen.append([0,0,0,1])
             else:
-                if self.MAX_indexlen[self.MAX_index.index(insert_index)] < 1:
-                    self.MAX_indexlen[self.MAX_index.index(insert_index)] = 1
+                if self.MAX_indexlen[self.MAX_index.index(insert_index)][3] < 1:
+                    self.MAX_indexlen[self.MAX_index.index(insert_index)][3] = 1
 
 
             for linenum, (key, line) in enumerate(datas.items()):
@@ -744,7 +749,25 @@ class SetPrint:
                 self.keep_index[-1] = linenum
                 self.now_index[-1] = linenum
 
-                if isinstance(line, (list, tuple, np.ndarray, dict)):
+
+                if isinstance(line, self.sequence_type):
+                    insert_index = self.keep_index.copy()
+                    
+                    collections_txt = str(key) + ' : ' + self.collections[str(type(line).__name__)][0]
+
+                    if (insert_index in self.MAX_index) == False:
+                        self.MAX_index.append(insert_index)
+                        self.MAX_indexlen.append([0,0,0,len(collections_txt)])
+                    else:
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][3] < len(collections_txt):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = len(collections_txt)
+
+                    self.keep_1line_data.append([insert_index,collections_txt])
+                    
+                    self.search_sequence(line)
+
+                elif isinstance(line, self.mapping_type):
+
                     insert_index = self.keep_index.copy()
                     
                     collections_txt = str(key) + ' : ' + self.collections[str(type(line).__name__)][0]
@@ -758,10 +781,7 @@ class SetPrint:
 
                     self.keep_1line_data.append([insert_index,collections_txt])
                     
-                    if type(line) == dict:
-                        self.search_mapping(line)
-                    else:
-                        self.search_sequence(line)
+                    self.search_sequence(line)
 
                 else:
                     txt_line = str(key) + ' : ' + str(line)
@@ -1062,7 +1082,7 @@ class SetPrint:
                     """
                     if (self.keep_index in self.MAX_index) == False:
                         self.MAX_index.append(self.keep_index.copy())
-                        self.MAX_indexlen.append(len(collections_txt))
+                        self.MAX_indexlen.append([0,len(collections_txt),0,0])
                     else:
                         if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = len(collections_txt)

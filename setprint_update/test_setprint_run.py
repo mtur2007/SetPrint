@@ -1,7 +1,7 @@
 
 # 実行コード
 import pickle
-from demo_setprint_0_3_0 import SetPrint
+from test_setprint_0_3_0 import SetPrint
 
 import os
 
