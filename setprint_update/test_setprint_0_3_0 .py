@@ -738,10 +738,10 @@ class SetPrint:
             
             if (insert_index in self.MAX_index) == False:
                 self.MAX_index.append(insert_index)
-                self.MAX_indexlen.append([0,0,0,1])
+                self.MAX_indexlen.append([0,1])
             else:
-                if self.MAX_indexlen[self.MAX_index.index(insert_index)][3] < 1:
-                    self.MAX_indexlen[self.MAX_index.index(insert_index)][3] = 1
+                if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < 1:
+                    self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = 1
 
 
             for linenum, (key, line) in enumerate(datas.items()):
@@ -757,10 +757,13 @@ class SetPrint:
 
                     if (insert_index in self.MAX_index) == False:
                         self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append([0,0,0,len(collections_txt)])
+                        self.MAX_indexlen.append([0,len(collections_txt)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][3] < len(collections_txt):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = len(collections_txt)
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
+
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
 
                     self.keep_1line_data.append([insert_index,collections_txt])
                     
@@ -776,8 +779,11 @@ class SetPrint:
                         self.MAX_index.append(insert_index)
                         self.MAX_indexlen.append(len(collections_txt))
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)] < len(collections_txt):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = len(collections_txt)
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
+
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
 
                     self.keep_1line_data.append([insert_index,collections_txt])
                     
@@ -792,8 +798,11 @@ class SetPrint:
                         self.MAX_index.append(insert_index)
                         self.MAX_indexlen.append(len(txt_line))
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)] < len(txt_line):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = len(txt_line)
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
+
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(txt_line):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
 
                     self.keep_1line_data.append([insert_index,txt_line])
             
@@ -902,10 +911,10 @@ class SetPrint:
             
             if (insert_index in self.MAX_index) == False:
                 self.MAX_index.append(insert_index)
-                self.MAX_indexlen.append(1)
+                self.MAX_indexlen.append([0,1])
             else:
-                if self.MAX_indexlen[self.MAX_index.index(insert_index)] < 1:
-                    self.MAX_indexlen[self.MAX_index.index(insert_index)] = 1
+                if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < 1:
+                    self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = 1
 
 
             for linenum in range(len(datas)):
@@ -921,10 +930,10 @@ class SetPrint:
 
                     if (insert_index in self.MAX_index) == False:
                         self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append(collections_txt[1])
+                        self.MAX_indexlen.append([0,collections_txt[1]])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)] < collections_txt[1]:
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = collections_txt[1]
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < collections_txt[1]:
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = collections_txt[1]
 
                     self.keep_1line_data.append([insert_index,collections_txt[0]])
                     print(line)
@@ -940,10 +949,10 @@ class SetPrint:
 
                     if (insert_index in self.MAX_index) == False:
                         self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append(len(txt_line))
+                        self.MAX_indexlen.append([0,len(txt_line)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)] < len(txt_line):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)] = len(txt_line)
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(txt_line):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
 
                     self.keep_1line_data.append([insert_index,txt_line])
             
@@ -958,10 +967,10 @@ class SetPrint:
 
             if (insert_index in self.MAX_index) == False:
                 self.MAX_index.append(insert_index)
-                self.MAX_indexlen.append(1)
+                self.MAX_indexlen.append([0,1])
             else:
-                if self.MAX_indexlen[self.MAX_index.index(insert_index)] < 1:
-                    self.MAX_indexlen[self.MAX_index.index(insert_index)] = 1
+                if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < 1:
+                    self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = 1
 
             
             key = str(insert_index[:-1])
@@ -1082,10 +1091,13 @@ class SetPrint:
                     """
                     if (self.keep_index in self.MAX_index) == False:
                         self.MAX_index.append(self.keep_index.copy())
-                        self.MAX_indexlen.append([0,len(collections_txt),0,0])
+                        self.MAX_indexlen.append([0,len(collections_txt)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < len(collections_txt):
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = len(collections_txt)
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
+
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
 
                     self.keep_1line_data.append([self.keep_index,collections_txt])
 
@@ -1105,8 +1117,11 @@ class SetPrint:
                         self.MAX_index.append(self.keep_index.copy())
                         self.MAX_indexlen.append(len(txt_line))
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < len(txt_line):
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = len(txt_line)
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
+
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(txt_line):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
 
                     keep_liens_data.append([[self.keep_index,txt_line]])
                 
@@ -1139,10 +1154,10 @@ class SetPrint:
                     """
                     if (self.keep_index in self.MAX_index) == False:
                         self.MAX_index.append(self.keep_index.copy())
-                        self.MAX_indexlen.append(collections_txt[1])
+                        self.MAX_indexlen.append([0,collections_txt[1]])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < collections_txt[1]:
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = collections_txt[1]
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < collections_txt[1]:
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = collections_txt[1]
 
                     self.keep_1line_data.append([self.keep_index,collections_txt[0]])
 
@@ -1161,10 +1176,10 @@ class SetPrint:
                     #存在するインデックスの情報の新規作成/更新
                     if (self.keep_index in self.MAX_index) == False:
                         self.MAX_index.append(self.keep_index.copy())
-                        self.MAX_indexlen.append(len(txt_line))
+                        self.MAX_indexlen.append([0,len(txt_line)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)] < len(txt_line):
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)] = len(txt_line)
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(txt_line):
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(txt_line)
 
                     keep_liens_data.append([[self.keep_index,txt_line]])
                 
