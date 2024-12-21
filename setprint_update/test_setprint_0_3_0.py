@@ -753,7 +753,7 @@ class SetPrint:
                 if isinstance(line, self.sequence_type):
                     insert_index = self.keep_index.copy()
                     
-                    collections_txt = str(key) + ' : ' + self.collections[str(type(line).__name__)][0]
+                    collections_txt = self.collections[str(type(line).__name__)][0]
 
                     if (insert_index in self.MAX_index) == False:
                         self.MAX_index.append(insert_index)
@@ -765,7 +765,7 @@ class SetPrint:
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
 
-                    self.keep_1line_data.append([insert_index,collections_txt])
+                    self.keep_1line_data.append([insert_index,collections_txt,key])
                     
                     self.search_sequence(line)
 
@@ -773,7 +773,7 @@ class SetPrint:
 
                     insert_index = self.keep_index.copy()
                     
-                    collections_txt = str(key) + ' : ' + self.collections[str(type(line).__name__)][0]
+                    collections_txt = self.collections[str(type(line).__name__)][0]
 
                     if (insert_index in self.MAX_index) == False:
                         self.MAX_index.append(insert_index)
@@ -785,12 +785,12 @@ class SetPrint:
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
 
-                    self.keep_1line_data.append([insert_index,collections_txt])
+                    self.keep_1line_data.append([insert_index,collections_txt,key])
                     
                     self.search_sequence(line)
 
                 else:
-                    txt_line = str(key) + ' : ' + str(line)
+                    txt_line = str(line)
                     
                     insert_index = self.keep_index.copy()
 
@@ -804,7 +804,7 @@ class SetPrint:
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
 
-                    self.keep_1line_data.append([insert_index,txt_line])
+                    self.keep_1line_data.append([insert_index,txt_line,key])
             
             insert_index = self.keep_index.copy()
             insert_index[-1] += 1
@@ -1050,15 +1050,22 @@ class SetPrint:
         # 格納情報、次元情報、文字数を取得する為の処理
 
         # 格納情報の初期化
-        keep_liens_data = [] # 1列毎の配列情報を格納するリスト
-
         self.MAX_index    = [] #存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
         self.MAX_indexlen = [] #インデックスに格納されている配列の文字数を格納する。
+        keep_liens_data   = [] # 1列毎の配列情報を格納するリスト
         """
+        self.MAX_index
+        拡張なし
+
         self.MAX_indexlen
-        格納する値を [ key_len,   int_len, flot_len ,  txt_len ] に拡張する。
-                     ~~~~~~~    ~~~~~~~--~~~~~~~~    ~~~~~~~
-                    辞書型対応       数列整形用          文字列用
+        格納する値を [ key_len,   txt_len,   int_len, flot_len, ] に拡張する。
+                     ~~~~~~~    ~~~~~~~    ~~~~~~~--~~~~~~~~
+                   辞書型対応[0] 文字列用[1]    数列整形用[2,3]  
+
+        keep_lies_data
+        格納する値を [ self.keep_index,  collections_txt,  key ]
+                                                         ~~~
+                                                     辞書型対応[2]
         """
 
         self.finish_index = {} #リスト配列の最後尾のインデックスを格納
@@ -1099,7 +1106,7 @@ class SetPrint:
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
 
-                    self.keep_1line_data.append([self.keep_index,collections_txt])
+                    self.keep_1line_data.append([self.keep_index,collections_txt,key])
 
                     if type(line) == dict:
                         self.search_mapping(line)
@@ -1123,7 +1130,7 @@ class SetPrint:
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
 
-                    keep_liens_data.append([[self.keep_index,txt_line]])
+                    keep_liens_data.append([[self.keep_index,txt_line,key]])
                 
 
                 # ber_print(2)
@@ -1295,9 +1302,22 @@ class SetPrint:
 
                 # 両者のインデックスが同じだった場合。
                 if keep_txts[0] == index_line:
+                    
                     index_len = self.MAX_indexlen[linenum]
-                    air = (index_len - len(keep_txts[1])) * self.padding_style
-                    txt += air + str(keep_txts[1]) + ' '
+
+                    if self.MAX_indexlen[linenum][0] == 0:
+                        value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
+                        txt += key + ' : ' + value + ' '
+
+                    else:
+                        if len(keep_txts) == 2:
+                            key_empty = index_len[0] * self.padding_style
+                            value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
+                            txt += key_empty + ' : ' + value + ' '
+                        else:
+                            key   = (index_len[0] - len(keep_txts[2])) * self.padding_style + str(keep_txts[2])
+                            value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
+                            txt += key + ' : ' + value + ' '
 
                 else:
                     #違かった場合、配列数が足りない 又は、違う次元があるのかを調べる
