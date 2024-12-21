@@ -720,13 +720,11 @@ class SetPrint:
         return set_data_dict
 
     def search_mapping(self, datas):
-
+        
         self.now_deep += 1 #deepはインデックスの次元測定
 
         # キープ範囲内にある次元のリスト配列から情報を取得する。
         if self.keep_start < self.now_deep <= (self.now_deep if self.show_all else self.keep_finish):
-            
-            insert_index = len(self.Xline_blocks)-1
             
             self.keep_index.append(-1)
             self.now_index.append('')
@@ -757,7 +755,7 @@ class SetPrint:
 
                     if (insert_index in self.MAX_index) == False:
                         self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append([0,len(collections_txt)])
+                        self.MAX_indexlen.append([len(str(key)),len(collections_txt)])
                     else:
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
@@ -777,7 +775,7 @@ class SetPrint:
 
                     if (insert_index in self.MAX_index) == False:
                         self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append(len(collections_txt))
+                        self.MAX_indexlen.append([len(str(key)),len(collections_txt)])
                     else:
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
@@ -787,7 +785,7 @@ class SetPrint:
 
                     self.keep_1line_data.append([insert_index,collections_txt,key])
                     
-                    self.search_sequence(line)
+                    self.search_mapping(line)
 
                 else:
                     txt_line = str(line)
@@ -796,7 +794,7 @@ class SetPrint:
 
                     if (insert_index in self.MAX_index) == False:
                         self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append(len(txt_line))
+                        self.MAX_indexlen.append([len(str(key)),len(txt_line)])
                     else:
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
@@ -809,16 +807,16 @@ class SetPrint:
             insert_index = self.keep_index.copy()
             insert_index[-1] += 1
 
+
             self.keep_1line_data.append(['finish',insert_index,'}'])
 
             if (insert_index in self.MAX_index) == False:
                 self.MAX_index.append(insert_index)
-                self.MAX_indexlen.append(1)
+                self.MAX_indexlen.append([0,1])
             else:
-                if self.MAX_indexlen[self.MAX_index.index(insert_index)] < 1:
-                    self.MAX_indexlen[self.MAX_index.index(insert_index)] = 1
+                if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < 1:
+                    self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = 1
 
-            
             key = str(insert_index[:-1])
             if (key in self.finish_index) == False:
                 self.finish_index[key] = insert_index[-1]
@@ -853,7 +851,9 @@ class SetPrint:
 
             self.now_index.append('')
 
-            max_indexlen = 0
+            max_keylen = 0
+            max_txtlen = 0
+            value_datas = []
             self.keep_txts_data.append('')
 
             for linenum, (key, line) in enumerate(datas.items()):
@@ -870,20 +870,26 @@ class SetPrint:
                     else:
                         self.search_sequence(line)
 
-                    keep_liens_data.append(f'data_type: {type(line)}')
-                else:
-                    keep_liens_data.append(str(key) + ' : ' + str(line))
-                    #リストの最下層の場合の処理
+                    line = f'data_type: {type(line)}'
+
+
+                value_datas.append([key,line])
                 
-                if len(keep_liens_data[linenum+1]) > max_indexlen:
-                    max_indexlen = len(keep_liens_data[linenum+1])
+                if max_keylen < len(str(key)):
+                    max_keylen = len(str(key))
+                if max_txtlen < len(str(line)):
+                    max_txtlen = len(str(line))
                 
+            for line in value_datas:
+                key_air = (max_keylen - len(str(line[0]))) * ' '
+                txt_air = (max_txtlen - len(str(line[1]))) * ' '
+                keep_liens_data.append(key_air+str(line[0])+' : '+txt_air+str(line[1]))
                 
             #中身のリスト作成
             self.Xline_blocks[insert_index] = keep_liens_data
             txt_keep_index = self.now_index.copy()
             txt_keep_index[-1] = 'n'
-            self.keep_txts_data[insert_index] = [txt_keep_index,max_indexlen]
+            self.keep_txts_data[insert_index] = [txt_keep_index,max_keylen+max_txtlen+3]
 
         del self.now_index[-1] #インデックスの調査が終わったら戻す
         self.now_deep -= 1
@@ -916,7 +922,6 @@ class SetPrint:
                 if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < 1:
                     self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = 1
 
-
             for linenum in range(len(datas)):
 
                 line = datas[linenum]
@@ -936,7 +941,7 @@ class SetPrint:
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = collections_txt[1]
 
                     self.keep_1line_data.append([insert_index,collections_txt[0]])
-                    print(line)
+                    
                     if type(line) == dict:
                         self.search_mapping(line)
                     else:
@@ -955,10 +960,10 @@ class SetPrint:
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
 
                     self.keep_1line_data.append([insert_index,txt_line])
-            
+
+
             insert_index = self.keep_index.copy()
             insert_index[-1] += 1
-
 
             if type(datas) == tuple:
                 self.keep_1line_data.append(['finish',insert_index,')'])
@@ -1075,10 +1080,9 @@ class SetPrint:
         self.keep_txts_data.append('')
 
         insert_index = len(self.Xline_blocks)-1
-        print('run_setup')
+        
         if type(datas) == dict:
-            print('setup_mapping')
-
+            
             for linenum, (key, line) in enumerate(datas.items()):
 
                 self.keep_index = []
@@ -1086,9 +1090,9 @@ class SetPrint:
                 self.now_index[-1] = linenum
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
-
+          
                     self.keep_1line_data = [] #1列の配列情報を格納するリスト
-                    collections_txt = str(key) + ' : ' + self.collections[str(type(line).__name__)][0]
+                    collections_txt = self.collections[str(type(line).__name__)][0]
                     
                     #存在するインデックスの情報の新規作成/更新
                     """
@@ -1098,13 +1102,13 @@ class SetPrint:
                     """
                     if (self.keep_index in self.MAX_index) == False:
                         self.MAX_index.append(self.keep_index.copy())
-                        self.MAX_indexlen.append([0,len(collections_txt)])
+                        self.MAX_indexlen.append([len(str(key)),len(collections_txt)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(key):
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(key)
 
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(collections_txt):
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(collections_txt)
 
                     self.keep_1line_data.append([self.keep_index,collections_txt,key])
 
@@ -1117,18 +1121,18 @@ class SetPrint:
                     keep_liens_data.append(self.keep_1line_data)
                 
                 else:
-                    txt_line = str(key) + ' : ' + str(line)
-
+                    txt_line = str(line)
+         
                     #存在するインデックスの情報の新規作成/更新
                     if (self.keep_index in self.MAX_index) == False:
                         self.MAX_index.append(self.keep_index.copy())
-                        self.MAX_indexlen.append(len(txt_line))
+                        self.MAX_indexlen.append([len(str(key)),len(txt_line)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(key):
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(key)
 
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(txt_line):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(txt_line):
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(txt_line)
 
                     keep_liens_data.append([[self.keep_index,txt_line,key]])
                 
@@ -1141,7 +1145,6 @@ class SetPrint:
             
         else:
             for linenum in range(len(datas)):
-                print('seach_sequence')
                 self.keep_index = []
                 line = datas[linenum]
                 
@@ -1168,7 +1171,6 @@ class SetPrint:
 
                     self.keep_1line_data.append([self.keep_index,collections_txt[0]])
 
-                    print(line)
                     if type(line) == dict:
                         self.search_mapping(line)
                     else:
@@ -1206,56 +1208,60 @@ class SetPrint:
         if len(datas) >= 1:
             format_txtdata,mismatch_indices = self.format_keep_data(keep_liens_data)
 
-        # pick_guideprintで引き継ぐ 配列情報データから リストの '[', "]" 部分の情報を削除する
-        total = self.MAX_indexlen[0] + 1
+
+        # # pick_guideprintで引き継ぐ 配列情報データから リストの '[', "]" 部分の情報を削除する
+        # if self.MAX_indexlen[0][0] == 0:
+        #     total = self.MAX_indexlen[0] + 1
+        # else:
+        #     total = 
         x_lens = [0]
-        for datanum in range(len(self.MAX_indexlen)-1):
-            x_lens.append(total)
-            total += self.MAX_indexlen[datanum+1] + 1
+        # for datanum in range(len(self.MAX_indexlen)-1):
+        #     x_lens.append(total)
+        #     total += self.MAX_indexlen[datanum+1] + 1
 
         del_MAXindex = self.MAX_index.copy()
-        now_index = self.now_index[:-1]
-        for linenum in range(len(self.MAX_index)-1):
-            line = self.MAX_index[linenum+1]
-            if line[-1] == -1:
+        # now_index = self.now_index[:-1]
+        # for linenum in range(len(self.MAX_index)-1):
+        #     line = self.MAX_index[linenum+1]
+        #     if line[-1] == -1:
                 
-                # if tuple(line[:-1]) in mismatch_indices:
+        #         # if tuple(line[:-1]) in mismatch_indices:
                     
-                #     search_index = now_index + ['n'] +line[:-1]
-                #     input_point = len(now_index)
+        #         #     search_index = now_index + ['n'] +line[:-1]
+        #         #     input_point = len(now_index)
                     
-                #     # 格納状況が異なる箇所の [] を　{) に変更しわかりやすくする。
-                #     for txt_linenum in range(len(format_txtdata)):
-                #         search_index[input_point] = txt_linenum
-                #         value = access_nested_list(self.input_list,search_index)
-                #         if not isinstance(value, (list, tuple, np.ndarray, dict)):
-                #             bracket_image = self.bracket['None']
-                #         else:
-                #             bracket_image = self.bracket[str(type(value).__name__)]
+        #         #     # 格納状況が異なる箇所の [] を　{) に変更しわかりやすくする。
+        #         #     for txt_linenum in range(len(format_txtdata)):
+        #         #         search_index[input_point] = txt_linenum
+        #         #         value = access_nested_list(self.input_list,search_index)
+        #         #         if not isinstance(value, (list, tuple, np.ndarray, dict)):
+        #         #             bracket_image = self.bracket['None']
+        #         #         else:
+        #         #             bracket_image = self.bracket[str(type(value).__name__)]
                             
 
-                #         txt_line = format_txtdata[txt_linenum]
+        #         #         txt_line = format_txtdata[txt_linenum]
 
-                #         S_index = x_lens[del_MAXindex.index(line)]
-                #         txt_line = txt_line[:S_index] + bracket_image[0] + txt_line[S_index+1:]
+        #         #         S_index = x_lens[del_MAXindex.index(line)]
+        #         #         txt_line = txt_line[:S_index] + bracket_image[0] + txt_line[S_index+1:]
 
-                #         search_line = line[:-1]
-                #         search_line.append(self.finish_index[str(search_line)])
-                #         F_index = x_lens[del_MAXindex.index(search_line)]
-                #         format_txtdata[txt_linenum] = txt_line[:F_index] + bracket_image[1] + txt_line[F_index+1:]
+        #         #         search_line = line[:-1]
+        #         #         search_line.append(self.finish_index[str(search_line)])
+        #         #         F_index = x_lens[del_MAXindex.index(search_line)]
+        #         #         format_txtdata[txt_linenum] = txt_line[:F_index] + bracket_image[1] + txt_line[F_index+1:]
                         
 
-                del_index = del_MAXindex.index(line)
-                del del_MAXindex[del_index]
-                del self.MAX_indexlen[del_index]
-                del x_lens[del_index]
+        #         del_index = del_MAXindex.index(line)
+        #         del del_MAXindex[del_index]
+        #         del self.MAX_indexlen[del_index]
+        #         del x_lens[del_index]
 
-                search_line = line[:-1]
-                search_line.append(self.finish_index[str(search_line)])
-                del_index = del_MAXindex.index(search_line)
-                del del_MAXindex[del_index]
-                del self.MAX_indexlen[del_index]
-                del x_lens[del_index]
+        #         search_line = line[:-1]
+        #         search_line.append(self.finish_index[str(search_line)])
+        #         del_index = del_MAXindex.index(search_line)
+        #         del del_MAXindex[del_index]
+        #         del self.MAX_indexlen[del_index]
+        #         del x_lens[del_index]
         
         # 整形したデータを全体のリストに挿入
         format_txtdata.insert(0,txt_index)
@@ -1302,18 +1308,18 @@ class SetPrint:
 
                 # 両者のインデックスが同じだった場合。
                 if keep_txts[0] == index_line:
-                    
+
                     index_len = self.MAX_indexlen[linenum]
 
-                    if self.MAX_indexlen[linenum][0] == 0:
+                    if index_len[0] == 0:
                         value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
-                        txt += key + ' : ' + value + ' '
+                        txt += value + ' '
 
                     else:
                         if len(keep_txts) == 2:
-                            key_empty = index_len[0] * self.padding_style
+                            key_empty   = index_len[0] * self.empty_style
                             value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
-                            txt += key_empty + ' : ' + value + ' '
+                            txt += key_empty + ' : ' + value_empty + ' '
                         else:
                             key   = (index_len[0] - len(keep_txts[2])) * self.padding_style + str(keep_txts[2])
                             value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
@@ -1335,13 +1341,27 @@ class SetPrint:
 
                     while True:
                         #検索項目のインデックスが出てくるまで空白を挿入
+                        index_len = self.MAX_indexlen[linenum]
+
                         if search_finish == self.MAX_index[linenum]:
                             if  keep_txts[0] == 'finish':
                                 txt += finish_txt + ' '
 
                             else:
-                                air = (self.MAX_indexlen[linenum] - len(keep_txts[1])) * self.padding_style
-                                txt += air + str(keep_txts[1]) + ' '
+                            
+                                if index_len[0] == 0:
+                                    value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
+                                    txt += value + ' '
+
+                                else:
+                                    if len(keep_txts) == 2:
+                                        key_empty   = index_len[0] * self.empty_style
+                                        value_empty = index_len[1] * self.empty_style
+                                        txt += key_empty + ' : ' + value_empty + ' '
+                                    else:
+                                        key   = (index_len[0] - len(keep_txts[2])) * self.padding_style + str(keep_txts[2])
+                                        value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
+                                        txt += key + ' : ' + value + ' '
                                 
                             break
                         else:
@@ -1353,14 +1373,23 @@ class SetPrint:
                                 key_index = self.MAX_index[linenum][:-1]
                                 key_index.append(self.finish_index[str(key_index)])
                                 noput_point.append(self.MAX_index.index(key_index))
-                                txt += (self.MAX_indexlen[linenum] * ' ') + ' '
+
+                                txt += (index_len[1] * ' ') + ' '
+
                             else:
                                 # 穴埋め時、格納状況が異なる箇所だった場合、空白ではなく '-' を挿入。
                                 if (linenum in noput_point) != True:
-                                    txt += (self.MAX_indexlen[linenum] * self.empty_style) + ' '
+
+                                    if index_len[0] == 0:
+                                        value = index_len[1] * self.empty_style
+                                        txt += value + ' '
+                                    else:
+                                        key_empty   = index_len[0] * self.empty_style
+                                        value_empty = index_len[1] * self.empty_style
+                                        txt += key_empty + ' : ' + value_empty + ' '
                                 else:
                                     del noput_point[noput_point.index(linenum)]
-                                    txt += (self.MAX_indexlen[linenum] * ' ') + ' '
+                                    txt += (index_len[1] * ' ') + ' '
                     
                         linenum += 1
                 linenum += 1
@@ -1376,14 +1405,22 @@ class SetPrint:
                     key_index = i_index[:-1]
                     key_index.append(self.finish_index[str(key_index)])
                     noput_point.append(self.MAX_index.index(key_index))
-                    txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
+                    txt += (self.MAX_indexlen[linenum + i][1] * ' ') + ' '
                 else:
                     if ((linenum + i) in noput_point) != True:
-                        txt += (self.MAX_indexlen[linenum + i] * self.empty_style) + ' '
+
+                        index_len = self.MAX_indexlen[linenum + i]
+                        if index_len[0] == 0:
+                            value = index_len[1] * self.empty_style
+                            txt += value + ' '
+                        else:
+                            key_empty   = index_len[0] * self.empty_style
+                            value_empty = index_len[1] * self.empty_style
+                            txt += key_empty + ' : ' + value_empty + ' '
                     else:
 
                         del noput_point[noput_point.index(linenum + i)]
-                        txt += (self.MAX_indexlen[linenum + i] * ' ') + ' '
+                        txt += (self.MAX_indexlen[linenum + i][1] * ' ') + ' '
 
             format_txtdata.append(txt)
 

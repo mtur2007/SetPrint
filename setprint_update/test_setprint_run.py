@@ -37,7 +37,29 @@ arguments = (
 
     ("progress"    , { 'print' : False ,
                        'len'   : 20}))
+)
 
+arguments = (
+    
+   (("Collections" , 
+        { 'image'   : {'list'     :'►',
+                        'tuple'   :'▷',
+                        'ndarray' :'>',
+                        'dict'    :'◆'}}),  # < New
+    ("bracket"     , 
+        { 'partially': {'list'    :('{',')'),                 
+                        'tuple'   :('<','>'),
+                        'ndarray' :('(','}'),
+                        'dict'    :('/','/'),   # < New
+                        'None'    :('`','`')}}),
+                                        
+    ("empty"       , { 'style' : ' '}),
+    ("padding"     , { 'style' : '-'}),
+
+    ("settings"    , { 'print' : False }),
+
+    ("progress"    , { 'print' : False ,
+                       'len'   : 20}))
 )
 
 # インデックスで引数のチェックを行う為、この配列の通りに指定してください。
@@ -50,7 +72,7 @@ list_data = SetPrint(arguments)
 list_data.set_text_style(arguments) # set_listの前
 
 # ３次元目に各テキストデータが格納されているので、keep_start=3にして実行
-set_datas = list_data.set_list(guide=True,keep_start=1,keep_range='all') 
+set_datas = list_data.set_list(guide=True,keep_start=4,keep_range='all') 
 
 # スクリプトが存在するディレクトリを基準にする
 base_dir = os.path.dirname(os.path.abspath(__file__))
