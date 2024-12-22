@@ -1,5 +1,5 @@
-# / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test /
-print('\n'+'/ \033[38;2;255;165;0m\033[1mtest\033[0m / \033[38;5;27mtest\033[0m '*10+'/\n')
+# / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict /
+print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
 # setpirnt (ver 0.3.0)
 
