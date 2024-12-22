@@ -1209,21 +1209,30 @@ class SetPrint:
             format_txtdata,mismatch_indices = self.format_keep_data(keep_liens_data)
 
 
-        # # pick_guideprintで引き継ぐ 配列情報データから リストの '[', "]" 部分の情報を削除する
-        # if self.MAX_indexlen[0][0] == 0:
-        #     total = self.MAX_indexlen[0] + 1
-        # else:
-        #     total = 
+        # pick_guideprintで引き継ぐ 配列情報データから リストの '[', "]" 部分の情報を削除する
+        if self.MAX_indexlen[0][0] == 0:
+            total = self.MAX_indexlen[0][1] + 1
+            max_indexlen = [self.MAX_indexlen[0][1]]
+        else:
+            total = self.MAX_indexlen[0][0] + self.MAX_indexlen[0][1] +4
+            max_indexlen = [self.MAX_indexlen[0][0] + self.MAX_indexlen[0][1] +3]
         x_lens = [0]
-        # for datanum in range(len(self.MAX_indexlen)-1):
-        #     x_lens.append(total)
-        #     total += self.MAX_indexlen[datanum+1] + 1
 
+        for datanum in range(len(self.MAX_indexlen)-1):
+            x_lens.append(total)
+            if self.MAX_indexlen[datanum+1][0] == 0:
+                total += self.MAX_indexlen[datanum+1][1] + 1
+                max_indexlen.append(self.MAX_indexlen[datanum+1][1])
+            else:
+                total += self.MAX_indexlen[datanum+1][0] + self.MAX_indexlen[datanum+1][1] +4
+                max_indexlen.append(self.MAX_indexlen[datanum+1][0] + self.MAX_indexlen[datanum+1][1] +3)
+        
         del_MAXindex = self.MAX_index.copy()
-        # now_index = self.now_index[:-1]
-        # for linenum in range(len(self.MAX_index)-1):
-        #     line = self.MAX_index[linenum+1]
-        #     if line[-1] == -1:
+        self.MAX_indexlen = max_indexlen
+        now_index = self.now_index[:-1]
+        for linenum in range(len(self.MAX_index)-1):
+            line = self.MAX_index[linenum+1]
+            if line[-1] == -1:
                 
         #         # if tuple(line[:-1]) in mismatch_indices:
                     
@@ -1251,17 +1260,17 @@ class SetPrint:
         #         #         format_txtdata[txt_linenum] = txt_line[:F_index] + bracket_image[1] + txt_line[F_index+1:]
                         
 
-        #         del_index = del_MAXindex.index(line)
-        #         del del_MAXindex[del_index]
-        #         del self.MAX_indexlen[del_index]
-        #         del x_lens[del_index]
+                del_index = del_MAXindex.index(line)
+                del del_MAXindex[del_index]
+                del self.MAX_indexlen[del_index]
+                del x_lens[del_index]
 
-        #         search_line = line[:-1]
-        #         search_line.append(self.finish_index[str(search_line)])
-        #         del_index = del_MAXindex.index(search_line)
-        #         del del_MAXindex[del_index]
-        #         del self.MAX_indexlen[del_index]
-        #         del x_lens[del_index]
+                search_line = line[:-1]
+                search_line.append(self.finish_index[str(search_line)])
+                del_index = del_MAXindex.index(search_line)
+                del del_MAXindex[del_index]
+                del self.MAX_indexlen[del_index]
+                del x_lens[del_index]
         
         # 整形したデータを全体のリストに挿入
         format_txtdata.insert(0,txt_index)

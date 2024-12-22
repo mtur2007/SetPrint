@@ -1,7 +1,7 @@
 
 # 実行コード
 import pickle
-from test_setprint_0_3_0 import SetPrint
+from demo_setprint_0_3_0 import SetPrint
 
 import os
 
@@ -56,7 +56,7 @@ arguments = (
     ("empty"       , { 'style' : ' '}),
     ("padding"     , { 'style' : '-'}),
 
-    ("settings"    , { 'print' : False }),
+    ("settings"    , { 'print' : True }),
 
     ("progress"    , { 'print' : False ,
                        'len'   : 20}))
@@ -72,7 +72,7 @@ list_data = SetPrint(arguments)
 list_data.set_text_style(arguments) # set_listの前
 
 # ３次元目に各テキストデータが格納されているので、keep_start=3にして実行
-set_datas = list_data.set_list(guide=True,keep_start=4,keep_range='all') 
+set_datas = list_data.set_list(guide=True,keep_start=1,keep_range='all') 
 
 # スクリプトが存在するディレクトリを基準にする
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -83,10 +83,10 @@ with open(set_data_write,'w') as f:
         f.write(line)
 
 
-# # スクリプトが存在するディレクトリを基準にする
-# base_dir = os.path.dirname(os.path.abspath(__file__))
-# pick_guide = os.path.join(base_dir, './output_txtfile/pick_guide.txt')
-# list_data.pick_guideprint(pick_guide)
+# スクリプトが存在するディレクトリを基準にする
+base_dir = os.path.dirname(os.path.abspath(__file__))
+pick_guide = os.path.join(base_dir, './output_txtfile/pick_guide.txt')
+list_data.pick_guideprint(pick_guide)
 
 
 # style_settings = (
