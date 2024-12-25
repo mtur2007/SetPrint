@@ -764,6 +764,8 @@ class SetPrint:
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
                     
                     self.mapping_point.append(self.keep_line + self.keep_index)
+                    self.mapping_key.append(key)
+
                     self.keep_1line_data.append([insert_index,collections_txt,key])
                     
                     self.search_sequence(line)
@@ -785,6 +787,8 @@ class SetPrint:
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
 
                     self.mapping_point.append(self.keep_line + self.keep_index)
+                    self.mapping_key.append(key)
+
                     self.keep_1line_data.append([insert_index,collections_txt,key])
                     
                     self.search_mapping(line)
@@ -805,6 +809,8 @@ class SetPrint:
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
 
                     self.mapping_point.append(self.keep_line + self.keep_index)
+                    self.mapping_key.append(key)
+
                     self.keep_1line_data.append([insert_index,txt_line,key])
             
             insert_index = self.keep_index.copy()
@@ -1060,6 +1066,7 @@ class SetPrint:
         # 格納情報の初期化
         self.MAX_index     = [] # 存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
         self.mapping_point = [] # 辞書型が存在している場所を格納する。
+        self.mapping_key   = []
         self.MAX_indexlen  = [] # インデックスに格納されている配列の文字数を格納する。
         keep_liens_data    = [] # 1列毎の配列情報を格納するリスト
         """
@@ -1116,6 +1123,7 @@ class SetPrint:
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(collections_txt)
 
                     self.mapping_point.append(self.keep_line + self.keep_index)
+                    self.mapping_key.append(key)
 
                     self.keep_1line_data.append([self.keep_index,collections_txt,key])
 
@@ -1142,6 +1150,7 @@ class SetPrint:
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(txt_line)
                     
                     self.mapping_point.append(self.keep_line + self.keep_index)
+                    self.mapping_key.append(key)
 
                     keep_liens_data.append([[self.keep_index,txt_line,key]])
                 
@@ -1211,8 +1220,8 @@ class SetPrint:
         print()
         parent_index = str(self.now_index[:-1])
         print('mapping_pint\nparent_index = ' + str(parent_index))
-        for line in self.mapping_point:
-                print(str(line))
+        for index,key in zip(self.mapping_point,self.mapping_key):
+                print(str(index)+' : '+str(key))
         print()
 
         # ber_print(2)
