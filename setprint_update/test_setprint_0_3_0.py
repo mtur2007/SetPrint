@@ -762,7 +762,8 @@ class SetPrint:
 
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
-
+                    
+                    self.mapping_point.append(self.keep_line + self.keep_index)
                     self.keep_1line_data.append([insert_index,collections_txt,key])
                     
                     self.search_sequence(line)
@@ -783,6 +784,7 @@ class SetPrint:
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
 
+                    self.mapping_point.append(self.keep_line + self.keep_index)
                     self.keep_1line_data.append([insert_index,collections_txt,key])
                     
                     self.search_mapping(line)
@@ -802,6 +804,7 @@ class SetPrint:
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
 
+                    self.mapping_point.append(self.keep_line + self.keep_index)
                     self.keep_1line_data.append([insert_index,txt_line,key])
             
             insert_index = self.keep_index.copy()
@@ -1055,9 +1058,10 @@ class SetPrint:
         # 格納情報、次元情報、文字数を取得する為の処理
 
         # 格納情報の初期化
-        self.MAX_index    = [] #存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
-        self.MAX_indexlen = [] #インデックスに格納されている配列の文字数を格納する。
-        keep_liens_data   = [] # 1列毎の配列情報を格納するリスト
+        self.MAX_index     = [] # 存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
+        self.mapping_point = [] # 辞書型が存在している場所を格納する。
+        self.MAX_indexlen  = [] # インデックスに格納されている配列の文字数を格納する。
+        keep_liens_data    = [] # 1列毎の配列情報を格納するリスト
         """
         self.MAX_index
         拡張なし
@@ -1072,7 +1076,7 @@ class SetPrint:
                                                          ~~~
                                                      辞書型対応[2]
         """
-
+        
         self.finish_index = {} #リスト配列の最後尾のインデックスを格納
 
         self.now_index.append('')
@@ -1084,13 +1088,14 @@ class SetPrint:
         if type(datas) == dict:
             
             for linenum, (key, line) in enumerate(datas.items()):
+                self.keep_line = [linenum]
 
                 self.keep_index = []
                 
                 self.now_index[-1] = linenum
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
-          
+                    
                     self.keep_1line_data = [] #1列の配列情報を格納するリスト
                     collections_txt = self.collections[str(type(line).__name__)][0]
                     
@@ -1109,6 +1114,8 @@ class SetPrint:
 
                         if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(collections_txt)
+
+                    self.mapping_point.append(self.keep_line + self.keep_index)
 
                     self.keep_1line_data.append([self.keep_index,collections_txt,key])
 
@@ -1133,6 +1140,8 @@ class SetPrint:
 
                         if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(txt_line)
+                    
+                    self.mapping_point.append(self.keep_line + self.keep_index)
 
                     keep_liens_data.append([[self.keep_index,txt_line,key]])
                 
@@ -1145,6 +1154,7 @@ class SetPrint:
             
         else:
             for linenum in range(len(datas)):
+                self.keep_line = [linenum]
                 self.keep_index = []
                 line = datas[linenum]
                 
@@ -1197,7 +1207,14 @@ class SetPrint:
                     if self.keep_start == 1:
                         now_len = int(self.line_ber_len*(linenum+1))
                         print('\033[F\033[K{ '+'-'*now_len+' '*(self.ber_len-now_len)+' }')
-            
+        
+        print()
+        parent_index = str(self.now_index[:-1])
+        print('mapping_pint\nparent_index = ' + str(parent_index))
+        for line in self.mapping_point:
+                print(str(line))
+        print()
+
         # ber_print(2)
         if self.ber_print:
             if self.keep_start == 1:

@@ -1,7 +1,7 @@
 
 # 実行コード
 import pickle
-from demo_setprint_0_3_0 import SetPrint
+from test_setprint_0_3_0 import SetPrint
 
 import os
 
@@ -56,7 +56,7 @@ arguments = (
     ("empty"       , { 'style' : ' '}),
     ("padding"     , { 'style' : '-'}),
 
-    ("settings"    , { 'print' : True }),
+    ("settings"    , { 'print' : False }),
 
     ("progress"    , { 'print' : False ,
                        'len'   : 20}))
@@ -83,10 +83,10 @@ with open(set_data_write,'w') as f:
         f.write(line)
 
 
-# スクリプトが存在するディレクトリを基準にする
-base_dir = os.path.dirname(os.path.abspath(__file__))
-pick_guide = os.path.join(base_dir, './output_txtfile/pick_guide.txt')
-list_data.pick_guideprint(pick_guide)
+# # スクリプトが存在するディレクトリを基準にする
+# base_dir = os.path.dirname(os.path.abspath(__file__))
+# pick_guide = os.path.join(base_dir, './output_txtfile/pick_guide.txt')
+# list_data.pick_guideprint(pick_guide)
 
 
 # style_settings = (
