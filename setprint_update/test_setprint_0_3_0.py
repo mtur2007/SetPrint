@@ -28,8 +28,7 @@ def access_nested_collection(nested_list,indices):
                 return None
             
         else:
-            if not(0 <= index < len(nested_list)): 
-                print('????')      
+            if not(0 <= index < len(nested_list)):     
                 return None # インデックスが範囲外の場合はNoneを返す
             
         # int または str の場合、最後のインデックスでない場合はNoneを返す
@@ -47,7 +46,31 @@ def access_nested_collection(nested_list,indices):
     else:
         value = nested_list
         return value
-      
+
+def check_matching_elements(mapping_point, collection_index):
+
+    max_match_count = 0  # 最大連続一致数
+    max_match_index = -1  # 最大連続一致数を持つ1次元目のインデックス
+
+    collection_len = len(collection_index)
+
+    for row_index, row in enumerate(mapping_point):
+        current_match_count = 0  # 現在の行での連続一致数
+        if collection_len >= len(row):
+            for i, elem in enumerate(row):
+                if i < len(collection_index) and elem == collection_index[i]:
+                    current_match_count += 1  # 一致した場合カウントを増やす
+                else:
+                    break  # 一致が途切れたら終了
+
+            # 最大連続一致数を更新
+            if current_match_count > max_match_count:
+                max_match_count = current_match_count
+                max_match_index = row_index
+
+    return max_match_index  # 最大連続一致数を持つ行のインデックス
+
+
 def convert_tuple_to_list(data):
     """
     ネストされたデータ構造内のタプルをリストに変換し、
@@ -751,7 +774,7 @@ class SetPrint:
             for linenum, (key, line) in enumerate(datas.items()):
 
                 self.keep_index[-1] = linenum
-                self.keep_key[-1] = [(self.now_deep-1),key]
+                self.keep_key[-1] = [(self.now_deep-self.keep_start),key]
                 self.now_index[-1] = linenum
                 
                 self.mapping_point.append(self.keep_line + self.keep_index)
@@ -861,9 +884,14 @@ class SetPrint:
             max_keylen = 0
             max_txtlen = 0
             value_datas = []
+
+            mapping_point = []
+            mapping_key   = []
             self.keep_txts_data.append('')
 
             for linenum, (key, line) in enumerate(datas.items()):
+                mapping_point.append([linenum])
+                mapping_key.append([[0,key]])
 
                 self.now_index[-1] = linenum
 
@@ -891,12 +919,12 @@ class SetPrint:
                 key_air = (max_keylen - len(str(line[0]))) * ' '
                 txt_air = (max_txtlen - len(str(line[1]))) * ' '
                 keep_liens_data.append(key_air+str(line[0])+' : '+txt_air+str(line[1]))
-                
+            
             #中身のリスト作成
             self.Xline_blocks[insert_index] = keep_liens_data
             txt_keep_index = self.now_index.copy()
             txt_keep_index[-1] = 'n'
-            self.keep_txts_data[insert_index] = [txt_keep_index,max_keylen+max_txtlen+3]
+            self.keep_txts_data[insert_index] = [txt_keep_index,max_keylen+max_txtlen+3,mapping_point,mapping_key]
 
         del self.now_index[-1] #インデックスの調査が終わったら戻す
         self.now_deep -= 1
@@ -1097,7 +1125,11 @@ class SetPrint:
                 self.keep_line = [linenum]
 
                 self.keep_index = []
-                
+                self.keep_key = [[0,key]]
+
+                self.mapping_point.append(self.keep_line + self.keep_index)
+                self.mapping_key.append(self.keep_key[:])
+
                 self.now_index[-1] = linenum
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
@@ -1120,9 +1152,6 @@ class SetPrint:
 
                         if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(collections_txt)
-
-                    self.mapping_point.append(self.keep_line + self.keep_index)
-                    self.mapping_key.append(key)
 
                     self.keep_1line_data.append([self.keep_index,collections_txt,key])
 
@@ -1148,8 +1177,6 @@ class SetPrint:
                         if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(txt_line)
                     
-                    self.mapping_point.append(self.keep_line + self.keep_index)
-                    self.mapping_key.append(key)
 
                     keep_liens_data.append([[self.keep_index,txt_line,key]])
                 
@@ -1478,12 +1505,23 @@ class SetPrint:
             indexs = k_data[1]
             x_lens = k_data[2]
             positions = k_data[3]
-        elif len(k_data) == 2:
+            mapping_point = k_data[4]
+            mapping_key   = k_data[5]
+
+        elif len(k_data) >= 2:
             y_lens = len(self.block[y][x])-1
             class_index = k_data[0][:-1]
             indexs = [[]]
             x_lens = [k_data[1]]
             positions = [0]
+            if len(k_data) == 4:
+                mapping_point = k_data[2]
+                mapping_key   = k_data[3]
+            
+            else:
+                mapping_point = []
+                mapping_key   = []
+
 
 
         gx = abs(gx%len(positions))
@@ -1497,20 +1535,20 @@ class SetPrint:
         
         guide_index += f'{{\033[38;2;255;165;0m\033[1m{str(gy)}\033[0m}}'
         no_color_ver += '{'+str(gy)+'}'
+        
 
-        if [gy] + indexs[gx] in k_data[4]:
-            # print('hit!')
-            # print()
-            # print()
-            key_data = k_data[5][k_data[4].index([gy] + indexs[gx])]
-            # print(key_data)
+        collection_index = [gy] + indexs[gx]
+        matching_index = check_matching_elements(mapping_point, collection_index)
+        if matching_index != -1:
+            
+            key_data = mapping_key[matching_index]
+            
             keep_key = [gy]+indexs[gx]
             for line in key_data:
                 keep_key[line[0]] = line[1]
             
             this = class_index+keep_key
-            # print(this)
-
+            
             for line in keep_key:
                 guide_index += f'[\033[1;34m{str(line)}\033[0m]'
                 no_color_ver += '['+str(line)+']'
@@ -1574,15 +1612,15 @@ class SetPrint:
             for line in write_txt:
                 f.write('       ' + line + '\n')
 
-            f.write('\n')
-            keep_data = self.block_keep_data[y][x]
-            if len(keep_data) == 4:
-                f.write((keep_data[3][gx]+8)*' '+str(keep_data[0])+'\n')
-                for line in keep_data[1:]:
-                    f.write((keep_data[3][gx]+8)*' '+str(line[gx]) + '\n')
-            else:
-                for line in keep_data:
-                    f.write(str(line)+'\n')
+            # f.write('\n')
+            # keep_data = self.block_keep_data[y][x]
+            # if len(keep_data) == 4:
+            #     f.write((keep_data[3][gx]+8)*' '+str(keep_data[0])+'\n')
+            #     for line in keep_data[1:]:
+            #         f.write((keep_data[3][gx]+8)*' '+str(line[gx]) + '\n')
+            # else:
+            #     for line in keep_data:
+            #         f.write(str(line)+'\n')
 
     def on_press(self, key):
         try:
