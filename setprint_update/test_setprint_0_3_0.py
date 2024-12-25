@@ -22,6 +22,8 @@ def Myint(num):
 def access_nested_list(nested_list,indices):
     
     for i,index in enumerate(indices):
+
+        print(index)
         
         if (0 <= index < len(nested_list)):             
             # int または str の場合、最後のインデックスでない場合はNoneを返す
@@ -727,6 +729,7 @@ class SetPrint:
         if self.keep_start < self.now_deep <= (self.now_deep if self.show_all else self.keep_finish):
             
             self.keep_index.append(-1)
+            self.keep_mapping.append('')
             self.now_index.append('')
             
                 
@@ -745,11 +748,15 @@ class SetPrint:
             for linenum, (key, line) in enumerate(datas.items()):
 
                 self.keep_index[-1] = linenum
+                self.keep_mapping[-1] = [(self.now_deep-1),key]
                 self.now_index[-1] = linenum
+                
+                self.mapping_point.append(self.keep_line + self.keep_index)
+                self.mapping_key.append(self.keep_mapping[:])
 
-
+                insert_index = self.keep_index.copy()
+                
                 if isinstance(line, self.sequence_type):
-                    insert_index = self.keep_index.copy()
                     
                     collections_txt = self.collections[str(type(line).__name__)][0]
 
@@ -762,17 +769,12 @@ class SetPrint:
 
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
-                    
-                    self.mapping_point.append(self.keep_line + self.keep_index)
-                    self.mapping_key.append(key)
 
                     self.keep_1line_data.append([insert_index,collections_txt,key])
                     
                     self.search_sequence(line)
 
                 elif isinstance(line, self.mapping_type):
-
-                    insert_index = self.keep_index.copy()
                     
                     collections_txt = self.collections[str(type(line).__name__)][0]
 
@@ -785,9 +787,6 @@ class SetPrint:
 
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
-
-                    self.mapping_point.append(self.keep_line + self.keep_index)
-                    self.mapping_key.append(key)
 
                     self.keep_1line_data.append([insert_index,collections_txt,key])
                     
@@ -795,8 +794,6 @@ class SetPrint:
 
                 else:
                     txt_line = str(line)
-                    
-                    insert_index = self.keep_index.copy()
 
                     if (insert_index in self.MAX_index) == False:
                         self.MAX_index.append(insert_index)
@@ -807,9 +804,6 @@ class SetPrint:
 
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
-
-                    self.mapping_point.append(self.keep_line + self.keep_index)
-                    self.mapping_key.append(key)
 
                     self.keep_1line_data.append([insert_index,txt_line,key])
             
@@ -834,6 +828,7 @@ class SetPrint:
                     self.finish_index[key] = insert_index[-1]
 
             del self.keep_index[-1]
+            del self.keep_mapping[-1]
         
         
         # キープする次元と現在の次元が同じなら、キープ用の処理に移る。
@@ -1066,6 +1061,7 @@ class SetPrint:
         # 格納情報の初期化
         self.MAX_index     = [] # 存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
         self.mapping_point = [] # 辞書型が存在している場所を格納する。
+        self.keep_mapping  = [] # 
         self.mapping_key   = []
         self.MAX_indexlen  = [] # インデックスに格納されている配列の文字数を格納する。
         keep_liens_data    = [] # 1列毎の配列情報を格納するリスト
@@ -1305,7 +1301,7 @@ class SetPrint:
         txt_keep_index = self.now_index.copy()
         txt_keep_index[-1] = 'n'
 
-        self.keep_txts_data[insert_index] = [txt_keep_index,del_MAXindex,self.MAX_indexlen,x_lens]       
+        self.keep_txts_data[insert_index] = [txt_keep_index,del_MAXindex,self.MAX_indexlen,x_lens,self.mapping_point,self.mapping_key]       
   
 
     def format_keep_data(self,keep_liens_data):
@@ -1480,7 +1476,7 @@ class SetPrint:
         y,x = self.y,self.x
         k_data = self.block_keep_data[y][x]
    
-        if len(k_data) == 4:
+        if len(k_data) == 6:
             y_lens = len(self.block[y][x])-1
             class_index = k_data[0][:-1]
             indexs = k_data[1]
@@ -1509,7 +1505,15 @@ class SetPrint:
             guide_index += f'[\033[1;34m{str(line)}\033[0m]'
             no_color_ver += '['+str(line)+']'
 
-        this = class_index+[gy]+indexs[gx]
+        if [gy] + indexs[gx] in k_data[4]:
+            print('hit!')
+            print()
+            print()
+            key = k_data[5][k_data[4].index([gy] + indexs[gx])]
+            this = class_index+[gy]+indexs[gx][:-1] + [key]
+        else:
+            this = class_index+[gy]+indexs[gx]
+
         value = access_nested_list(self.input_list,this)
         
         value_txt = str(value).replace(', ', ',').replace('\n', '')
