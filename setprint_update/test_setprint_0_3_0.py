@@ -19,27 +19,30 @@ def Myint(num):
             return int(num[:line])
     return int(num)
 
-def access_nested_list(nested_list,indices):
+def access_nested_collection(nested_list,indices):
     
     for i,index in enumerate(indices):
 
-        print(index)
-        
-        if (0 <= index < len(nested_list)):             
-            # int または str の場合、最後のインデックスでない場合はNoneを返す
-            if not isinstance(nested_list[index], (list, tuple, np.ndarray)):
-                if i == len(indices) - 1:
-                    value = nested_list[index]
-                    return value
-               
-                else:
-                    return None # インデックスが範囲外の場合はNoneを返す
-                  
-            nested_list = nested_list[index]
-
+        if type(nested_list) == dict:
+            if not(index in nested_list):
+                return None
+            
         else:
-            return None # インデックスが範囲外の場合はNoneを返す
-    
+            if not(0 <= index < len(nested_list)): 
+                print('????')      
+                return None # インデックスが範囲外の場合はNoneを返す
+            
+        # int または str の場合、最後のインデックスでない場合はNoneを返す
+        if not isinstance(nested_list[index], (list, tuple, np.ndarray, dict)):
+            if i == len(indices) - 1:
+                value = nested_list[index]
+                return value
+        
+            else:
+                return None # インデックスが範囲外の場合はNoneを返す
+            
+        nested_list = nested_list[index]
+        
     # 最終的な要素がリストまたは配列の場合
     else:
         value = nested_list
@@ -729,7 +732,7 @@ class SetPrint:
         if self.keep_start < self.now_deep <= (self.now_deep if self.show_all else self.keep_finish):
             
             self.keep_index.append(-1)
-            self.keep_mapping.append('')
+            self.keep_key.append('')
             self.now_index.append('')
             
                 
@@ -748,11 +751,11 @@ class SetPrint:
             for linenum, (key, line) in enumerate(datas.items()):
 
                 self.keep_index[-1] = linenum
-                self.keep_mapping[-1] = [(self.now_deep-1),key]
+                self.keep_key[-1] = [(self.now_deep-1),key]
                 self.now_index[-1] = linenum
                 
                 self.mapping_point.append(self.keep_line + self.keep_index)
-                self.mapping_key.append(self.keep_mapping[:])
+                self.mapping_key.append(self.keep_key[:])
 
                 insert_index = self.keep_index.copy()
                 
@@ -828,7 +831,7 @@ class SetPrint:
                     self.finish_index[key] = insert_index[-1]
 
             del self.keep_index[-1]
-            del self.keep_mapping[-1]
+            del self.keep_key[-1]
         
         
         # キープする次元と現在の次元が同じなら、キープ用の処理に移る。
@@ -1061,7 +1064,7 @@ class SetPrint:
         # 格納情報の初期化
         self.MAX_index     = [] # 存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
         self.mapping_point = [] # 辞書型が存在している場所を格納する。
-        self.keep_mapping  = [] # 
+        self.keep_key      = [] # 
         self.mapping_key   = []
         self.MAX_indexlen  = [] # インデックスに格納されている配列の文字数を格納する。
         keep_liens_data    = [] # 1列毎の配列情報を格納するリスト
@@ -1213,13 +1216,6 @@ class SetPrint:
                         now_len = int(self.line_ber_len*(linenum+1))
                         print('\033[F\033[K{ '+'-'*now_len+' '*(self.ber_len-now_len)+' }')
         
-        print()
-        parent_index = str(self.now_index[:-1])
-        print('mapping_pint\nparent_index = ' + str(parent_index))
-        for index,key in zip(self.mapping_point,self.mapping_key):
-                print(str(index)+' : '+str(key))
-        print()
-
         # ber_print(2)
         if self.ber_print:
             if self.keep_start == 1:
@@ -1501,20 +1497,32 @@ class SetPrint:
         
         guide_index += f'{{\033[38;2;255;165;0m\033[1m{str(gy)}\033[0m}}'
         no_color_ver += '{'+str(gy)+'}'
-        for line in indexs[gx]:
-            guide_index += f'[\033[1;34m{str(line)}\033[0m]'
-            no_color_ver += '['+str(line)+']'
 
         if [gy] + indexs[gx] in k_data[4]:
-            print('hit!')
-            print()
-            print()
-            key = k_data[5][k_data[4].index([gy] + indexs[gx])]
-            this = class_index+[gy]+indexs[gx][:-1] + [key]
+            # print('hit!')
+            # print()
+            # print()
+            key_data = k_data[5][k_data[4].index([gy] + indexs[gx])]
+            # print(key_data)
+            keep_key = [gy]+indexs[gx]
+            for line in key_data:
+                keep_key[line[0]] = line[1]
+            
+            this = class_index+keep_key
+            # print(this)
+
+            for line in keep_key:
+                guide_index += f'[\033[1;34m{str(line)}\033[0m]'
+                no_color_ver += '['+str(line)+']'
+
         else:
             this = class_index+[gy]+indexs[gx]
 
-        value = access_nested_list(self.input_list,this)
+            for line in indexs[gx]:
+                guide_index += f'[\033[1;34m{str(line)}\033[0m]'
+                no_color_ver += '['+str(line)+']'
+
+        value = access_nested_collection(self.input_list,this)
         
         value_txt = str(value).replace(', ', ',').replace('\n', '')
         value_txt = value_txt if len(value_txt) < 140 else value_txt[:140] + ' ~'

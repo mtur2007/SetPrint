@@ -6,12 +6,12 @@ from test_setprint_0_3_0 import SetPrint
 import os
 
 # pickleファイルからデータを読み込む
-file_name = 'ocr_txtdata.pkl'
-with open(file_name, "rb") as file:
-      loaded_data = pickle.load(file)
+# file_name = 'ocr_txtdata.pkl'
+# with open(file_name, "rb") as file:
+#       loaded_data = pickle.load(file)
 
 # keyを指定してテキストデータを取得
-txt_data = loaded_data["Alltxtdatas"]
+# txt_data = loaded_data["Alltxtdatas"]
 
 # list_data = SetPrint(txt_data)
 #list_data = SetPrint(list)
@@ -83,10 +83,10 @@ with open(set_data_write,'w') as f:
         f.write(line)
 
 
-# # スクリプトが存在するディレクトリを基準にする
-# base_dir = os.path.dirname(os.path.abspath(__file__))
-# pick_guide = os.path.join(base_dir, './output_txtfile/pick_guide.txt')
-# list_data.pick_guideprint(pick_guide)
+# スクリプトが存在するディレクトリを基準にする
+base_dir = os.path.dirname(os.path.abspath(__file__))
+pick_guide = os.path.join(base_dir, './output_txtfile/pick_guide.txt')
+list_data.pick_guideprint(pick_guide)
 
 
 # style_settings = (
