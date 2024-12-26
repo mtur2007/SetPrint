@@ -19,30 +19,58 @@ def Myint(num):
             return int(num[:line])
     return int(num)
 
-def access_nested_list(nested_list,indices):
+def access_nested_collection(nested_list,indices):
     
     for i,index in enumerate(indices):
-        
-        if (0 <= index < len(nested_list)):             
-            # int または str の場合、最後のインデックスでない場合はNoneを返す
-            if not isinstance(nested_list[index], (list, tuple, np.ndarray)):
-                if i == len(indices) - 1:
-                    value = nested_list[index]
-                    return value
-               
-                else:
-                    return None # インデックスが範囲外の場合はNoneを返す
-                  
-            nested_list = nested_list[index]
 
+        if type(nested_list) == dict:
+            if not(index in nested_list):
+                return None
+            
         else:
-            return None # インデックスが範囲外の場合はNoneを返す
-    
+            if not(0 <= index < len(nested_list)):     
+                return None # インデックスが範囲外の場合はNoneを返す
+            
+        # int または str の場合、最後のインデックスでない場合はNoneを返す
+        if not isinstance(nested_list[index], (list, tuple, np.ndarray, dict)):
+            if i == len(indices) - 1:
+                value = nested_list[index]
+                return value
+        
+            else:
+                return None # インデックスが範囲外の場合はNoneを返す
+            
+        nested_list = nested_list[index]
+        
     # 最終的な要素がリストまたは配列の場合
     else:
         value = nested_list
         return value
-      
+
+def check_matching_elements(mapping_point, collection_index):
+
+    max_match_count = 0  # 最大連続一致数
+    max_match_index = -1  # 最大連続一致数を持つ1次元目のインデックス
+
+    collection_len = len(collection_index)
+
+    for row_index, row in enumerate(mapping_point):
+        current_match_count = 0  # 現在の行での連続一致数
+        if collection_len >= len(row):
+            for i, elem in enumerate(row):
+                if i < len(collection_index) and elem == collection_index[i]:
+                    current_match_count += 1  # 一致した場合カウントを増やす
+                else:
+                    break  # 一致が途切れたら終了
+
+            # 最大連続一致数を更新
+            if current_match_count > max_match_count:
+                max_match_count = current_match_count
+                max_match_index = row_index
+
+    return max_match_index  # 最大連続一致数を持つ行のインデックス
+
+
 def convert_tuple_to_list(data):
     """
     ネストされたデータ構造内のタプルをリストに変換し、
@@ -618,7 +646,8 @@ class SetPrint:
             
         #初期化
         self.now_deep = 1 #now_deepはインデックスの次元測定
-        self.now_index = []
+        self.now_index = [] # 調べている場所のインデックスを格納する。
+        self.now_key   = [] # now_indexに辞書型のキーが必要な箇所とキーを格納
         self.Xline_blocks = []
         self.keep_txts_data = []
         self.keep_index = []
@@ -728,7 +757,7 @@ class SetPrint:
             
             self.keep_index.append(-1)
             self.now_index.append('')
-            
+            self.now_key.append('')
                 
             insert_index = self.keep_index.copy()
 
@@ -746,10 +775,14 @@ class SetPrint:
 
                 self.keep_index[-1] = linenum
                 self.now_index[-1] = linenum
+                self.now_key[-1] = [self.now_deep-1,key]
+                
+                self.mapping_point.append(self.keep_line + self.keep_index)
+                self.mapping_key.append(self.now_key[self.pivot_value:])
 
-
+                insert_index = self.keep_index.copy()
+                
                 if isinstance(line, self.sequence_type):
-                    insert_index = self.keep_index.copy()
                     
                     collections_txt = self.collections[str(type(line).__name__)][0]
 
@@ -768,8 +801,6 @@ class SetPrint:
                     self.search_sequence(line)
 
                 elif isinstance(line, self.mapping_type):
-
-                    insert_index = self.keep_index.copy()
                     
                     collections_txt = self.collections[str(type(line).__name__)][0]
 
@@ -789,8 +820,6 @@ class SetPrint:
 
                 else:
                     txt_line = str(line)
-                    
-                    insert_index = self.keep_index.copy()
 
                     if (insert_index in self.MAX_index) == False:
                         self.MAX_index.append(insert_index)
@@ -849,16 +878,30 @@ class SetPrint:
             self.Xline_blocks.append('')
             insert_index = len(self.Xline_blocks)-1
 
+            parent_key = self.now_key[:]
+            parent_index = self.now_index.copy()
+            parent_index[-1] = 'n'
+            for line in parent_key:
+                parent_index[line[0]] = line[1]
+
             self.now_index.append('')
+            self.now_key.append('')
 
             max_keylen = 0
             max_txtlen = 0
             value_datas = []
+
+            mapping_point = []
+            mapping_key   = []
             self.keep_txts_data.append('')
 
             for linenum, (key, line) in enumerate(datas.items()):
 
                 self.now_index[-1] = linenum
+                self.now_key[-1] = [self.now_deep-1,key]
+
+                mapping_point.append([linenum])
+                mapping_key.append(self.now_key[:])
 
                 txt = ""
                 for i in self.now_index:
@@ -884,14 +927,15 @@ class SetPrint:
                 key_air = (max_keylen - len(str(line[0]))) * ' '
                 txt_air = (max_txtlen - len(str(line[1]))) * ' '
                 keep_liens_data.append(key_air+str(line[0])+' : '+txt_air+str(line[1]))
-                
+            
             #中身のリスト作成
             self.Xline_blocks[insert_index] = keep_liens_data
-            txt_keep_index = self.now_index.copy()
-            txt_keep_index[-1] = 'n'
-            self.keep_txts_data[insert_index] = [txt_keep_index,max_keylen+max_txtlen+3]
+            
+            self.keep_txts_data[insert_index] = [parent_index,max_keylen+max_txtlen+3,mapping_point,mapping_key]
 
         del self.now_index[-1] #インデックスの調査が終わったら戻す
+        del self.now_key[-1]
+
         self.now_deep -= 1
 
     #リストのインデックスを再帰関数を使って調べていき、指定条件に沿った形で整列し、出力する。12
@@ -1012,6 +1056,13 @@ class SetPrint:
 
             self.now_index.append('')
 
+            parent_key = self.now_key[:]
+            
+            parent_index = self.now_index.copy()
+            parent_index[-1] = 'n'
+            for line in parent_key:
+                parent_index[line[0]] = line[1]
+
             max_indexlen = 0
             self.keep_txts_data.append('')
 
@@ -1038,12 +1089,10 @@ class SetPrint:
                 if len(keep_liens_data[linenum+1]) > max_indexlen:
                     max_indexlen = len(keep_liens_data[linenum+1])
                 
-                
             #中身のリスト作成
             self.Xline_blocks[insert_index] = keep_liens_data
-            txt_keep_index = self.now_index.copy()
-            txt_keep_index[-1] = 'n'
-            self.keep_txts_data[insert_index] = [txt_keep_index,max_indexlen]
+
+            self.keep_txts_data[insert_index] = [parent_index, max_indexlen]
 
         del self.now_index[-1] #インデックスの調査が終わったら戻す
         self.now_deep -= 1
@@ -1055,9 +1104,18 @@ class SetPrint:
         # 格納情報、次元情報、文字数を取得する為の処理
 
         # 格納情報の初期化
-        self.MAX_index    = [] #存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
-        self.MAX_indexlen = [] #インデックスに格納されている配列の文字数を格納する。
-        keep_liens_data   = [] # 1列毎の配列情報を格納するリスト
+
+        self.MAX_index     = [] # 存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
+        self.MAX_indexlen  = [] # インデックスに格納されている配列の文字数を格納する。
+
+        parent_key         = self.now_key[:]    # 親インデックスのキー
+        self.pivot_value   = len(parent_key) # 親インデックスのキー以降をmapping_keyに格納するための基準値設定。
+                
+        self.mapping_point = [] # 辞書型が存在している場所を格納する。
+        self.mapping_key   = [] # keep_keyに対応するマッピング型のキー
+
+        keep_liens_data    = [] # 1列毎の配列情報を格納するリスト
+
         """
         self.MAX_index
         拡張なし
@@ -1072,7 +1130,7 @@ class SetPrint:
                                                          ~~~
                                                      辞書型対応[2]
         """
-
+        
         self.finish_index = {} #リスト配列の最後尾のインデックスを格納
 
         self.now_index.append('')
@@ -1082,15 +1140,22 @@ class SetPrint:
         insert_index = len(self.Xline_blocks)-1
         
         if type(datas) == dict:
+            self.now_key.append('')
             
             for linenum, (key, line) in enumerate(datas.items()):
 
-                self.keep_index = []
-                
                 self.now_index[-1] = linenum
+                self.now_key[-1] = [[self.now_deep-1,key]]
+
+                self.keep_line = [linenum]
+
+                self.keep_index = []
+
+                self.mapping_point.append(self.keep_line + self.keep_index)
+                self.mapping_key.append(self.now_key[self.pivot_value:])
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
-          
+                    
                     self.keep_1line_data = [] #1列の配列情報を格納するリスト
                     collections_txt = self.collections[str(type(line).__name__)][0]
                     
@@ -1133,6 +1198,7 @@ class SetPrint:
 
                         if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(txt_line)
+                    
 
                     keep_liens_data.append([[self.keep_index,txt_line,key]])
                 
@@ -1145,6 +1211,7 @@ class SetPrint:
             
         else:
             for linenum in range(len(datas)):
+                self.keep_line = [linenum]
                 self.keep_index = []
                 line = datas[linenum]
                 
@@ -1197,7 +1264,7 @@ class SetPrint:
                     if self.keep_start == 1:
                         now_len = int(self.line_ber_len*(linenum+1))
                         print('\033[F\033[K{ '+'-'*now_len+' '*(self.ber_len-now_len)+' }')
-            
+
         # ber_print(2)
         if self.ber_print:
             if self.keep_start == 1:
@@ -1227,37 +1294,57 @@ class SetPrint:
                 total += self.MAX_indexlen[datanum+1][0] + self.MAX_indexlen[datanum+1][1] +4
                 max_indexlen.append(self.MAX_indexlen[datanum+1][0] + self.MAX_indexlen[datanum+1][1] +3)
         
+
+        parent_index = self.now_index.copy()
+        parent_index[-1] = 'n'
+
+        for line in parent_key:
+            parent_index[line[0]] = line[1]
+
         del_MAXindex = self.MAX_index.copy()
         self.MAX_indexlen = max_indexlen
         now_index = self.now_index[:-1]
+
         for linenum in range(len(self.MAX_index)-1):
             line = self.MAX_index[linenum+1]
             if line[-1] == -1:
                 
-        #         # if tuple(line[:-1]) in mismatch_indices:
+                if tuple(line[:-1]) in mismatch_indices:
                     
-        #         #     search_index = now_index + ['n'] +line[:-1]
-        #         #     input_point = len(now_index)
+                    mismatch_point = line[:-1]
+               
+                    # 格納状況が異なる箇所の [] を　{) に変更しわかりやすくする。
+                    for txt_linenum in range(len(format_txtdata)):
+
+                        search_index = [txt_linenum] + mismatch_point
                     
-        #         #     # 格納状況が異なる箇所の [] を　{) に変更しわかりやすくする。
-        #         #     for txt_linenum in range(len(format_txtdata)):
-        #         #         search_index[input_point] = txt_linenum
-        #         #         value = access_nested_list(self.input_list,search_index)
-        #         #         if not isinstance(value, (list, tuple, np.ndarray, dict)):
-        #         #             bracket_image = self.bracket['None']
-        #         #         else:
-        #         #             bracket_image = self.bracket[str(type(value).__name__)]
+                        matching_index = check_matching_elements(self.mapping_point, search_index)
+                        if matching_index != -1:
+                            
+                            key_data = self.mapping_key[matching_index]
+                            
+                            for key_line in key_data:
+                                search_index[key_line[0]] = key_line[1]
+                        
+                        search_index = parent_index[:-1] + search_index
+                      
+                        value = access_nested_collection(self.input_list,search_index)
+
+                        if not isinstance(value, (list, tuple, np.ndarray, dict)):
+                            bracket_image = self.bracket['None']
+                        else:
+                            bracket_image = self.bracket[str(type(value).__name__)]
                             
 
-        #         #         txt_line = format_txtdata[txt_linenum]
+                        txt_line = format_txtdata[txt_linenum]
 
-        #         #         S_index = x_lens[del_MAXindex.index(line)]
-        #         #         txt_line = txt_line[:S_index] + bracket_image[0] + txt_line[S_index+1:]
+                        S_index = x_lens[del_MAXindex.index(line)]
+                        txt_line = txt_line[:S_index] + bracket_image[0] + txt_line[S_index+1:]
 
-        #         #         search_line = line[:-1]
-        #         #         search_line.append(self.finish_index[str(search_line)])
-        #         #         F_index = x_lens[del_MAXindex.index(search_line)]
-        #         #         format_txtdata[txt_linenum] = txt_line[:F_index] + bracket_image[1] + txt_line[F_index+1:]
+                        search_line = line[:-1]
+                        search_line.append(self.finish_index[str(search_line)])
+                        F_index = x_lens[del_MAXindex.index(search_line)]
+                        format_txtdata[txt_linenum] = txt_line[:F_index] + bracket_image[1] + txt_line[F_index+1:]
                         
 
                 del_index = del_MAXindex.index(line)
@@ -1276,10 +1363,7 @@ class SetPrint:
         format_txtdata.insert(0,txt_index)
         self.Xline_blocks[insert_index] = format_txtdata
 
-        txt_keep_index = self.now_index.copy()
-        txt_keep_index[-1] = 'n'
-
-        self.keep_txts_data[insert_index] = [txt_keep_index,del_MAXindex,self.MAX_indexlen,x_lens]       
+        self.keep_txts_data[insert_index] = [parent_index,del_MAXindex,self.MAX_indexlen,x_lens,self.mapping_point,self.mapping_key]       
   
 
     def format_keep_data(self,keep_liens_data):
@@ -1378,7 +1462,7 @@ class SetPrint:
                             if self.MAX_index[linenum][-1] == -1:
                             
                                 mismatch_indices.add(tuple(self.MAX_index[linenum][:-1]))
-
+                        
                                 key_index = self.MAX_index[linenum][:-1]
                                 key_index.append(self.finish_index[str(key_index)])
                                 noput_point.append(self.MAX_index.index(key_index))
@@ -1410,6 +1494,8 @@ class SetPrint:
                 i_index = self.MAX_index[linenum + i]
 
                 if i_index[-1] == -1:
+
+                    mismatch_indices.add(tuple(self.MAX_index[linenum][:-1]))    
 
                     key_index = i_index[:-1]
                     key_index.append(self.finish_index[str(key_index)])
@@ -1454,18 +1540,29 @@ class SetPrint:
         y,x = self.y,self.x
         k_data = self.block_keep_data[y][x]
    
-        if len(k_data) == 4:
+        if len(k_data) == 6:
             y_lens = len(self.block[y][x])-1
             class_index = k_data[0][:-1]
             indexs = k_data[1]
             x_lens = k_data[2]
             positions = k_data[3]
-        elif len(k_data) == 2:
+            mapping_point = k_data[4]
+            mapping_key   = k_data[5]
+
+        elif len(k_data) >= 2:
             y_lens = len(self.block[y][x])-1
             class_index = k_data[0][:-1]
             indexs = [[]]
             x_lens = [k_data[1]]
             positions = [0]
+            if len(k_data) == 4:
+                mapping_point = k_data[2]
+                mapping_key   = k_data[3]
+            
+            else:
+                mapping_point = []
+                mapping_key   = []
+
 
 
         gx = abs(gx%len(positions))
@@ -1479,12 +1576,29 @@ class SetPrint:
         
         guide_index += f'{{\033[38;2;255;165;0m\033[1m{str(gy)}\033[0m}}'
         no_color_ver += '{'+str(gy)+'}'
-        for line in indexs[gx]:
-            guide_index += f'[\033[1;34m{str(line)}\033[0m]'
-            no_color_ver += '['+str(line)+']'
+        
 
-        this = class_index+[gy]+indexs[gx]
-        value = access_nested_list(self.input_list,this)
+        collection_index = [gy] + indexs[gx]
+        this = class_index+collection_index
+        matching_index = check_matching_elements(mapping_point, collection_index)
+        if matching_index != -1:
+            
+            key_data = mapping_key[matching_index]
+            
+            for line in key_data:
+                this[line[0]] = line[1]
+            
+            for line in this[len(class_index):]:
+                guide_index += f'[\033[1;34m{str(line)}\033[0m]'
+                no_color_ver += '['+str(line)+']'
+
+        else:
+
+            for line in indexs[gx]:
+                guide_index += f'[\033[1;34m{str(line)}\033[0m]'
+                no_color_ver += '['+str(line)+']'
+
+        value = access_nested_collection(self.input_list,this)
         
         value_txt = str(value).replace(', ', ',').replace('\n', '')
         value_txt = value_txt if len(value_txt) < 140 else value_txt[:140] + ' ~'
@@ -1536,15 +1650,15 @@ class SetPrint:
             for line in write_txt:
                 f.write('       ' + line + '\n')
 
-            f.write('\n')
-            keep_data = self.block_keep_data[y][x]
-            if len(keep_data) == 4:
-                f.write((keep_data[3][gx]+8)*' '+str(keep_data[0])+'\n')
-                for line in keep_data[1:]:
-                    f.write((keep_data[3][gx]+8)*' '+str(line[gx]) + '\n')
-            else:
-                for line in keep_data:
-                    f.write(str(line)+'\n')
+            # f.write('\n')
+            # keep_data = self.block_keep_data[y][x]
+            # if len(keep_data) == 4:
+            #     f.write((keep_data[3][gx]+8)*' '+str(keep_data[0])+'\n')
+            #     for line in keep_data[1:]:
+            #         f.write((keep_data[3][gx]+8)*' '+str(line[gx]) + '\n')
+            # else:
+            #     for line in keep_data:
+            #         f.write(str(line)+'\n')
 
     def on_press(self, key):
         try:
