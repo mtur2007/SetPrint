@@ -1,5 +1,5 @@
 # / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict /
-print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
+#print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
 # setpirnt (ver 0.3.0)
 
@@ -697,7 +697,11 @@ class SetPrint:
                 self.now_index = [linenum]
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
-                    self.search_sequence(line)
+                    if type(line) == dict:
+                        self.search_mapping(line)
+                    else:
+                        self.search_sequence(line)
+
                     All_blocks.append(self.Xline_blocks)
                     keep_Ylines_data.append(self.keep_txts_data)
 
@@ -1108,9 +1112,9 @@ class SetPrint:
         self.MAX_index     = [] # 存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
         self.MAX_indexlen  = [] # インデックスに格納されている配列の文字数を格納する。
 
-        parent_key         = self.now_key[:]    # 親インデックスのキー
+        parent_key         = self.now_key[:] # 親インデックスのキー
         self.pivot_value   = len(parent_key) # 親インデックスのキー以降をmapping_keyに格納するための基準値設定。
-                
+
         self.mapping_point = [] # 辞書型が存在している場所を格納する。
         self.mapping_key   = [] # keep_keyに対応するマッピング型のキー
 
@@ -1145,7 +1149,7 @@ class SetPrint:
             for linenum, (key, line) in enumerate(datas.items()):
 
                 self.now_index[-1] = linenum
-                self.now_key[-1] = [[self.now_deep-1,key]]
+                self.now_key[-1] = [self.now_deep-1,key]
 
                 self.keep_line = [linenum]
 
@@ -1305,6 +1309,8 @@ class SetPrint:
         self.MAX_indexlen = max_indexlen
         now_index = self.now_index[:-1]
 
+        diff = len(parent_index[:-1])
+
         for linenum in range(len(self.MAX_index)-1):
             line = self.MAX_index[linenum+1]
             if line[-1] == -1:
@@ -1324,7 +1330,7 @@ class SetPrint:
                             key_data = self.mapping_key[matching_index]
                             
                             for key_line in key_data:
-                                search_index[key_line[0]] = key_line[1]
+                                search_index[key_line[0]-diff] = key_line[1]
                         
                         search_index = parent_index[:-1] + search_index
                       
@@ -1412,7 +1418,7 @@ class SetPrint:
                         if len(keep_txts) == 2:
                             key_empty   = index_len[0] * self.empty_style
                             value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
-                            txt += key_empty + ' : ' + value_empty + ' '
+                            txt += key_empty + ' : ' + value + ' '
                         else:
                             key   = (index_len[0] - len(keep_txts[2])) * self.padding_style + str(keep_txts[2])
                             value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])

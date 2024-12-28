@@ -39,18 +39,29 @@ arguments = (
                        'len'   : 20}))
 )
 
+# インデックスで引数のチェックを行う為、この配列の通りに指定してください。
+# 制限の範囲内ではなかった値は表示され、デフォルトの値が代入されます。
+
+# set_datas = list_data.set_list(guide=True, keep_start=1, keep_range='all')
+
+
+
+test_dict = [ [0,(0,1,2),2], (0,1,2), {'a':0, 'b':{'zero':0, 'frst':1, 'twe':2}, 'c':2}, {'zero':0, 'frst':1, 'twe':2} ]
+
+list_data = SetPrint(test_dict)
+
 arguments = (
     
    (("Collections" , 
-        { 'image'   : {'list'     :'►',
-                        'tuple'   :'▷',
-                        'ndarray' :'>',
-                        'dict'    :'◆'}}),  # < New
+        { 'image'   : {'list'     :'list ►',
+                        'tuple'   :'tuple ▷',
+                        'ndarray' :'nadarray >',
+                        'dict'    :'dict ◆'}}),  # < New
     ("bracket"     , 
         { 'partially': {'list'    :('{',')'),                 
                         'tuple'   :('<','>'),
                         'ndarray' :('(','}'),
-                        'dict'    :('/','/'),   # < New
+                        'dict'    :('{','}'),   # < New
                         'None'    :('`','`')}}),
                                         
     ("empty"       , { 'style' : ' '}),
@@ -62,17 +73,10 @@ arguments = (
                        'len'   : 20}))
 )
 
-# インデックスで引数のチェックを行う為、この配列の通りに指定してください。
-# 制限の範囲内ではなかった値は表示され、デフォルトの値が代入されます。
-
-# set_datas = list_data.set_list(guide=True, keep_start=1, keep_range='all')
-
-list_data = SetPrint(arguments)
-
 list_data.set_text_style(arguments) # set_listの前
 
 # ３次元目に各テキストデータが格納されているので、keep_start=3にして実行
-set_datas = list_data.set_list(guide=True,keep_start=1,keep_range='all') 
+set_datas = list_data.set_list(guide=True,keep_start=2,keep_range='all') 
 
 # スクリプトが存在するディレクトリを基準にする
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -83,10 +87,10 @@ with open(set_data_write,'w') as f:
         f.write(line)
 
 
-# # スクリプトが存在するディレクトリを基準にする
-# base_dir = os.path.dirname(os.path.abspath(__file__))
-# pick_guide = os.path.join(base_dir, './output_txtfile/pick_guide.txt')
-# list_data.pick_guideprint(pick_guide)
+# スクリプトが存在するディレクトリを基準にする
+base_dir = os.path.dirname(os.path.abspath(__file__))
+pick_guide = os.path.join(base_dir, './output_txtfile/pick_guide.txt')
+list_data.pick_guideprint(pick_guide)
 
 
 # style_settings = (

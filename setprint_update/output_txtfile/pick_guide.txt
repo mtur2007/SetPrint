@@ -1,10 +1,8 @@
-{guide} >        >      >           >               >         ▼{1}[1][1][partially][tuple]
+{guide}               ▼{0}
 
-        ▷ ( Collections ◆ {     image :     ◆ / list : ►  tuple : ▷  ndarray : > dict : ◆ ---- : - / --- : -- } ) 
-       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ┏         ┓ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        ▷ (     bracket ◆ { partially :     ◆ ` list : ▷  tuple : ▷  ndarray : ▷ dict : ▷ None : ▷ ` --- : -- } ) 
-       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ┗         ┛ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        ▷ (       empty ◆ {     style :       ` ---- : -  ----- : -  ------- : - ---- : - ---- : - ` --- : -- } ) 
-        ▷ (     padding ◆ {     style :     - ` ---- : -  ----- : -  ------- : - ---- : - ---- : - ` --- : -- } ) 
-        ▷ (    settings ◆ {     print : False ` ---- : -  ----- : -  ------- : - ---- : - ---- : - ` --- : -- } ) 
-        ▷ (    progress ◆ {     print : False ` ---- : -  ----- : -  ------- : - ---- : - ---- : - ` len : 20 } ) 
+        ┏                          ┓ 
+         data_type: <class 'list'>   
+        ┗                          ┛ 
+         data_type: <class 'tuple'> 
+         data_type: <class 'dict'> 
+         data_type: <class 'dict'> 
