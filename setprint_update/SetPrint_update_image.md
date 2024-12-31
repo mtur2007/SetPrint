@@ -79,8 +79,8 @@
     | ------------- | --------  | ---------  | ----------   | ------------------------ | ------------------- |
     | "padding"     | style     |            | ' '          | 字数の穴埋め               | type: str, len: l=1 |
     | ------------- | --------  | ---------  | ----------   | ------------------------ | ------------------- |
-    | "empty"       | style     | sequence   | '-'          | 存在しない要素　　          | type: str, len: l=1 |
-    |    ``         | ``        | mapping    | '*'          | 存在しない辞書要素(key)　   | type: str, len: l=1 |
+    | "empty"       | style     | value      | '-'          | 存在しない要素　　          | type: str, len: l=1 |
+    |    ``         | ``        | key        | '*'          | 存在しない辞書要素(key)　   | type: str, len: l=1 |
     | ------------- | --------  | ---------  | ----------   | ------------------------ | ------------------- |
     | "settings"    | print     |            | True         | スタイル設定値の表示,非表示　 | type: bool          |
     | "progress"    | print     |            | True         | プログレスバーの表示,非表示　 | type: bool          |
@@ -92,29 +92,29 @@
     - **実行例**
         ```python
         #list_data = SetPrint(list)
-        
-        arguments = (
             
-           (("Collections" , 
-                { 'image'   : {'list'     :'►list',
-                                'tuple'   :'▷tuple',
-                                'ndarray' :'>numpy',
-                                'dict'    :'◆dict'}}),  # < New
-            ("bracket"     , 
-                { 'partially': {'list'    :('{',')'),                 
-                                'tuple'   :('<','>'),
-                                'ndarray' :('(','}'),
-                                'dict'    :('/','/'),   # < New
-                                'None'    :('`','`')}}),
-                                                
-            ("empty"       , { 'style' : ' '}),
-            ("padding"     , { 'style' : '-'}),
+        arguments = (
 
-            ("settings"    , { 'print' : True }),
+          (("Collections" ,
+            {  'image'   : { 'list'    : '►list' ,
+                             'tuple'   : '▷tuple' ,
+                             'ndarray' : '>nadarray' ,
+                             'dict'    : '◆dect' }}),
 
-            ("progress"    , { 'print' : True ,
-                               'len'   : 20}))
+           ("bracket"     ,
+            { 'partially': { 'list'    : ( '{' , ')' ),
+                             'tuple'   : ( '<' , '>' ),
+                             'ndarray' : ( '(' , '}' ),
+                             'dict'    : ( '{' , ')' ),
+                             'None'    : ( '`' , '`' )}}),
 
+           ("padding"     , {  'key'   : (' ', ':') , 'value'  : ' ' }),
+           ("empty"       , {  'key'   : ('*', ' ') , 'value'  : '-' }),
+
+
+           ("settings"    , { 'print'  : True }),
+           ("progress"    , { 'print'  : False  ,
+                              'len'    : 20  }))
         )
         
         list_data.set_text_style(arguments) # set_listの前
