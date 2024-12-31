@@ -16,49 +16,6 @@ def file_relative_access(relative_path):
     relative_path = os.path.join(base_dir, relative_path)
     return relative_path
 
-# pickleファイルからデータを読み込む
-# file_name = 'ocr_txtdata.pkl'
-# with open(file_name, "rb") as file:
-#       loaded_data = pickle.load(file)
-
-# keyを指定してテキストデータを取得
-# txt_data = loaded_data["Alltxtdatas"]
-
-# list_data = SetPrint(txt_data)
-#list_data = SetPrint(list)
-
-# インデックスで引数のチェックを行う為、この配列の通りに指定してください。
-# 制限の範囲内ではなかった値は表示され、デフォルトの値が代入されます。
-
-# set_datas = list_data.set_list(guide=True, keep_start=1, keep_range='all')
-
-style_settings = (
-
-   (("Collections" ,
-     {  'image'   : { 'list'    : '►list' ,
-                      'tuple'   : '▷tuple' ,
-                      'ndarray' : '>nadarray' ,
-                      'dict'    : '◆dect' }}),
-
-    ("bracket"     ,
-     { 'partially': { 'list'    : ( '{' , ')' ),
-                      'tuple'   : ( '<' , '>' ),
-                      'ndarray' : ( '(' , '}' ),
-                      'dict'    : ( '{' , ')' ),
-                      'None'    : ( '`' , '`' )}}),
-
-    ("padding"     , {  'key'   : (' ', ':') , 'value'  : ' ' }),
-    ("empty"       , {  'key'   : ('*', ' ') , 'value'  : '-' }),
-
-
-    ("settings"    , { 'print'  : True }),
-    ("progress"    , { 'print'  : False  ,
-                       'len'    : 20  }))
-)
-
-test_dict = [ [0,(0,1,2),2], (0,1,2), {'a':0, 'b':{'zero':0, 'frst':1, 'twe':2}, 'c':2}, {'zero':0, 'frst':1, 'twe':2} ]
-
-list_data = SetPrint(test_dict)
 
 style_settings = (
 
@@ -83,38 +40,58 @@ style_settings = (
     ("progress"    , { 'print'  : False  ,
                        'len'    : 20  }))
 )
-list_data.set_text_style(style_settings) # set_listの前
 
-# ３次元目に各テキストデータが格納されているので、keep_start=3にして実行
-set_datas = list_data.set_list(guide=True,keep_start=1,keep_range='all') 
+if False:
+    # pickleファイルからデータを読み込む
+    file_name = 'ocr_txtdata.pkl'
+    with open(file_name, "rb") as file:
+        loaded_data = pickle.load(file)
 
-# スクリプトが存在するディレクトリを基準にする
-set_data_write = file_relative_access('./output_txtfile/set_data.txt')
+    # keyを指定してテキストデータを取得
+    txt_data = loaded_data["Alltxtdatas"]
 
-with open(set_data_write,'w') as f:
-    for line in set_datas['grid_slice']:
-        f.write(line)
+    list_data = SetPrint(txt_data)
+
+    list_data.set_text_style(style_settings) # set_listの前
+
+    # インデックスで引数のチェックを行う為、この配列の通りに指定してください。
+    # 制限の範囲内ではなかった値は表示され、デフォルトの値が代入されます。
+
+    set_datas = list_data.set_list(guide=True, keep_start=3, keep_range='all')
+
+#else:
+    # test_dict = [ [0,(0,1,2),2], (0,1,2), {'a':0, 'b':{'zero':0, 'frst':1, 'twe':2}, 'c':2}, {'zero':0, 'frst':1, 'twe':2} ]
+
+    # list_data = SetPrint(test_dict)
+
+    # list_data.set_text_style(style_settings) # set_listの前
+
+    # # ３次元目に各テキストデータが格納されているので、keep_start=3にして実行
+    # set_datas = list_data.set_list(guide=True,keep_start=1,keep_range='all') 
+
+# データの作成
+test_data = [
+    [0.0, 0.1, 0.2, 0.3],
+    {0: 0, 'one': 1, 'two': 2},
+    {'zero': 0, 'frst': {'zero': 0, 'one': 1}, 2:2}
+]
+
+# インスタンスを生成
+list_data = SetPrint(test_data)
+
+# データの整形
+set_datas = list_data.set_list(guide=True,keep_start=1,keep_range='all')
+
+# 表示
+for line in set_datas['grid_slice']:
+    print(line[:-1])
+
+# # スクリプトが存在するディレクトリを基準にする
+# set_data_write = file_relative_access('./output_txtfile/set_data.txt')
+
+# with open(set_data_write,'w') as f:
+#     for line in set_datas['grid_slice']:
+#         f.write(line)
 
 # pick表示を行う
 #list_data.pick_guideprint(file_relative_access('./output_txtfile/pick_guide.txt'))
-
-
-# style_settings = (
-
-#    (("Collections" ,
-#      {  'image'   : { 'list'    : '►list' ,
-#                       'tuple'   : '▷tuple' ,
-#                       'ndarray' : '>numpy' ,
-
-#     ("bracket"     ,
-#      { 'partially': { 'list'    : ( '{' ・ ')' ),
-#                       'tuple'   : ( '<' ・ '>' ),
-#                       'ndarray' : ( '(' ・ '}' ),
-#                       'None'    : ( '`' ・ '`' ),
-
-#     ("empty"       , { 'style'  : ' ' ),
-#     ("padding"     , { 'style'  : '-' ),
-
-#     ("progress"    , { 'print'  :  False  ,
-#                        'len'    :  20  }))
-# )

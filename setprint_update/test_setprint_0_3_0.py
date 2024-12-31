@@ -811,8 +811,8 @@ class SetPrint:
                         self.MAX_index.append(insert_index)
                         self.MAX_indexlen.append([len(str(key)),len(collections_txt)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(str(key)):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(str(key))
 
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
@@ -829,8 +829,8 @@ class SetPrint:
                         self.MAX_index.append(insert_index)
                         self.MAX_indexlen.append([len(str(key)),len(collections_txt)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(str(key)):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(str(key))
 
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
@@ -846,8 +846,8 @@ class SetPrint:
                         self.MAX_index.append(insert_index)
                         self.MAX_indexlen.append([len(str(key)),len(txt_line)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(str(key)):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(str(key))
 
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
@@ -1182,8 +1182,8 @@ class SetPrint:
                         self.MAX_index.append(self.keep_index.copy())
                         self.MAX_indexlen.append([len(str(key)),len(collections_txt)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(key):
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(key)
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(str(key)):
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(str(key))
 
                         if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(collections_txt)
@@ -1206,8 +1206,8 @@ class SetPrint:
                         self.MAX_index.append(self.keep_index.copy())
                         self.MAX_indexlen.append([len(str(key)),len(txt_line)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(key):
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(key)
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(str(key)):
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(str(key))
 
                         if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(txt_line)
@@ -1429,7 +1429,7 @@ class SetPrint:
                             value = (index_len[1] - len(keep_txts[1])) * self.padding_value + str(keep_txts[1])
                             txt += key_empty + self.empty_colon + value + ' '
                         else:
-                            key   = (index_len[0] - len(keep_txts[2])) * self.padding_key + str(keep_txts[2])
+                            key   = (index_len[0] - len(str(keep_txts[2]))) * self.padding_key + str(keep_txts[2])
                             value = (index_len[1] - len(keep_txts[1])) * self.padding_value + str(keep_txts[1])
                             txt += key + self.padding_colon + value + ' '
 
@@ -1442,35 +1442,32 @@ class SetPrint:
                         #配列が足りない場合は同じ次元の終わりのインデックスを検索項目にする。
                         search_finish = keep_txts[1][:-1]
                         search_finish.append(self.finish_index[str(search_finish)])
-                        finish_txt = keep_txts[2]
+                        finish_value = keep_txts[2]
                     else:
                         #違う次元がある場合は現在のインデックスを検索項目にする。
                         search_finish = keep_txts[0]
+                        finish_value = keep_txts[1]
 
                     while True:
                         #検索項目のインデックスが出てくるまで空白を挿入
                         index_len = self.MAX_indexlen[linenum]
 
                         if search_finish == self.MAX_index[linenum]:
-                            if  keep_txts[0] == 'finish':
-                                txt += finish_txt + ' '
+                        
+                            value_txt = str(finish_value)
+                            value_txt = (index_len[1] - len(value_txt)) * self.padding_value + value_txt
+
+                            if index_len[0] == 0:
+                                txt += value_txt + ' '
 
                             else:
-                            
-                                if index_len[0] == 0:
-                                    value = (index_len[1] - len(keep_txts[1])) * self.padding_value + str(keep_txts[1])
-                                    txt += value + ' '
-
+                                if len(keep_txts) == 2:
+                                    key_empty   = index_len[0] * self.empty_key
+                                    txt += key_empty + self.empty_colon + value_txt + ' '
                                 else:
-                                    if len(keep_txts) == 2:
-                                        key_empty   = index_len[0] * self.empty_key
-                                        value_empty = index_len[1] * self.empty_value
-                                        txt += key_empty + self.empty_colon + value_empty + ' '
-                                    else:
-                                        key   = (index_len[0] - len(keep_txts[2])) * self.padding_key + str(keep_txts[2])
-                                        value = (index_len[1] - len(keep_txts[1])) * self.padding_value + str(keep_txts[1])
-                                        txt += key + self.padding_colon + value + ' '
-                                
+                                    key   = (index_len[0] - len(str(keep_txts[2]))) * self.padding_key + str(keep_txts[2])
+                                    txt += key + self.padding_colon + value_txt + ' '
+                            
                             break
                         else:
                             # 穴埋め時に他次元の情報が見つかったら、格納状況が異なる箇所として扱う
@@ -1487,13 +1484,11 @@ class SetPrint:
                             else:
                                 # 穴埋め時、格納状況が異なる箇所だった場合、空白ではなく '-' を挿入。
                                 if (linenum in noput_point) != True:
-
+                                    value_empty = index_len[1] * self.empty_value
                                     if index_len[0] == 0:
-                                        value = index_len[1] * self.empty_value
-                                        txt += value + ' '
+                                        txt += value_empty + ' '
                                     else:
                                         key_empty   = index_len[0] * self.empty_key
-                                        value_empty = index_len[1] * self.empty_value
                                         txt += key_empty + self.empty_colon + value_empty + ' '
                                 else:
                                     del noput_point[noput_point.index(linenum)]
@@ -1520,12 +1515,12 @@ class SetPrint:
                     if ((linenum + i) in noput_point) != True:
 
                         index_len = self.MAX_indexlen[linenum + i]
+                        value_empty = index_len[1] * self.empty_value
+
                         if index_len[0] == 0:
-                            value = index_len[1] * self.empty_value
-                            txt += value + ' '
+                            txt += value_empty + ' '
                         else:
-                            key_empty   = index_len[0] * self.empty_key
-                            value_empty = index_len[1] * self.empty_value
+                            key_empty = index_len[0] * self.empty_key
                             txt += key_empty + self.empty_colon + value_empty + ' '
                     else:
 
