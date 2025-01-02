@@ -1,8 +1,8 @@
-{guide}               ▼{0}
+{guide}   ▼[0]{1}
 
-        ┏                          ┓ 
-         data_type: <class 'list'>   
-        ┗                          ┛ 
-         data_type: <class 'tuple'> 
-         data_type: <class 'dict'> 
-         data_type: <class 'dict'> 
+         0.0  
+        ┏   ┓ 
+         0.1  
+        ┗   ┛ 
+         0.2  
+         0.3  

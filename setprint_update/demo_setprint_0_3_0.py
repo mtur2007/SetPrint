@@ -6,12 +6,8 @@
 import numpy as np
 from pynput import keyboard
 
-'''
-=============================================================================================================================================================
-・初歩的な整列
-'''
 
-#数値の int部分を見た目的に表示させる様にする自作関数
+# 数値の int部分を見た目的に表示させる様にする自作関数
 def Myint(num):
     num = str(num)
     for line in range(len(num)):
@@ -19,6 +15,7 @@ def Myint(num):
             return int(num[:line])
     return int(num)
 
+# 配列の値にインデックスを格納したリスト配列を使ってアクセスする
 def access_nested_collection(nested_list,indices):
     
     for i,index in enumerate(indices):
@@ -47,6 +44,7 @@ def access_nested_collection(nested_list,indices):
         value = nested_list
         return value
 
+# 配列の文字列、数列がどこの次元に位置しているかを調べる関数。(オート機能の処理)
 def check_matching_elements(mapping_point, collection_index):
 
     max_match_count = 0  # 最大連続一致数
@@ -71,6 +69,8 @@ def check_matching_elements(mapping_point, collection_index):
     return max_match_index  # 最大連続一致数を持つ行のインデックス
 
 
+# 配列の型変換を行う関数
+# tuple,dict > list, dict
 def convert_tuple_to_list(data):
     """
     ネストされたデータ構造内のタプルをリストに変換し、
@@ -94,7 +94,7 @@ def convert_tuple_to_list(data):
     else:
         # 基本データ型はそのまま返す
         return data
-
+# list, dict ▷ tuple,dict
 def convert_list_to_tuple(data):
     """
     ネストされたデータ構造内のリストをタプルに変換し、
@@ -119,7 +119,10 @@ def convert_list_to_tuple(data):
         # 基本データ型はそのまま返す
         return data
 
-#------------------------------------------------------------------------------------------------------------------------------------------------------------
+'''
+=============================================================================================================================================================
+・初歩的な整列
+'''
 
 #リストに格納されている情報を文字とみて整列させる関数(main)
 def set_txt(txtslist,mode,position):
@@ -326,27 +329,27 @@ class SetPrint:
 
         # 入力データ('#'は引数の受け取り箇所)
         self.style_settings = (
-            
-           (("Collections" , 
-                { 'image'   : {'list'     :'►list',
-                                'tuple'   :'▷tuple',
-                                'ndarray' :'>numpy',
-                                'dict'    :'◆dict'}}),
-            ("bracket"     , 
-                { 'partially': {'list'    :('{',')'),                 
-                                'tuple'   :('<','>'),
-                                'ndarray' :('(','}'),
-                                'dict'    :('/','/'),
-                                'None'    :('`','`')}}),
-                                                
-            ("empty"       , { 'style' : ' '}),
-            ("padding"     , { 'style' : '-'}),
 
-            ("settings"    , { 'print' : True }),
+          (("Collections" ,
+            {  'image'   : { 'list'    : '►list' ,
+                             'tuple'   : '▷tuple' ,
+                             'ndarray' : '>nadarray' ,
+                             'dict'    : '◆dect' }}),
 
-            ("progress"    , { 'print' : True ,
-                               'len'   : 20}))
+           ("bracket"     ,
+            { 'partially': { 'list'    : ( '{' , ')' ),
+                             'tuple'   : ( '<' , '>' ),
+                             'ndarray' : ( '(' , '}' ),
+                             'dict'    : ( '{' , ')' ),
+                             'None'    : ( '`' , '`' )}}),
 
+           ("padding"    ,  {  'key'   : (' ', ':') , 'value'  : ' ' }),
+           ("empty"      ,  {  'key'   : ('*', ' ') , 'value'  : '-' }),
+
+
+           ("settings"   ,  { 'print'  : True }),
+           ("progress"   ,  { 'print'  : False  ,
+                              'len'    : 20  }))
         )
         
         # 制限('#'の箇所をまとめて管理)
@@ -365,8 +368,12 @@ class SetPrint:
             ( 1, 1, 'partially',    'dict', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
             ( 1, 1, 'partially',    'None', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
             ( 1, 1, 'partially',    'None', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 2, 1,     'style'               ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,     'style'               ) : {'type': str, 'min_length':1, 'max_length':1},    
+            ( 2, 1,       'key',        0     ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 2, 1,       'key',        1     ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 2, 1,     'value'               ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,       'key',        0     ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,       'key',        1     ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,     'value'               ) : {'type': str, 'min_length':1, 'max_length':1},
             ( 4, 1,     'print'               ) : {'type': bool,},
             ( 5, 1,     'print'               ) : {'type': bool,},
             ( 5, 1,       'len'               ) : {'type': int, 'min':0}
@@ -381,6 +388,7 @@ class SetPrint:
         if self.style_settings[4][1]['print']:
             # ANSIエスケープコードを色ごとに変数で定義
             g = "\033[38;5;46m"   # 緑 (Green)
+            g2 = '\033[38;5;43m'
             b = "\033[38;5;27m"   # 青 (Blue)
             y = "\033[38;5;226m"  # 黄色 (Yellow)
             c = "\033[38;5;51m"   # シアン (Cyan)
@@ -396,20 +404,22 @@ class SetPrint:
                 "     {  'image'   : { "+f"'list'    {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['list']}{quote} ,",
                 f"                      'tuple'   {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['tuple']}{quote} ,",
                 f"                      'ndarray' {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['ndarray']}{quote} ,",
+                f"                      'dict'    {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['dict']}{quote} }}}}),",
                 '',
                 f'    ({g}"bracket"{R}     ,',
-                "     { 'partially': { "+f"'list'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially'][   'list'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially'][   'list'][1]}{quote} ),",
-                f"                      'tuple'   {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially'][  'tuple'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially'][  'tuple'][1]}{quote} ),",
-                f"                      'ndarray' {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['ndarray'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially']['ndarray'][1]}{quote} ),",
-                f"                      'None'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially'][   'None'][0]}{quote}{b} ・ {R}{quote}{y}{self.style_settings[1][1]['partially'][   'None'][1]}{quote} ),",
+                "     { 'partially': { "+f"'list'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['list'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['list'][1]}{quote} ),",
+                f"                      'tuple'   {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['tuple'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['tuple'][1]}{quote} ),",
+                f"                      'ndarray' {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['ndarray'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['ndarray'][1]}{quote} ),",
+                f"                      'dict'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['dict'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['dict'][1]}{quote} ),",
+                f"                      'None'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['None'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['None'][1]}{quote} )}}}}),",
                 '',                                       
-                f'    ({g}"empty"{R}       ,'+" { 'style' "+f" {g}:{R} {quote}{l}{self.style_settings[2][1]['style']}{quote} ),",
-                f'    ({g}"padding"{R}     ,'+" { 'style' "+f" {g}:{R} {quote}{l}{self.style_settings[3][1]['style']}{quote} ),",
+                f'    ({g}"padding"{R}     ,'+" {  'key'  "+f" {g}:{R} {l}{self.style_settings[2][1]['key']}{R} ,  'value' "+f"{g}:{R} {quote}{l}{self.style_settings[2][1]['value']}{quote} }}),",
+                f'    ({g}"empty"{R}       ,'+" {  'key'  "+f" {g}:{R} {l}{self.style_settings[3][1]['key']}{R} ,  'value' "+f"{g}:{R} {quote}{l}{self.style_settings[3][1]['value']}{quote} }}),",  
                 '',
-                f'    ({g}"settings"{R}    ,'+" { 'print'  "+g+":"+R+" \033[34m" + str(self.style_settings[4][1]['print']) + "\033[0m }),",
                 '',
-                f'    ({g}"progress"{R}    ,'+" { 'print'  "+g+":"+R+" \033[34m" + str(self.style_settings[5][1]['print']) + "\033[0m  ,",
-                       '                    '+"   'len'    "+g+":"+R+" \033[34m" + str(self.style_settings[5][1]['len'])   + "\033[0m  }))",
+                f'    ({g2}"settings"{R}    ,'+" { 'print'  "+g2+":"+R+" \033[34m" + str(self.style_settings[4][1]['print']) + "\033[0m }),",
+                f'    ({g2}"progress"{R}    ,'+" { 'print'  "+g2+":"+R+" \033[34m" + str(self.style_settings[5][1]['print']) + "\033[0m  ,",
+                       '                    '+"   'len'    "+g2+":"+R+" \033[34m" + str(self.style_settings[5][1]['len'])   + "\033[0m  }))",
                 ')',
             ]
             for line in list_settings:
@@ -612,8 +622,9 @@ class SetPrint:
     ・リストの中身やインデックスを調査し、整列させる関数。
     '''
 
-    #リストを整列する際の条件を整理したり、１次元毎にブロックを一段ずらす為、１次元までこの関数で処理し、以降は search_index で調査。
-    #中身はsearch_indexとほぼ同じ
+    # リストを整列する際の条件を整理
+    # １次元毎にブロックを一段ずらす為、１次元までこの関数で処理し、以降は search_mapping / search_sequence で調査。
+    # 中身は search_mapping / search_sequence とほぼ同じ
     def set_list(self, guide,keep_start,keep_range):
 
         datas = self.input_list
@@ -664,9 +675,14 @@ class SetPrint:
         
         self.bracket = self.style_settings[1][1]['partially']
 
-        self.padding_style = self.style_settings[2][1]['style']
-        self.empty_style = self.style_settings[3][1]['style']
+        self.padding_key = self.style_settings[2][1]['key'][0]
+        self.padding_colon = ' '+self.style_settings[2][1]['key'][1]+' '
+        self.padding_value = self.style_settings[2][1]['value']
 
+        self.empty_key = self.style_settings[3][1]['key'][0]
+        self.empty_colon = ' '+self.style_settings[3][1]['key'][1]+' '
+        self.empty_value = self.style_settings[3][1]['value']
+        
         # self.bracket_e = self.style_settings['bracket']['exists']
         self.ber_print = self.style_settings[5][1]['print']
         # ber_print(1)
@@ -751,7 +767,8 @@ class SetPrint:
         self.set_data_dict = set_data_dict
 
         return set_data_dict
-
+ 
+    # マッピング型を調べる
     def search_mapping(self, datas):
         
         self.now_deep += 1 #deepはインデックスの次元測定
@@ -794,8 +811,8 @@ class SetPrint:
                         self.MAX_index.append(insert_index)
                         self.MAX_indexlen.append([len(str(key)),len(collections_txt)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(str(key)):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(str(key))
 
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
@@ -812,8 +829,8 @@ class SetPrint:
                         self.MAX_index.append(insert_index)
                         self.MAX_indexlen.append([len(str(key)),len(collections_txt)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(str(key)):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(str(key))
 
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
@@ -829,8 +846,8 @@ class SetPrint:
                         self.MAX_index.append(insert_index)
                         self.MAX_indexlen.append([len(str(key)),len(txt_line)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(key):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(key)
+                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(str(key)):
+                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(str(key))
 
                         if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
@@ -906,10 +923,6 @@ class SetPrint:
 
                 mapping_point.append([linenum])
                 mapping_key.append(self.now_key[:])
-
-                txt = ""
-                for i in self.now_index:
-                    txt += "[" + str(i) + "]"
                 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
                     if type(line) == dict:
@@ -942,7 +955,7 @@ class SetPrint:
 
         self.now_deep -= 1
 
-    #リストのインデックスを再帰関数を使って調べていき、指定条件に沿った形で整列し、出力する。12
+    # シーケンス型を調べる
     def search_sequence(self, datas):
 
         self.now_deep += 1 #deepはインデックスの次元測定
@@ -1074,10 +1087,6 @@ class SetPrint:
                 line = datas[linenum]
 
                 self.now_index[-1] = linenum
-
-                txt = ""
-                for i in self.now_index:
-                    txt += "[" + str(i) + "]"
                 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
                     if type(line) == dict:
@@ -1101,7 +1110,7 @@ class SetPrint:
         del self.now_index[-1] #インデックスの調査が終わったら戻す
         self.now_deep -= 1
 
-    #キープデータの初期化
+    # キープデータの初期化/作成
     def keep_setup(self,datas,txt_index):
         
 
@@ -1173,8 +1182,8 @@ class SetPrint:
                         self.MAX_index.append(self.keep_index.copy())
                         self.MAX_indexlen.append([len(str(key)),len(collections_txt)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(key):
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(key)
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(str(key)):
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(str(key))
 
                         if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(collections_txt):
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(collections_txt)
@@ -1197,8 +1206,8 @@ class SetPrint:
                         self.MAX_index.append(self.keep_index.copy())
                         self.MAX_indexlen.append([len(str(key)),len(txt_line)])
                     else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(key):
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(key)
+                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(str(key)):
+                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(str(key))
 
                         if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(txt_line):
                             self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(txt_line)
@@ -1371,7 +1380,7 @@ class SetPrint:
 
         self.keep_txts_data[insert_index] = [parent_index,del_MAXindex,self.MAX_indexlen,x_lens,self.mapping_point,self.mapping_key]       
   
-
+    # キープデータの整形
     def format_keep_data(self,keep_liens_data):
             
         '''
@@ -1411,18 +1420,18 @@ class SetPrint:
                     index_len = self.MAX_indexlen[linenum]
 
                     if index_len[0] == 0:
-                        value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
+                        value = (index_len[1] - len(keep_txts[1])) * self.padding_value + str(keep_txts[1])
                         txt += value + ' '
 
                     else:
                         if len(keep_txts) == 2:
-                            key_empty   = index_len[0] * self.empty_style
-                            value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
-                            txt += key_empty + ' : ' + value + ' '
+                            key_empty   = index_len[0] * self.empty_key
+                            value = (index_len[1] - len(keep_txts[1])) * self.padding_value + str(keep_txts[1])
+                            txt += key_empty + self.empty_colon + value + ' '
                         else:
-                            key   = (index_len[0] - len(keep_txts[2])) * self.padding_style + str(keep_txts[2])
-                            value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
-                            txt += key + ' : ' + value + ' '
+                            key   = (index_len[0] - len(str(keep_txts[2]))) * self.padding_key + str(keep_txts[2])
+                            value = (index_len[1] - len(keep_txts[1])) * self.padding_value + str(keep_txts[1])
+                            txt += key + self.padding_colon + value + ' '
 
                 else:
                     #違かった場合、配列数が足りない 又は、違う次元があるのかを調べる
@@ -1433,35 +1442,32 @@ class SetPrint:
                         #配列が足りない場合は同じ次元の終わりのインデックスを検索項目にする。
                         search_finish = keep_txts[1][:-1]
                         search_finish.append(self.finish_index[str(search_finish)])
-                        finish_txt = keep_txts[2]
+                        finish_value = keep_txts[2]
                     else:
                         #違う次元がある場合は現在のインデックスを検索項目にする。
                         search_finish = keep_txts[0]
+                        finish_value = keep_txts[1]
 
                     while True:
                         #検索項目のインデックスが出てくるまで空白を挿入
                         index_len = self.MAX_indexlen[linenum]
 
                         if search_finish == self.MAX_index[linenum]:
-                            if  keep_txts[0] == 'finish':
-                                txt += finish_txt + ' '
+                        
+                            value_txt = str(finish_value)
+                            value_txt = (index_len[1] - len(value_txt)) * self.padding_value + value_txt
+
+                            if index_len[0] == 0:
+                                txt += value_txt + ' '
 
                             else:
-                            
-                                if index_len[0] == 0:
-                                    value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
-                                    txt += value + ' '
-
+                                if len(keep_txts) == 2:
+                                    key_empty   = index_len[0] * self.empty_key
+                                    txt += key_empty + self.empty_colon + value_txt + ' '
                                 else:
-                                    if len(keep_txts) == 2:
-                                        key_empty   = index_len[0] * self.empty_style
-                                        value_empty = index_len[1] * self.empty_style
-                                        txt += key_empty + ' : ' + value_empty + ' '
-                                    else:
-                                        key   = (index_len[0] - len(keep_txts[2])) * self.padding_style + str(keep_txts[2])
-                                        value = (index_len[1] - len(keep_txts[1])) * self.padding_style + str(keep_txts[1])
-                                        txt += key + ' : ' + value + ' '
-                                
+                                    key   = (index_len[0] - len(str(keep_txts[2]))) * self.padding_key + str(keep_txts[2])
+                                    txt += key + self.padding_colon + value_txt + ' '
+                            
                             break
                         else:
                             # 穴埋め時に他次元の情報が見つかったら、格納状況が異なる箇所として扱う
@@ -1478,14 +1484,12 @@ class SetPrint:
                             else:
                                 # 穴埋め時、格納状況が異なる箇所だった場合、空白ではなく '-' を挿入。
                                 if (linenum in noput_point) != True:
-
+                                    value_empty = index_len[1] * self.empty_value
                                     if index_len[0] == 0:
-                                        value = index_len[1] * self.empty_style
-                                        txt += value + ' '
+                                        txt += value_empty + ' '
                                     else:
-                                        key_empty   = index_len[0] * self.empty_style
-                                        value_empty = index_len[1] * self.empty_style
-                                        txt += key_empty + ' : ' + value_empty + ' '
+                                        key_empty   = index_len[0] * self.empty_key
+                                        txt += key_empty + self.empty_colon + value_empty + ' '
                                 else:
                                     del noput_point[noput_point.index(linenum)]
                                     txt += (index_len[1] * ' ') + ' '
@@ -1511,13 +1515,13 @@ class SetPrint:
                     if ((linenum + i) in noput_point) != True:
 
                         index_len = self.MAX_indexlen[linenum + i]
+                        value_empty = index_len[1] * self.empty_value
+
                         if index_len[0] == 0:
-                            value = index_len[1] * self.empty_style
-                            txt += value + ' '
+                            txt += value_empty + ' '
                         else:
-                            key_empty   = index_len[0] * self.empty_style
-                            value_empty = index_len[1] * self.empty_style
-                            txt += key_empty + ' : ' + value_empty + ' '
+                            key_empty = index_len[0] * self.empty_key
+                            txt += key_empty + self.empty_colon + value_empty + ' '
                     else:
 
                         del noput_point[noput_point.index(linenum + i)]

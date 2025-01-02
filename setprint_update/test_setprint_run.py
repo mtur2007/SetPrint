@@ -6,8 +6,8 @@
 
 # 実行コード
 import pickle
-from test_setprint_0_3_0 import SetPrint
-#from demo_setprint_0_3_0 import SetPrint
+#from test_setprint_0_3_0 import SetPrint
+from demo_setprint_0_3_0 import SetPrint
 
 import os
 
@@ -33,7 +33,7 @@ style_settings = (
                       'None'    : ( '`' , '`' )}}),
 
     ("empty"       , {  'key'   : (' ',':') ,  'value' : ' ' }),
-    ("padding"     , {  'key'   : ('*',' ') ,  'value' : '-' }),
+    ("padding"     , {  'key'   : ('*','`') ,  'value' : '-' }),
 
 
     ("settings"    , { 'print'  : True }),
@@ -72,15 +72,16 @@ if False:
 # データの作成
 test_data = [
     [0.0, 0.1, 0.2, 0.3],
-    {0: 0, 'one': 1, 'two': 2},
+    {(0,0): 0, 'one': 1, 'two': 2},
     {'zero': 0, 'frst': {'zero': 0, 'one': 1}, 2:2}
 ]
 
 # インスタンスを生成
 list_data = SetPrint(test_data)
 
+list_data.set_text_style(style_settings) # set_listの前
 # データの整形
-set_datas = list_data.set_list(guide=True,keep_start=1,keep_range='all')
+set_datas = list_data.set_list(guide=True,keep_start=2,keep_range=1)
 
 # 表示
 for line in set_datas['grid_slice']:
@@ -94,4 +95,4 @@ for line in set_datas['grid_slice']:
 #         f.write(line)
 
 # pick表示を行う
-#list_data.pick_guideprint(file_relative_access('./output_txtfile/pick_guide.txt'))
+list_data.pick_guideprint(file_relative_access('./output_txtfile/pick_guide.txt'))
