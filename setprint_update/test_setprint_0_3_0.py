@@ -62,7 +62,7 @@ def check_matching_elements(mapping_point, collection_index):
                     break  # 一致が途切れたら終了
 
             # 最大連続一致数を更新
-            if current_match_count > max_match_count:
+            if (len(row) == current_match_count) and (current_match_count > max_match_count):
                 max_match_count = current_match_count
                 max_match_index = row_index
 
@@ -537,6 +537,8 @@ class SetPrint:
 
                 #それぞれのラインに横枠をつける
                 list_index.append(dataline[0])
+                printline = sample_guide + str(dataline[0][0]) + '   '
+                
                 for linenum in range(len(dataline)-1):
                     line = dataline[linenum+1]
                     printline = sample_guide
@@ -546,9 +548,8 @@ class SetPrint:
 
                     writeline.append(printline)
 
+                linelen1 = len(sample_guide)+sum([len(str(line))+5 for line in dataline[0]])-2
                 
-                linelen1 = len(printline)
-
                 #横枠の作成...表示文字列列の以前の長さと現在の長さによって長さの基準を変える
                 if linelen0 > linelen1:
                     printlist.append(f"{'='*linelen0}\n")
@@ -658,7 +659,7 @@ class SetPrint:
         #初期化
         self.now_deep = 1 #now_deepはインデックスの次元測定
         self.now_index = [] # 調べている場所のインデックスを格納する。
-        self.now_key   = [] # now_indexに辞書型のキーが必要な箇所とキーを格納
+        self.now_key = [] # now_indexに辞書型のキーが必要な箇所とキーを格納
         self.Xline_blocks = []
         self.keep_txts_data = []
         self.keep_index = []
@@ -741,8 +742,7 @@ class SetPrint:
 
             keep_liens_data = [keep_liens_data]
 
-            txt_keep_index = self.now_index.copy()
-            txt_keep_index[-1] = 'n'
+            txt_keep_index = ['n']
             keep_Ylines_data.insert(0,[[txt_keep_index,max_indexlen]])
 
             All_blocks.insert(0,keep_liens_data)
@@ -751,7 +751,6 @@ class SetPrint:
         if self.ber_print:
             print('\033[F\033[F\033[KThe search_collection process has been successfully completed.\n' + '{ '+'='*self.ber_len+' }')
         
-        self.All_blocks = All_blocks
         set_border_list = self.blocks_border_print(All_blocks = All_blocks, line_title = line_title, guide = guide)
 
         set_data_dict = {
@@ -913,7 +912,7 @@ class SetPrint:
             value_datas = []
 
             mapping_point = []
-            mapping_key   = []
+            mapping_key = []
             self.keep_txts_data.append('')
 
             for linenum, (key, line) in enumerate(datas.items()):
@@ -1284,29 +1283,27 @@ class SetPrint:
                 print('\033[F\033[F\033[Kformat_keep_data...\n' + '{ '+'-'*self.ber_len+' }')
 
         # 取得し終えた、配列情報を、場所や長さで整える処理
-        format_txtdata = ['']
+        format_txtdata = []
         if len(datas) >= 1:
             format_txtdata,mismatch_indices = self.format_keep_data(keep_liens_data)
 
 
         # pick_guideprintで引き継ぐ 配列情報データから リストの '[', "]" 部分の情報を削除する
-        if self.MAX_indexlen[0][0] == 0:
-            total = self.MAX_indexlen[0][1] + 1
-            max_indexlen = [self.MAX_indexlen[0][1]]
-        else:
-            total = self.MAX_indexlen[0][0] + self.MAX_indexlen[0][1] +4
-            max_indexlen = [self.MAX_indexlen[0][0] + self.MAX_indexlen[0][1] +3]
         x_lens = [0]
+        total = 0
+        max_indexlen = []
+        for index_len in self.MAX_indexlen:
 
-        for datanum in range(len(self.MAX_indexlen)-1):
-            x_lens.append(total)
-            if self.MAX_indexlen[datanum+1][0] == 0:
-                total += self.MAX_indexlen[datanum+1][1] + 1
-                max_indexlen.append(self.MAX_indexlen[datanum+1][1])
+            if index_len[0] == 0:
+                total += index_len[1] + 1
+                max_indexlen.append(index_len[1])
             else:
-                total += self.MAX_indexlen[datanum+1][0] + self.MAX_indexlen[datanum+1][1] +4
-                max_indexlen.append(self.MAX_indexlen[datanum+1][0] + self.MAX_indexlen[datanum+1][1] +3)
+                total += index_len[0] + index_len[1] +4
+                max_indexlen.append(index_len[0] + index_len[1] +3)
+
+            x_lens.append(total)
         
+        del x_lens[-1]
 
         parent_index = self.now_index.copy()
         parent_index[-1] = 'n'
@@ -1316,8 +1313,7 @@ class SetPrint:
 
         del_MAXindex = self.MAX_index.copy()
         self.MAX_indexlen = max_indexlen
-        now_index = self.now_index[:-1]
-
+        
         diff = len(parent_index[:-1])
 
         for linenum in range(len(self.MAX_index)-1):
@@ -1425,11 +1421,11 @@ class SetPrint:
 
                     else:
                         if len(keep_txts) == 2:
-                            key_empty   = index_len[0] * self.empty_key
+                            key_empty = index_len[0] * self.empty_key
                             value = (index_len[1] - len(keep_txts[1])) * self.padding_value + str(keep_txts[1])
                             txt += key_empty + self.empty_colon + value + ' '
                         else:
-                            key   = (index_len[0] - len(str(keep_txts[2]))) * self.padding_key + str(keep_txts[2])
+                            key = (index_len[0] - len(str(keep_txts[2]))) * self.padding_key + str(keep_txts[2])
                             value = (index_len[1] - len(keep_txts[1])) * self.padding_value + str(keep_txts[1])
                             txt += key + self.padding_colon + value + ' '
 
@@ -1462,10 +1458,10 @@ class SetPrint:
 
                             else:
                                 if len(keep_txts) == 2:
-                                    key_empty   = index_len[0] * self.empty_key
+                                    key_empty = index_len[0] * self.empty_key
                                     txt += key_empty + self.empty_colon + value_txt + ' '
                                 else:
-                                    key   = (index_len[0] - len(str(keep_txts[2]))) * self.padding_key + str(keep_txts[2])
+                                    key = (index_len[0] - len(str(keep_txts[2]))) * self.padding_key + str(keep_txts[2])
                                     txt += key + self.padding_colon + value_txt + ' '
                             
                             break
@@ -1488,7 +1484,7 @@ class SetPrint:
                                     if index_len[0] == 0:
                                         txt += value_empty + ' '
                                     else:
-                                        key_empty   = index_len[0] * self.empty_key
+                                        key_empty = index_len[0] * self.empty_key
                                         txt += key_empty + self.empty_colon + value_empty + ' '
                                 else:
                                     del noput_point[noput_point.index(linenum)]
@@ -1544,39 +1540,61 @@ class SetPrint:
 
     def Block_GuidePrint(self, y,x,gx,gy):
 
-        self.y = abs(self.y % len(self.block_keep_data))
-        self.x = abs(self.x % len(self.block_keep_data[self.y]))
-
-        y,x = self.y,self.x
+        y = abs(self.y % len(self.block_keep_data))
+        x = abs(self.x % len(self.block_keep_data[y]))
+        if y == 0:
+            self.y = 0
+        if x == 0:
+            self.x = 0
+        
         k_data = self.block_keep_data[y][x]
-   
+
+        y_lens = len(self.block[y][x])-1
+
+        if y_lens == 0:
+
+            guide_index = ''
+            no_color_ver = ''
+            for line in k_data[0][:-1]:
+                guide_index += f'[\033[38;2;127;82;0m{str(line)}\033[0m]'
+                no_color_ver += '['+str(line)+']'
+                
+            # 行1を更新
+            print("\033[F\033[F\033[Kindex \\ " + guide_index)
+            # 行2を更新
+            print(' value \\ \033[K'+'\033[1;32m_no_in_data_\033[30m'+'\033[0m')
+
+            with open(self.output_path ,'w') as f:
+                f.write('{guide}' + no_color_ver + '\n\n')
+
+            return
+
         if len(k_data) == 6:
-            y_lens = len(self.block[y][x])-1
             class_index = k_data[0][:-1]
             indexs = k_data[1]
             x_lens = k_data[2]
             positions = k_data[3]
             mapping_point = k_data[4]
-            mapping_key   = k_data[5]
+            mapping_key = k_data[5]
 
         elif len(k_data) >= 2:
-            y_lens = len(self.block[y][x])-1
             class_index = k_data[0][:-1]
             indexs = [[]]
             x_lens = [k_data[1]]
             positions = [0]
             if len(k_data) == 4:
                 mapping_point = k_data[2]
-                mapping_key   = k_data[3]
-            
+                mapping_key = k_data[3]
             else:
                 mapping_point = []
-                mapping_key   = []
-
-
-
-        gx = abs(gx%len(positions))
+                mapping_key = []
+        
         gy = abs(gy%y_lens)
+        gx = abs(gx%len(positions))
+        if gx == 0:
+            self.gx = 0
+        if gy == 0:
+            self.gy = 0
 
         guide_index = ''
         no_color_ver = ''
@@ -1651,7 +1669,7 @@ class SetPrint:
         write_txt[gy+1] = line[:start] +'  '+ line[start+2:finish+2] + '  ' + line[finish+4:]
 
         line = write_txt[gy+2]
-        write_txt[gy+2] =  line[:start] +' ┗'+ x_lens[gx]*' ' +'┛ '+ line[finish+4:]
+        write_txt[gy+2] = line[:start] +' ┗'+ x_lens[gx]*' ' +'┛ '+ line[finish+4:]
 
 
         with open(self.output_path ,'w') as f:
@@ -1675,25 +1693,25 @@ class SetPrint:
             
             key = key.char
 
-
-            if key == 'a':
-                self.gx -= 1
-            elif key == 'd':
-                self.gx += 1
-            elif key == 'w':
-                self.gy -= 1
-            elif key == 's':
-                self.gy += 1
-
-            elif key == 'f':
-                self.x -= 1
-            elif key == 'h':
-                self.x += 1
-            elif key == 't':
-                self.y -= 1
-            elif key == 'g':
-                self.y += 1
-
+            if key in ('w','s','a','d'):
+                if key == 'w':
+                    self.gy -= 1
+                elif key == 's':
+                    self.gy += 1
+                elif key == 'a':
+                    self.gx -= 1
+                elif key == 'd':
+                    self.gx += 1
+            else:
+                if key == 't':
+                    self.y -= 1
+                elif key == 'g':
+                    self.y += 1
+                elif key == 'f':
+                    self.x -= 1
+                elif key == 'h':
+                    self.x += 1
+                
             self.Block_GuidePrint(self.y,self.x,self.gx,self.gy)
 
 

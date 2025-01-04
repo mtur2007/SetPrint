@@ -6,6 +6,7 @@
 
 # 実行コード
 import pickle
+import numpy as np
 #from test_setprint_0_3_0 import SetPrint
 from demo_setprint_0_3_0 import SetPrint
 
@@ -21,22 +22,22 @@ style_settings = (
 
    (("Collections" ,
      {  'image'   : { 'list'    : '►list' ,
-                      'tuple'   : '▷tuple' ,
-                      'ndarray' : '>nadarray' ,
+                      'tuple'   : '▷tupl' ,
+                      'ndarray' : '>Ndry' ,
                       'dict'    : '◆dect'}}),
 
     ("bracket"     ,
-     { 'partially': { 'list'    : ( '｢' , '｣' ),
+     { 'partially': { 'list'    : ( '\\' , '/' ),
                       'tuple'   : ( '<' , '>' ),
-                      'ndarray' : ( '(' , '}' ),
-                      'dict'    : ( '/' , '/' ),
+                      'ndarray' : ( '≤' , '≥' ),
+                      'dict'    : ( '{' , ')' ),
                       'None'    : ( '`' , '`' )}}),
 
     ("empty"       , {  'key'   : (' ',':') ,  'value' : ' ' }),
     ("padding"     , {  'key'   : ('*','`') ,  'value' : '-' }),
 
 
-    ("settings"    , { 'print'  : True }),
+    ("settings"    , { 'print'  : False }),
     ("progress"    , { 'print'  : False  ,
                        'len'    : 20  }))
 )
@@ -70,18 +71,30 @@ if False:
     # set_datas = list_data.set_list(guide=True,keep_start=1,keep_range='all') 
 
 # データの作成
-test_data = [
-    [0.0, 0.1, 0.2, 0.3],
-    {(0,0): 0, 'one': 1, 'two': 2},
-    {'zero': 0, 'frst': {'zero': 0, 'one': 1}, 2:2}
-]
+# test_data = [
+#     [
+#     [0.0, 0.1, 0.2, 0.3, ],
+#     {(0,0): [], 'one': 1, 'two': 2},
+#     {'zero': 0, 'frst': {'zero': 0, 'one': 1}, 2:2}],
+
+#     {
+#      'list' :[0.0, 0.1, 0.2, 0.3, ],
+#      'tuple':{(0,0): [], 'one': 1, 'two': 2},
+#      'dict' :{'zero': 0, 'frst': {'zero': 0, 'one': 1}, 2:2}}
+
+# ]
+
+# n = np.ndarray(0)
+# test_data = [[[],[]],[n,n],[(),()],[{},{}],[{}]]
+
+test_data = []
 
 # インスタンスを生成
 list_data = SetPrint(test_data)
 
 list_data.set_text_style(style_settings) # set_listの前
 # データの整形
-set_datas = list_data.set_list(guide=True,keep_start=2,keep_range=1)
+set_datas = list_data.set_list(guide=True,keep_start=1,keep_range='all')
 
 # 表示
 for line in set_datas['grid_slice']:
