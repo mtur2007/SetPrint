@@ -1,5 +1,5 @@
 # / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test /
-print('\n'+'/ \033[38;2;255;165;0m\033[1mtest\033[0m / \033[38;5;27mtest\033[0m '*10+'/\n')
+# print('\n'+'/ \033[38;2;255;165;0m\033[1mtest\033[0m / \033[38;5;27mtest\033[0m '*10+'/\n')
 
 # setpirnt (ver 0.3.0)
 
@@ -14,6 +14,67 @@ def Myint(num):
         if num[line] == ".":
             return int(num[:line])
     return int(num)
+
+'''
+=============================================================================================================================================================
+・配列の下調べ・簡易的なアクセスを行う関数
+'''
+
+# 配列の文字列、数列がどこの次元に位置しているかを調べる関数。(オート機能の処理)
+def check_matching_elements(mapping_point, collection_index):
+
+    max_match_count = 0  # 最大連続一致数
+    max_match_index = -1  # 最大連続一致数を持つ1次元目のインデックス
+
+    collection_len = len(collection_index)
+
+    for row_index, row in enumerate(mapping_point):
+        current_match_count = 0  # 現在の行での連続一致数
+        if collection_len >= len(row):
+            for i, elem in enumerate(row):
+                if i < len(collection_index) and elem == collection_index[i]:
+                    current_match_count += 1  # 一致した場合カウントを増やす
+                else:
+                    break  # 一致が途切れたら終了
+
+            # 最大連続一致数を更新
+            if (len(row) == current_match_count) and (current_match_count > max_match_count):
+                max_match_count = current_match_count
+                max_match_index = row_index
+
+    return max_match_index  # 最大連続一致数を持つ行のインデックス
+
+# リストに格納されている最大要素数とその次元を求める関数
+def find_max_elements_and_level(data, depth=0, level_counts=None):
+    """
+    Find the maximum number of elements and the corresponding depth in a nested list.
+
+    Args:
+        data (list): The nested list to analyze.
+        depth (int): The current depth in the recursion (default is 0).
+        level_counts (dict): A dictionary to track the number of elements at each depth.
+
+    Returns:
+        tuple: (max_count, max_depth) where:
+               - max_count is the maximum number of elements.
+               - max_depth is the depth at which max_count was found.
+    """
+    if level_counts is None:
+        level_counts = {}
+
+    if isinstance(data, (list,tuple,np.ndarray)):
+        # Count elements at the current depth
+        level_counts[depth] = level_counts.get(depth, 0) + len(data)
+
+        # Recursively check sublists
+        for item in data:
+            find_max_elements_and_level(item, depth + 1, level_counts)
+
+    # Find the depth with the maximum count
+    max_depth = max(level_counts, key=level_counts.get)
+    max_count = level_counts[max_depth]
+
+    return max_count, max_depth
 
 # 配列の値にインデックスを格納したリスト配列を使ってアクセスする
 def access_nested_collection(nested_list,indices):
@@ -44,30 +105,7 @@ def access_nested_collection(nested_list,indices):
         value = nested_list
         return value
 
-# 配列の文字列、数列がどこの次元に位置しているかを調べる関数。(オート機能の処理)
-def check_matching_elements(mapping_point, collection_index):
-
-    max_match_count = 0  # 最大連続一致数
-    max_match_index = -1  # 最大連続一致数を持つ1次元目のインデックス
-
-    collection_len = len(collection_index)
-
-    for row_index, row in enumerate(mapping_point):
-        current_match_count = 0  # 現在の行での連続一致数
-        if collection_len >= len(row):
-            for i, elem in enumerate(row):
-                if i < len(collection_index) and elem == collection_index[i]:
-                    current_match_count += 1  # 一致した場合カウントを増やす
-                else:
-                    break  # 一致が途切れたら終了
-
-            # 最大連続一致数を更新
-            if (len(row) == current_match_count) and (current_match_count > max_match_count):
-                max_match_count = current_match_count
-                max_match_index = row_index
-
-    return max_match_index  # 最大連続一致数を持つ行のインデックス
-
+#------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # 配列の型変換を行う関数
 # tuple,dict > list, dict
@@ -94,6 +132,7 @@ def convert_tuple_to_list(data):
     else:
         # 基本データ型はそのまま返す
         return data
+    
 # list, dict ▷ tuple,dict
 def convert_list_to_tuple(data):
     """
@@ -124,7 +163,7 @@ def convert_list_to_tuple(data):
 ・初歩的な整列
 '''
 
-#リストに格納されている情報を文字とみて整列させる関数(main)
+# リストに格納されている情報を文字とみて整列させる関数(main)
 def set_txt(txtslist,mode,position):
 
     if mode == 0:
@@ -198,7 +237,7 @@ def set_txt(txtslist,mode,position):
 
         return txtslist#[:-1]
 
-#リストに格納されている情報を文字とみて整列させる関数(引数処理)
+# リストに格納されている情報を文字とみて整列させる関数(引数処理)
 def set_txts(txtslist,mode,position):
 
     if isinstance(txtslist[0], list) == False:
@@ -216,46 +255,12 @@ def set_txts(txtslist,mode,position):
 
     return txtslist
 
-#------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-#リストに格納されている最大要素数とその次元を求める関数
-def find_max_elements_and_level(data, depth=0, level_counts=None):
-    """
-    Find the maximum number of elements and the corresponding depth in a nested list.
-
-    Args:
-        data (list): The nested list to analyze.
-        depth (int): The current depth in the recursion (default is 0).
-        level_counts (dict): A dictionary to track the number of elements at each depth.
-
-    Returns:
-        tuple: (max_count, max_depth) where:
-               - max_count is the maximum number of elements.
-               - max_depth is the depth at which max_count was found.
-    """
-    if level_counts is None:
-        level_counts = {}
-
-    if isinstance(data, (list,tuple,np.ndarray)):
-        # Count elements at the current depth
-        level_counts[depth] = level_counts.get(depth, 0) + len(data)
-
-        # Recursively check sublists
-        for item in data:
-            find_max_elements_and_level(item, depth + 1, level_counts)
-
-    # Find the depth with the maximum count
-    max_depth = max(level_counts, key=level_counts.get)
-    max_count = level_counts[max_depth]
-
-    return max_count, max_depth
-
 '''
 =============================================================================================================================================================
-ブロック状の配列にボーダーをつけ見やすくする関数。
+・配列のフラット化
 '''
 
-#1次元配列毎の2次元配列部分を1列ごとに整列させる関数
+# 3次元配列を2次元にフラット化する関数
 def slice_blocks(datas,mode):
 
     if isinstance(datas[0][0], list) == False:
@@ -313,11 +318,12 @@ def slice_blocks(datas,mode):
 
 '''
 =============================================================================================================================================================
-リストを整列させるクラス。
+配列をフラット化・整形するクラス
 '''
 
 class SetPrint:
 
+    # 初期化
     def __init__(self, input_list):
 
         self.input_list = input_list
@@ -326,6 +332,7 @@ class SetPrint:
         self.str_type = (str)
         self.sequence_type = (list,tuple,np.ndarray)
         self.mapping_type = (dict)
+        #self.collection_type = self.sequence_type+self.mapping_type
 
         # 入力データ('#'は引数の受け取り箇所)
         self.style_settings = (
@@ -380,6 +387,7 @@ class SetPrint:
         
         }
    
+    # 表示スタイルの状態を視覚化する関数 
     def set_text_style(self,arguments):
         self.style_settings = convert_tuple_to_list(self.style_settings)
         self.update_data_with_arguments(arguments, current_index=())
@@ -424,7 +432,8 @@ class SetPrint:
             ]
             for line in list_settings:
                 print(line)
-        
+    
+    # 表示スタイルの変更を行う関数
     def update_data_with_arguments(self, arguments, current_index=()):
 
         if isinstance(arguments, self.mapping_type):
@@ -485,9 +494,9 @@ class SetPrint:
 
     '''
     =============================================================================================================================================================
-    ブロック状の配列にボーダーをつけ見やすくする関数。
+    ・ブロック状の配列にボーダーをつけ見やすくする関数。
     '''
-
+    # ボーダーを追加する関数
     def blocks_border_print(self, **kwargs):
 
         #引数チェック
@@ -621,11 +630,13 @@ class SetPrint:
     '''
     =============================================================================================================================================================
     ・リストの中身やインデックスを調査し、整列させる関数。
+    [→]...通常の関数
+    [↺]...再帰関数
+    [_:n]...関数の番号
     '''
 
-    # リストを整列する際の条件を整理
-    # １次元毎にブロックを一段ずらす為、１次元までこの関数で処理し、以降は search_mapping / search_sequence で調査。
-    # 中身は search_mapping / search_sequence とほぼ同じ
+    # リストを整型する際の条件を整理 / １次元目の格納情報を整形 [→:#0]
+    # [→:0] 中身は search_mapping / search_sequence とほぼ同じ
     def set_list(self, guide,keep_start,keep_range):
 
         datas = self.input_list
@@ -767,7 +778,7 @@ class SetPrint:
 
         return set_data_dict
  
-    # マッピング型を調べる
+    # [↺:1] マッピング型を調べる
     def search_mapping(self, datas):
         
         self.now_deep += 1 #deepはインデックスの次元測定
@@ -804,54 +815,33 @@ class SetPrint:
                 
                 if isinstance(line, self.sequence_type):
                     
-                    collections_txt = self.collections[str(type(line).__name__)][0]
-
-                    if (insert_index in self.MAX_index) == False:
-                        self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append([len(str(key)),len(collections_txt)])
-                    else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(str(key)):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(str(key))
-
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
-
-                    self.keep_1line_data.append([insert_index,collections_txt,key])
+                    value_txt = self.collections[str(type(line).__name__)][0]
+                    self.keep_1line_data.append([insert_index,value_txt,key])
                     
                     self.search_sequence(line)
 
                 elif isinstance(line, self.mapping_type):
                     
-                    collections_txt = self.collections[str(type(line).__name__)][0]
-
-                    if (insert_index in self.MAX_index) == False:
-                        self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append([len(str(key)),len(collections_txt)])
-                    else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(str(key)):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(str(key))
-
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(collections_txt):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(collections_txt)
-
-                    self.keep_1line_data.append([insert_index,collections_txt,key])
+                    value_txt = self.collections[str(type(line).__name__)][0]
+                    self.keep_1line_data.append([insert_index,value_txt,key])
                     
                     self.search_mapping(line)
 
                 else:
-                    txt_line = str(line)
+                    value_txt = str(line)
+                    self.keep_1line_data.append([insert_index,value_txt,key])
+                
+                #存在するインデックスの情報の新規作成/更新
+                if (insert_index in self.MAX_index) == False:
+                    self.MAX_index.append(insert_index)
+                    self.MAX_indexlen.append([len(str(key)),len(value_txt)])
+                else:
+                    if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(str(key)):
+                        self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(str(key))
 
-                    if (insert_index in self.MAX_index) == False:
-                        self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append([len(str(key)),len(txt_line)])
-                    else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(str(key)):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(str(key))
+                    if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(value_txt):
+                        self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(value_txt)
 
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(txt_line):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
-
-                    self.keep_1line_data.append([insert_index,txt_line,key])
             
             insert_index = self.keep_index.copy()
             insert_index[-1] += 1
@@ -954,7 +944,7 @@ class SetPrint:
 
         self.now_deep -= 1
 
-    # シーケンス型を調べる
+    # [↺:2] シーケンス型を調べる
     def search_sequence(self, datas):
 
         self.now_deep += 1 #deepはインデックスの次元測定
@@ -989,18 +979,12 @@ class SetPrint:
                 self.keep_index[-1] = linenum
                 self.now_index[-1] = linenum
 
+                insert_index = self.keep_index.copy()
+
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
-                    insert_index = self.keep_index.copy()
-                    collections_txt = self.collections[str(type(line).__name__)]
-
-                    if (insert_index in self.MAX_index) == False:
-                        self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append([0,collections_txt[1]])
-                    else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < collections_txt[1]:
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = collections_txt[1]
-
-                    self.keep_1line_data.append([insert_index,collections_txt[0]])
+                    
+                    value_txt = self.collections[str(type(line).__name__)][0]
+                    self.keep_1line_data.append([insert_index,value_txt[0]])
                     
                     if type(line) == dict:
                         self.search_mapping(line)
@@ -1008,18 +992,17 @@ class SetPrint:
                         self.search_sequence(line)
 
                 else:
-                    txt_line = str(line)
                     
-                    insert_index = self.keep_index.copy()
-
-                    if (insert_index in self.MAX_index) == False:
-                        self.MAX_index.append(insert_index)
-                        self.MAX_indexlen.append([0,len(txt_line)])
-                    else:
-                        if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(txt_line):
-                            self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(txt_line)
-
-                    self.keep_1line_data.append([insert_index,txt_line])
+                    value_txt = str(line)
+                    self.keep_1line_data.append([insert_index,value_txt])
+                                
+                #存在するインデックスの情報の新規作成/更新
+                if (insert_index in self.MAX_index) == False:
+                    self.MAX_index.append(insert_index)
+                    self.MAX_indexlen.append([0,len(value_txt)])
+                else:
+                    if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(value_txt):
+                        self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(value_txt)
 
 
             insert_index = self.keep_index.copy()
@@ -1109,7 +1092,7 @@ class SetPrint:
         del self.now_index[-1] #インデックスの調査が終わったら戻す
         self.now_deep -= 1
 
-    # キープデータの初期化/作成
+    # [→:3] キープデータの初期化/作成
     def keep_setup(self,datas,txt_index):
         
 
@@ -1169,51 +1152,31 @@ class SetPrint:
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
                     
                     self.keep_1line_data = [] #1列の配列情報を格納するリスト
-                    collections_txt = self.collections[str(type(line).__name__)][0]
-                    
-                    #存在するインデックスの情報の新規作成/更新
-                    """
-                    self.MAX_indexlen
-                    シーケンス型,   数列型の場合は int_len, flot_len
-                        ``    , 文字列型の場合は txt_len の更新
-                    """
-                    if (self.keep_index in self.MAX_index) == False:
-                        self.MAX_index.append(self.keep_index.copy())
-                        self.MAX_indexlen.append([len(str(key)),len(collections_txt)])
-                    else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(str(key)):
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(str(key))
+                    value_txt = self.collections[str(type(line).__name__)][0]
+                    self.keep_1line_data.append([self.keep_index,value_txt,key])
 
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(collections_txt):
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(collections_txt)
-
-                    self.keep_1line_data.append([self.keep_index,collections_txt,key])
-
+                    # 以降の格納要素についてのキープデータ作成は search_ mapping,sequence 関数を使用する。
                     if type(line) == dict:
                         self.search_mapping(line)
                     else:
-                        #リストだった場合、またこのメソッドが呼び出される。
                         self.search_sequence(line)
                 
                     keep_liens_data.append(self.keep_1line_data)
                 
                 else:
-                    txt_line = str(line)
-         
-                    #存在するインデックスの情報の新規作成/更新
-                    if (self.keep_index in self.MAX_index) == False:
-                        self.MAX_index.append(self.keep_index.copy())
-                        self.MAX_indexlen.append([len(str(key)),len(txt_line)])
-                    else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(str(key)):
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(str(key))
-
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(txt_line):
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(txt_line)
-                    
-
-                    keep_liens_data.append([[self.keep_index,txt_line,key]])
+                    value_line = str(line)
+                    keep_liens_data.append([[self.keep_index,value_line,key]])
                 
+                #存在するインデックスの情報の新規作成/更新
+                if (self.keep_index in self.MAX_index) == False:
+                    self.MAX_index.append(self.keep_index.copy())
+                    self.MAX_indexlen.append([len(str(key)),len(value_txt)])
+                else:
+                    if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(str(key)):
+                        self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(str(key))
+
+                    if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(value_txt):
+                        self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(value_txt)
 
                 # ber_print(2)
                 if self.ber_print:
@@ -1233,43 +1196,28 @@ class SetPrint:
 
                     self.keep_1line_data = [] #1列の配列情報を格納するリスト
 
-                    collections_txt = self.collections[str(type(line).__name__)]
-                    
-                    #存在するインデックスの情報の新規作成/更新
-                    """
-                    self.MAX_indexlen
-                    シーケンス型,   数列型の場合は int_len, flot_len
-                        ``    , 文字列型の場合は txt_len の更新
-                    """
-                    if (self.keep_index in self.MAX_index) == False:
-                        self.MAX_index.append(self.keep_index.copy())
-                        self.MAX_indexlen.append([0,collections_txt[1]])
-                    else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < collections_txt[1]:
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = collections_txt[1]
+                    value_txt = self.collections[str(type(line).__name__)]
+                    self.keep_1line_data.append([self.keep_index,value_txt[0]])
 
-                    self.keep_1line_data.append([self.keep_index,collections_txt[0]])
-
+                    # 以降の格納要素についてのキープデータ作成は search_ mapping,sequence 関数を使用する。
                     if type(line) == dict:
                         self.search_mapping(line)
                     else:
-                        #リストだった場合、またこのメソッドが呼び出される。
                         self.search_sequence(line)
             
                     keep_liens_data.append(self.keep_1line_data)
 
                 else:
-                    txt_line = str(line)
-
-                    #存在するインデックスの情報の新規作成/更新
-                    if (self.keep_index in self.MAX_index) == False:
-                        self.MAX_index.append(self.keep_index.copy())
-                        self.MAX_indexlen.append([0,len(txt_line)])
-                    else:
-                        if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(txt_line):
-                            self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(txt_line)
-
-                    keep_liens_data.append([[self.keep_index,txt_line]])
+                    value_txt = str(line)
+                    keep_liens_data.append([[self.keep_index,value_txt]])
+                
+                #存在するインデックスの情報の新規作成/更新
+                if (self.keep_index in self.MAX_index) == False:
+                    self.MAX_index.append(self.keep_index.copy())
+                    self.MAX_indexlen.append([0,value_txt[1]])
+                else:
+                    if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < value_txt[1]:
+                        self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = value_txt[1]
                 
                 # ber_print(2)
                 if self.ber_print:
@@ -1376,7 +1324,7 @@ class SetPrint:
 
         self.keep_txts_data[insert_index] = [parent_index,del_MAXindex,self.MAX_indexlen,x_lens,self.mapping_point,self.mapping_key]       
   
-    # キープデータの整形
+    # [→:4] キープデータの整形
     def format_keep_data(self,keep_liens_data):
             
         '''
@@ -1535,9 +1483,10 @@ class SetPrint:
 
     '''
     =============================================================================================================================================================
-    set_listで大まかなガイドが表示されるが、さらに詳しい格納情報を見ることが出来るようにする関数。
+    ・set_listで大まかなガイドが表示されるが、さらに詳しい格納情報を見ることが出来るようにする関数。
     '''
 
+    # ブロック状の整形データにアクセスし、詳細を出力する関数
     def Block_GuidePrint(self, y,x,gx,gy):
 
         y = abs(self.y % len(self.block_keep_data))
@@ -1688,6 +1637,7 @@ class SetPrint:
             #     for line in keep_data:
             #         f.write(str(line)+'\n')
 
+    # 入力キーに応じて ブロック間の場所(y,x)とブロック内の場所(gy,gx) の値を処理する関数
     def on_press(self, key):
         try:
             
@@ -1720,6 +1670,7 @@ class SetPrint:
                 # ESC キーが押された場合に終了
                 return False
 
+    # 位置の初期化とキーボードのリスナーを開始する関数
     def pick_guideprint(self, output_path):
 
         # リスト内包表記を使って、キーに対応する値を取り出す
