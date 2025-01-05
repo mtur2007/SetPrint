@@ -633,6 +633,14 @@ class SetPrint:
     [→]...通常の関数
     [↺]...再帰関数
     [_:n]...関数の番号
+
+    (P:n)...search_  処理の重要箇所
+     - (P:0); キープ無しでブロック化
+        # キープ範囲外の単独でのブロック化 ( ***** {キープ範囲} ##### )
+        # ^^^ の処理                  [ ^^^^^            ^^^^^ ]
+
+     - (P:1); キープブロック化 (キープデータの初期化)
+     - (P:2); キープブロック化 (キープデータへ格納情報を格納)
     '''
 
     # リストを整型する際の条件を整理 / １次元目の格納情報を整形 [→:#0]
@@ -705,7 +713,7 @@ class SetPrint:
             print('seach_collection...')
             print('{ '+' '*self.ber_len+' }')
 
-
+        # (P:1)
         if self.keep_start == self.now_deep:
 
             self.keep_setup(datas,'{n}')
@@ -713,7 +721,7 @@ class SetPrint:
             All_blocks = [self.Xline_blocks]
             line_title = ['']
             
-
+        # (P:0)
         else:
             line_title = ['']
             max_indexlen = 0
@@ -783,7 +791,8 @@ class SetPrint:
         
         self.now_deep += 1 #deepはインデックスの次元測定
 
-        # キープ範囲内にある次元のリスト配列から情報を取得する。
+        # (P:2)
+        # キープ範囲内にある次元の配列から情報を取得する。
         if self.keep_start < self.now_deep <= (self.now_deep if self.show_all else self.keep_finish):
             
             self.keep_index.append(-1)
@@ -865,10 +874,10 @@ class SetPrint:
 
             del self.keep_index[-1]
         
-        
+        # (P:1)
         # キープする次元と現在の次元が同じなら、キープ用の処理に移る。
         elif self.keep_start == self.now_deep:
-        
+
             txt_index = ''
             for i in self.now_index:
                 txt_index += '['+str(i)+']'
@@ -876,6 +885,7 @@ class SetPrint:
             
             self.keep_setup(datas,txt_index)
 
+        # (P:0)
         else:
 
             txt_index = ''
@@ -949,9 +959,10 @@ class SetPrint:
 
         self.now_deep += 1 #deepはインデックスの次元測定
 
-        # キープ範囲内にある次元のリスト配列から情報を取得する。
+        # (P:2)
+        # キープ範囲内にある次元の配列から情報を取得する。
         if self.keep_start < self.now_deep <= (self.now_deep if self.show_all else self.keep_finish):
-            
+    
             insert_index = len(self.Xline_blocks)-1
             
             self.keep_index.append(-1)
@@ -1030,7 +1041,7 @@ class SetPrint:
 
             del self.keep_index[-1]
         
-        
+        # (P:1)
         # キープする次元と現在の次元が同じなら、キープ用の処理に移る。
         elif self.keep_start == self.now_deep:
         
@@ -1041,6 +1052,7 @@ class SetPrint:
             
             self.keep_setup(datas,txt_index)
 
+        # (P:0)
         else:
 
             txt_index = ''
@@ -1092,7 +1104,7 @@ class SetPrint:
         del self.now_index[-1] #インデックスの調査が終わったら戻す
         self.now_deep -= 1
 
-    # [→:3] キープデータの初期化/作成
+    # [→:3] キープデータの初期化/作成後の後処理
     def keep_setup(self,datas,txt_index):
         
 
