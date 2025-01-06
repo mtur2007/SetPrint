@@ -824,32 +824,38 @@ class SetPrint:
                 
                 if isinstance(line, self.sequence_type):
                     
-                    value_txt = self.collections[str(type(line).__name__)][0]
-                    self.keep_1line_data.append([insert_index,value_txt,key])
+                    value = self.collections[str(type(line).__name__)][0]
+                    self.keep_1line_data.append([insert_index,value,key])
                     
                     self.search_sequence(line)
 
                 elif isinstance(line, self.mapping_type):
                     
-                    value_txt = self.collections[str(type(line).__name__)][0]
-                    self.keep_1line_data.append([insert_index,value_txt,key])
+                    value = self.collections[str(type(line).__name__)][0]
+                    self.keep_1line_data.append([insert_index,value,key])
                     
                     self.search_mapping(line)
 
                 else:
-                    value_txt = str(line)
-                    self.keep_1line_data.append([insert_index,value_txt,key])
+                    value = line
+                    self.keep_1line_data.append([insert_index,value,key])
                 
                 #存在するインデックスの情報の新規作成/更新
                 if (insert_index in self.MAX_index) == False:
                     self.MAX_index.append(insert_index)
-                    self.MAX_indexlen.append([len(str(key)),len(value_txt)])
+                    if isinstance(value,self.int_type):
+                        int_len = len(str(int(value)))
+                        float_len = (str(value))-int_len # 小数点を含める
+                        self.MAX_indexlen.append([len(str(key)),len(value),int_len,float_len])
+                    else:
+                        self.MAX_indexlen.append([len(str(key)),len(value),0,0])
                 else:
-                    if self.MAX_indexlen[self.MAX_index.index(insert_index)][0] < len(str(key)):
-                        self.MAX_indexlen[self.MAX_index.index(insert_index)][0] = len(str(key))
+                    insert_index = self.MAX_index.index(insert_index)
+                    if self.MAX_indexlen[insert_index][0] < len(str(key)):
+                        self.MAX_indexlen[insert_index][0] = len(str(key))
 
-                    if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(value_txt):
-                        self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = len(value_txt)
+                    if self.MAX_indexlen[insert_index][1] < len(value):
+                        self.MAX_indexlen[insert_index][1] = len(value)
 
             
             insert_index = self.keep_index.copy()
