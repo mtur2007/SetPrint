@@ -7,10 +7,9 @@
 # 実行コード
 import pickle
 import numpy as np
-#from maintenance_setprint import SetPrint
-#from demo_setprint_0_3_0 import SetPrint
 
-from re_set import SetPrint
+from maintenance_setprint import SetPrint
+
 
 import os
 
