@@ -1,7 +1,9 @@
-{guide}       >                >                 >            >        ▼[1]{0}[list][1][1]
+{guide}              ▼{1}
 
-       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ┏       ┓ ━━━━━━━━━━━━━━━━━━
-         list : ►list [ ****** `   0.0 ` ` **** `   0.1 ` **** ` -  *** ` -  ` *** ` 0.2 0.3 ] 
-       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ┗       ┛ ━━━━━━━━━━━━━━━━━━
-        tuple : ◆dect { (0, 0) : ►list \ /  one :     1 ` **** ` -  *** ` -  ` two :   2 --- } 
-         dict : ◆dect {   zero :     0 ` ` frst : ◆dect { zero : 0  one : 1  )   2 :   2 --- } 
+         data_type: <class 'list'> 
+        ┏                         ┓ 
+         data_type: <class 'list'>  
+        ┗                         ┛ 
+         data_type: <class 'list'> 
+         data_type: <class 'list'> 
+         data_type: <class 'list'> 

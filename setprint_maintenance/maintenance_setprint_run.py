@@ -7,8 +7,10 @@
 # 実行コード
 import pickle
 import numpy as np
-from test_setprint_0_3_0 import SetPrint
+#from maintenance_setprint import SetPrint
 #from demo_setprint_0_3_0 import SetPrint
+
+from re_set import SetPrint
 
 import os
 
@@ -85,9 +87,8 @@ test_data = [
 ]
 
 # n = np.ndarray(0)
-# test_data = [[[],[]],[n,n],[(),()],[{},{}],[{}]]
+test_data = [[[],[]],[],[((0,(0,(0,0)),0)),((10,[0,0],0))],[('aafdrgf'),('►list')],[{}]]
 
-test_data = [[[],[]],[],[(('zero',(0,0),0)),((10,[0,0],0))],[(),()],[{}]]
 # test_data = []
 
 # インスタンスを生成
@@ -95,11 +96,11 @@ list_data = SetPrint(test_data)
 
 list_data.set_text_style(style_settings) # set_listの前
 # データの整形
-set_datas = list_data.set_list(guide=True,keep_start=3,keep_range='all')
+set_datas = list_data.set_list(guide=True,keep_start=2,keep_range='all')
 
-# 表示
-for line in set_datas['grid_slice']:
-    print(line[:-1])
+# # 表示
+# for line in set_datas['grid_slice']:
+#     print(line[:-1])
 
 # # スクリプトが存在するディレクトリを基準にする
 # set_data_write = file_relative_access('./output_txtfile/set_data.txt')
@@ -109,4 +110,4 @@ for line in set_datas['grid_slice']:
 #         f.write(line)
 
 # pick表示を行う
-list_data.pick_guideprint(file_relative_access('./output_txtfile/pick_guide.txt'))
+#list_data.pick_guideprint(file_relative_access('./output_txtfile/pick_guide.txt'))

@@ -643,6 +643,50 @@ class SetPrint:
      - (P:2); キープブロック化 (キープデータへ格納情報を格納)
     '''
 
+    def maintenance_run(self,run_title, *data):
+
+        if run_title == '初期化':
+            self.parent_len = 0
+            self.run_tracking = []
+            self.tracking_data = []
+        
+
+        elif run_title == 'キープ初期化':
+            self.parent_len = self.now_deep-1
+            self.keep_tracking = []
+
+        elif run_title == '範囲内':
+            self.run_tracking.append(0)
+            self.keep_tracking.append(self.run_tracking[self.parent_len:])
+
+        elif run_title == '範囲内 int/str型':
+            self.run_tracking[-1] = 1
+            self.keep_tracking.append(self.run_tracking[self.parent_len:])
+
+        elif run_title == '範囲内 配列型':
+            self.run_tracking[-1] = 2
+            self.keep_tracking.append(self.run_tracking[self.parent_len:])
+
+        elif run_title == '範囲内 配列の調査完了':
+            self.run_tracking[-1] = 3
+            self.keep_tracking.append(self.run_tracking[self.parent_len:])
+            del self.run_tracking[-1]
+        
+        elif run_title == '再起の戻り':
+            self.run_tracking[-1] = 4
+            self.keep_tracking.append(self.run_tracking[self.parent_len:])
+            
+        elif run_title == 'キープ範囲調査完了':
+            self.tracking_data.append([self.run_tracking[:self.parent_len],self.keep_tracking])
+            print([self.run_tracking[:self.parent_len],self.keep_tracking])
+            del self.run_tracking[-1]
+        
+        elif run_title == '範囲外':
+            self.run_tracking.append(5)
+        
+        elif run_title == '配列の調査完了':
+            del self.run_tracking[-1]
+
     # リストを整型する際の条件を整理 / １次元目の格納情報を整形 [→:#0]
     # [→:0] 中身は search_mapping / search_sequence とほぼ同じ
     def set_list(self, guide,keep_start,keep_range):
@@ -687,6 +731,9 @@ class SetPrint:
         All_blocks = []
         keep_Ylines_data = []
 
+        # <t:初期化>
+        self.maintenance_run('初期化')
+
         #表示スタイルの更新
         self.collections = self.style_settings[0][1]['image']
         
@@ -726,6 +773,9 @@ class SetPrint:
             line_title = ['']
             max_indexlen = 0
 
+            # <t:範囲外>
+            self.maintenance_run('範囲外')
+
             for linenum in range(len(datas)):
                 self.Xline_blocks = []
                 self.keep_txts_data = []
@@ -737,6 +787,8 @@ class SetPrint:
                         self.search_mapping(line)
                     else:
                         self.search_sequence(line)
+                    
+                    #self.maintenance_run('再起の戻り')
 
                     All_blocks.append(self.Xline_blocks)
                     keep_Ylines_data.append(self.keep_txts_data)
@@ -810,6 +862,8 @@ class SetPrint:
                 if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < 1:
                     self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = 1
 
+            # <p:範囲内>
+            self.maintenance_run('範囲内')
 
             for linenum, (key, line) in enumerate(datas.items()):
 
@@ -823,18 +877,28 @@ class SetPrint:
                 insert_index = self.keep_index.copy()
                 
                 if isinstance(line, self.sequence_type):
+
+                    # <p:配列型>
+                    self.maintenance_run('範囲内 配列型',insert_index)
                     
                     value = self.collections[str(type(line).__name__)][0]
                     self.keep_1line_data.append([insert_index,value,key])
                     
                     self.search_sequence(line)
 
+                    self.maintenance_run('再起の戻り')
+
                 elif isinstance(line, self.mapping_type):
+
+                    # <p:範囲内 int/str型>
+                    self.maintenance_run('範囲内 int/str型',insert_index)
                     
                     value = self.collections[str(type(line).__name__)][0]
                     self.keep_1line_data.append([insert_index,value,key])
                     
                     self.search_mapping(line)
+
+                    self.maintenance_run('再起の戻り')
 
                 else:
                     value = str(line)
@@ -883,6 +947,9 @@ class SetPrint:
 
             del self.keep_index[-1]
         
+            # <t:範囲内 配列の調査完了>
+            self.maintenance_run('範囲内 配列の調査完了')
+        
         # (P:1)
         # キープする次元と現在の次元が同じなら、キープ用の処理に移る。
         elif self.keep_start == self.now_deep:
@@ -896,6 +963,9 @@ class SetPrint:
 
         # (P:0)
         else:
+
+            # <t:範囲外>
+            self.maintenance_run('範囲外')
 
             txt_index = ''
             for i in self.now_index:
@@ -958,6 +1028,9 @@ class SetPrint:
             
             self.keep_txts_data[insert_index] = [parent_index,max_keylen+max_txtlen+3,mapping_point,mapping_key]
 
+            # <t:配列の調査完了>
+            self.maintenance_run('配列の調査完了')
+
         del self.now_index[-1] #インデックスの調査が終わったら戻す
         del self.now_key[-1]
 
@@ -992,6 +1065,9 @@ class SetPrint:
                 if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < 1:
                     self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = 1
 
+            # <p:範囲内>
+            self.maintenance_run('範囲内')
+
             for linenum in range(len(datas)):
 
                 line = datas[linenum]
@@ -1002,20 +1078,28 @@ class SetPrint:
                 insert_index = self.keep_index.copy()
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
+
+                    # <p:配列型>
+                    self.maintenance_run('範囲内 配列型',insert_index)
                     
                     value_txt = self.collections[str(type(line).__name__)][0]
-                    self.keep_1line_data.append([insert_index,value_txt[0]])
+                    self.keep_1line_data.append([insert_index,value_txt])
                     
                     if type(line) == dict:
                         self.search_mapping(line)
                     else:
                         self.search_sequence(line)
 
+                    self.maintenance_run('再起の戻り')
+
                 else:
                     
+                    # <p:範囲内 int/str型>
+                    self.maintenance_run('範囲内 int/str型',insert_index)
+
                     value_txt = str(line)
                     self.keep_1line_data.append([insert_index,value_txt])
-                                
+                
                 #存在するインデックスの情報の新規作成/更新
                 if (insert_index in self.MAX_index) == False:
                     self.MAX_index.append(insert_index)
@@ -1049,6 +1133,9 @@ class SetPrint:
                     self.finish_index[key] = insert_index[-1]
 
             del self.keep_index[-1]
+
+            # <t:範囲内 配列の調査完了>
+            self.maintenance_run('範囲内 配列の調査完了')
         
         # (P:1)
         # キープする次元と現在の次元が同じなら、キープ用の処理に移る。
@@ -1063,6 +1150,9 @@ class SetPrint:
 
         # (P:0)
         else:
+
+            # <t:範囲外>
+            self.maintenance_run('範囲外')
 
             txt_index = ''
             for i in self.now_index:
@@ -1110,14 +1200,19 @@ class SetPrint:
 
             self.keep_txts_data[insert_index] = [parent_index, max_indexlen]
 
+            # <t:配列の調査完了>
+            self.maintenance_run('配列の調査完了')
+
         del self.now_index[-1] #インデックスの調査が終わったら戻す
         self.now_deep -= 1
 
     # [→:3] キープデータの初期化/作成後の後処理
     def keep_setup(self,datas,txt_index):
         
-
         # 格納情報、次元情報、文字数を取得する為の処理
+
+        # <t:キープ初期化>
+        self.maintenance_run('キープ初期化',self.now_deep)
 
         # 格納情報の初期化
 
@@ -1153,6 +1248,9 @@ class SetPrint:
         self.Xline_blocks.append('')
         self.keep_txts_data.append('')
 
+        # <t:範囲内>
+        self.maintenance_run('範囲内')
+
         insert_index = len(self.Xline_blocks)-1
         
         if type(datas) == dict:
@@ -1172,6 +1270,9 @@ class SetPrint:
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
                     
+                    # <p:配列型>
+                    self.maintenance_run('範囲内 配列型')
+                    
                     self.keep_1line_data = [] #1列の配列情報を格納するリスト
                     value_txt = self.collections[str(type(line).__name__)][0]
                     self.keep_1line_data.append([self.keep_index,value_txt,key])
@@ -1181,10 +1282,16 @@ class SetPrint:
                         self.search_mapping(line)
                     else:
                         self.search_sequence(line)
+                    
+                    self.maintenance_run('再起の戻り')
                 
                     keep_liens_data.append(self.keep_1line_data)
                 
                 else:
+
+                    # <p:範囲内 int/str型>
+                    self.maintenance_run('範囲内 int/str型')
+
                     value_line = str(line)
                     keep_liens_data.append([[self.keep_index,value_line,key]])
                 
@@ -1215,6 +1322,9 @@ class SetPrint:
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
+                    # <p:配列型>
+                    self.maintenance_run('範囲内 配列型')
+
                     self.keep_1line_data = [] #1列の配列情報を格納するリスト
 
                     value_txt = self.collections[str(type(line).__name__)][0]
@@ -1226,9 +1336,15 @@ class SetPrint:
                     else:
                         self.search_sequence(line)
             
+                    self.maintenance_run('再起の戻り')
+
                     keep_liens_data.append(self.keep_1line_data)
 
                 else:
+
+                    # <p:範囲内 int/str型>
+                    self.maintenance_run('範囲内 int/str型')
+
                     value_txt = str(line)
                     keep_liens_data.append([[self.keep_index,value_txt]])
                 
@@ -1245,6 +1361,9 @@ class SetPrint:
                     if self.keep_start == 1:
                         now_len = int(self.line_ber_len*(linenum+1))
                         print('\033[F\033[K{ '+'-'*now_len+' '*(self.ber_len-now_len)+' }')
+
+        # <t:キープ範囲調査完了>
+        self.maintenance_run('キープ範囲調査完了')
 
         # ber_print(2)
         if self.ber_print:
