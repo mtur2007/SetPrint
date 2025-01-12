@@ -97,7 +97,7 @@ list_data = SetPrint(test_data)
 list_data.set_text_style(style_settings) # set_listの前
 
 # データの整形
-set_datas,tracking_data = list_data.set_list(guide=True,keep_start=2,keep_range='all')
+set_datas,tracking_data = list_data.set_list(guide=True,keep_start=3,keep_range='all')
 print(tracking_data)
 
 image_print(tracking_data)
