@@ -654,51 +654,52 @@ class SetPrint:
             self.tracking_data = []
         
         elif run_title == 'キープ初期化':
+            print(self.run_tracking)
             self.parent_len = self.now_deep-1
             self.keep_tracking = []
         
-        elif run_title == 'start':
-            if range_type == 'In_range':
-                self.run_tracking.append(0)
-                self.keep_tracking.append(self.run_tracking[self.parent_len:])
-            else:
-                self.run_tracking.append(5)
-                self.parent_len = self.now_deep-1
-        
-        elif run_title == 'int/str_type':
-            self.run_tracking[-1] = 1
-            if range_type == 'In_range':
-                self.keep_tracking.append(self.run_tracking[self.parent_len:])
-            else:
-                self.tracking_data.append([[self.run_tracking[:]]])
-               
-        elif run_title == 'collection_type':
-            self.run_tracking[-1] = 2
-            if range_type == 'In_range':
-                self.keep_tracking.append(self.run_tracking[self.parent_len:])
-            else:
-                self.tracking_data.append([self.run_tracking[:]])
-    
-        elif run_title == '配列の調査完了':
-            if range_type == 'In_range':
-                self.run_tracking[-1] = 3
-                self.keep_tracking.append(self.run_tracking[self.parent_len:])
-            else:
-                self.run_tracking[-1] = 3
-                self.tracking_data.append([self.run_tracking[:]])
-            del self.run_tracking[-1]
-        
-        elif run_title == '配列の調査結果の受け取り':
-            self.run_tracking[-1] = 4 if range_type == 'In_range' else 4
 
+        elif run_title in ('start','int/str_type','collection_type','配列の調査結果の受け取り'):
+
+            if run_title == 'start':
+                self.run_tracking.append(0 if range_type == 'In_range' else 5)
+
+            elif run_title == 'int/str_type':
+                self.run_tracking[-1] = 1 if range_type == 'In_range' else 7
+                
+            elif run_title == 'collection_type':
+                self.run_tracking[-1] = 2 if range_type == 'In_range' else 6
+            
+            elif run_title == '配列の調査結果の受け取り':
+                self.run_tracking[-1] = 4 if range_type == 'In_range' else 9
+            
             if range_type == 'In_range':
+                self.run_tracking[self.parent_len:]
                 self.keep_tracking.append(self.run_tracking[self.parent_len:])
             else:
-                self.tracking_data.append([self.run_tracking[:]])
+                self.tracking_data.append([self.run_tracking[:],[[10]]])
+
+                #self.tracking_data.append([self.run_tracking[:],[[0]]])
+        
+        elif run_title == '配列の調査完了':
+            self.run_tracking[-1] = 3 if range_type == 'In_range' else 8
+            if range_type == 'In_range':
+                self.run_tracking[self.parent_len:]
+                self.keep_tracking.append(self.run_tracking[self.parent_len:])
+            else:
+                self.tracking_data.append([self.run_tracking[:],[[10]]])
+
+            del self.run_tracking[-1]
+    
         
         elif run_title == 'キープ範囲調査完了':
-            self.tracking_data.append([self.run_tracking[:self.parent_len],self.keep_tracking[:]])
+            if self.keep_start == 1:
+                self.tracking_data.append([self.run_tracking[:self.parent_len]+[10],self.keep_tracking[:]+[[3]]])
+            else:
+                self.tracking_data.append([self.run_tracking[:self.parent_len],self.keep_tracking[:]+[[3]]])
             
+            del self.run_tracking[-1]
+        
         else:
             print(run_title)
       
@@ -1362,11 +1363,6 @@ class SetPrint:
                     if self.keep_start == 1:
                         now_len = int(self.line_ber_len*(linenum+1))
                         print('\033[F\033[K{ '+'-'*now_len+' '*(self.ber_len-now_len)+' }')
-
-                print(self.tracking_data)
-        
-            # <t:範囲内 配列の調査完了>
-            self.maintenance_run('配列の調査完了','In_range')
         
         else:
             for linenum in range(len(datas)):
@@ -1417,11 +1413,6 @@ class SetPrint:
                     if self.keep_start == 1:
                         now_len = int(self.line_ber_len*(linenum+1))
                         print('\033[F\033[K{ '+'-'*now_len+' '*(self.ber_len-now_len)+' }')
-
-                print(self.tracking_data)
-            
-            # <t:範囲内 配列の調査完了>
-            self.maintenance_run('配列の調査完了','In_range')
 
         # <t:キープ範囲調査完了>
         self.maintenance_run('キープ範囲調査完了')
