@@ -7,6 +7,7 @@
 # 実行コード
 import pickle
 import numpy as np
+from test_run_image import image_print
 
 from maintenance_setprint import SetPrint
 
@@ -86,7 +87,7 @@ test_data = [
 ]
 
 # n = np.ndarray(0)
-test_data = [[[],[]],[],[((0,(0,(0,0)),0)),((10,[0,0],0))],[('aafdrgf'),('►list')],[{}]]
+test_data = [[((0,(0,(0,0)),0)),((10,[0,0],0))],[('aafdrgf'),('►list')]]
 
 # test_data = []
 
@@ -95,7 +96,9 @@ list_data = SetPrint(test_data)
 
 list_data.set_text_style(style_settings) # set_listの前
 # データの整形
-set_datas = list_data.set_list(guide=True,keep_start=2,keep_range='all')
+set_datas,tracking_data = list_data.set_list(guide=True,keep_start=2,keep_range=1)
+print(tracking_data)
+#image_print(tracking_data)
 
 # # 表示
 # for line in set_datas['grid_slice']:
