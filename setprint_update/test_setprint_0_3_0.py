@@ -1266,8 +1266,22 @@ class SetPrint:
         # <t:キープ初期化>
         self.maintenance_run('キープ初期化')
 
-        # 格納情報の初期化
 
+        # 格納情報の保存
+        parent__MAX_index     = self.MAX_index # 存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
+        parent__MAX_indexlen  = self.MAX_indexlen # インデックスに格納されている配列の文字数を格納する。
+
+        parent__paretnt_key     = parent_key # 親インデックスのキー
+        parent__pivot_value     = self.pivot_value # 親インデックスのキー以降をmapping_keyに格納するための基準値設定。
+
+        parent__mapping_point   = self.mapping_point # 辞書型が存在している場所を格納する。
+        parent_mapping_key      = self.mapping_key # keep_keyに対応するマッピング型のキー
+        
+        parent__keep_liens_data = keep_liens_data # 1列毎の配列情報を格納するリスト
+        
+        parent__finish_index    = self.finish_index #リスト配列の最後尾のインデックスを格納
+
+        # 格納情報の初期化
         self.MAX_index     = [] # 存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
         self.MAX_indexlen  = [] # インデックスに格納されている配列の文字数を格納する。
 
@@ -1278,6 +1292,8 @@ class SetPrint:
         self.mapping_key   = [] # keep_keyに対応するマッピング型のキー
 
         keep_liens_data    = [] # 1列毎の配列情報を格納するリスト
+
+        self.finish_index = {} #リスト配列の最後尾のインデックスを格納
 
         """
         self.MAX_index
@@ -1294,8 +1310,6 @@ class SetPrint:
                                                      辞書型対応[2]
         """
         
-        self.finish_index = {} #リスト配列の最後尾のインデックスを格納
-
         self.now_index.append('')
         self.Xline_blocks.append('')
         self.keep_txts_data.append('')

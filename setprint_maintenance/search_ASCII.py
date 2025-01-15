@@ -189,7 +189,11 @@ special_blocks = find_special_blocks(grid, special_symbols)
 
 # Branch directions for if-like blocks
 branch_directions = {
-
+           
+           '''
+           可変的にする
+           '''
+           
 (5, 33): ( 'ˆ', ['ˇ', '›'] ),  # O : ┤
 (6, 29): ( 'ˇ', ['›', 'ˆ'] ),  # P : ┤
 (9, 29): ( 'ˇ', ['›', 'ˆ'] ),  # Q : ┤
