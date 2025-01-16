@@ -87,19 +87,20 @@ test_data = [
 # n = np.ndarray(0)
 # test_data = [[[],[]],[n,n],[(),()],[{},{}],[{}]]
 
-test_data = [[[],[]],[],[(('zero',(0,0),0)),((10,[0,0],0))],[(),()],[{}]]
+# test_data = [[[],[]],[],[(('zero',(0,0),0)),((10,[0,0],0))],[(),()],[{}]]
+test_data = [[[[0,0],[0,0]],[[1,1],[1,1]]],[[[2,2],[2,2]],[[3,3],[3,3]]]]
 # test_data = []
 
 # インスタンスを生成
 list_data = SetPrint(test_data)
 
 list_data.set_text_style(style_settings) # set_listの前
-# データの整形
-set_datas = list_data.set_list(guide=True,keep_start=3,keep_range='all')
+# データの整形                                   {1:'y',2:'x',3:'y',4:'yf',6:'yf'}
+set_datas = list_data.set_list(guide=True,keep_start={1:'y',2:'x',3:'yf',5:'yf'})
 
 # 表示
-for line in set_datas['grid_slice']:
-    print(line[:-1])
+# for line in set_datas['grid_slice']:
+#     print(line[:-1])
 
 # # スクリプトが存在するディレクトリを基準にする
 # set_data_write = file_relative_access('./output_txtfile/set_data.txt')
@@ -108,5 +109,5 @@ for line in set_datas['grid_slice']:
 #     for line in set_datas['grid_slice']:
 #         f.write(line)
 
-# pick表示を行う
-list_data.pick_guideprint(file_relative_access('./output_txtfile/pick_guide.txt'))
+# # pick表示を行う
+# list_data.pick_guideprint(file_relative_access('./output_txtfile/pick_guide.txt'))
