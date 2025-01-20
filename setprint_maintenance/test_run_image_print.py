@@ -3,7 +3,10 @@ import os
 
 # サンプルデータ
 data = [
-    [0],[[1, 0],[1,1,1],[[2, 0, 0],[2, 1, 0],[[3,0],[3,1]]],[1,3]],[0,2]
+    [0],[[0, 0],[0, 1],[[0, 1, 0],[0, 1, 1],[[0, 1, 1, 0],[0, 1, 1, 1]],[0, 1, 2]],[0,2]],[1]
+
+    #[0],[[1, 0],[1, 1],[[1, 2, 0],[1, 2, 1],[[1, 2, 2, 0],[1, 2, 2, 1]],[1, 2, 3]],[1,3]],[2]
+
 ]
 
 # 現在の位置情報を保持するインデックスリスト
@@ -52,7 +55,7 @@ def display_cards_horizontally(card_list, indices):
 
 # 現在の要素とその詳細を表示する関数
 def display_current_element(data,indices):
-    #os.system('cls' if os.name == 'nt' else 'clear')  # 画面をクリア
+    os.system('cls' if os.name == 'nt' else 'clear')  # 画面をクリア
     print("\n現在の要素を解析します:")
     print(f"現在のインデックス: {indices}")
     #route_index = route_index[-1]q
@@ -64,11 +67,16 @@ def display_current_element(data,indices):
         
         parent_element = get_current_element(data, idx[:-1])
         parent_len = 0
-        for p_line in parent_element:
+        line_index = idx[-1]
+        for linenum,p_line in enumerate(parent_element):
             if type(p_line[0]) != list:
                 parent_len += 1
+            else:
+                if linenum <= idx[-1]:
+                    line_index -= 1
+
         
-        print(str(idx[-1]+1)+'/'+str(parent_len))
+        print(str(line_index+1)+'/'+str(parent_len))
         
         display_cards_horizontally(card_designs_half_width,element)
         # print()
@@ -81,10 +89,15 @@ def display_current_element(data,indices):
 
     parent_element = get_current_element(data, indices[:-1])
     parent_len = 0
-    for p_line in parent_element:
+    line_index = indices[-1]
+    for linenum,p_line in enumerate(parent_element):
         if type(p_line[0]) != list:
             parent_len += 1
-    print(str(indices[-1]+1)+'/'+str(parent_len))
+        else:
+            if linenum <= indices[-1]:
+                line_index -= 1
+    
+    print(str(line_index+1)+'/'+str(parent_len))
 
     display_cards_horizontally(card_designs_half_width,element)
         
@@ -144,25 +157,32 @@ def update_indices(direction, indices):
 
             if indices[-1] > len(parent_element)-1:
                 # ( over )
+                print('over')
                 # print('out_range_(over > before)',indices)
                 del indices[-1]
-                indices[-1] = indices[-1] + 1
+                indices[-1] += 1
 
                 # print('out_range_(over ▷ after)',indices)
             else:
                 # ( Under )
+                print('Under')
                 del indices[-1]
-                indices[-1] = indices[-1] - 1
+
+                indices[-1] -= 1
+
+                print(indices)
                 
                 if 0 <= indices[-1] <= len(parent_element)-1:
-                    indices = list_deep_search(parent_element,indices[:-1])
+                    indices = list_deep_search(parent_element[indices[-1]],indices)
                     # print('back_index',indices)
                     
         else:
             if indices[-1] > len(parent_element)-1:
+                print('0_over')
                 indices = [-1]
             else:
-                indices = list_deep_search(data,[])
+                print('0_Under')
+                indices = list_deep_search(data[-1],[len(parent_element)-1])
 
             # print('in_range_y0',indices)
 
