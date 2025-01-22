@@ -677,10 +677,15 @@ class SetPrint:
             self.parent_len = 0
             self.run_tracking = []
             self.tracking_data = []
+            self.keep_tracking = []
         
         elif run_title == 'キープ初期化':
             self.parent_len = self.now_deep-1
+            print('parent_len',self.parent_len)
+            
+            parent__keep_tracking = self.keep_tracking[:]
             self.keep_tracking = []
+            return parent__keep_tracking
         
 
         elif run_title in ('start','int/str_type','collection_type','配列の調査結果の受け取り'):
@@ -700,6 +705,7 @@ class SetPrint:
             if range_type == 'In_range':
                 self.run_tracking[self.parent_len:]
                 self.keep_tracking.append(self.run_tracking[self.parent_len:])
+                
             else:
                 self.tracking_data.append([self.run_tracking[:],[[10]]])
 
@@ -717,13 +723,23 @@ class SetPrint:
     
         
         elif run_title == 'キープ範囲調査完了':
+
             if self.keep_start == 1:
                 self.tracking_data.append([self.run_tracking[:self.parent_len]+[10],self.keep_tracking[:]+[[3]]])
             else:
-                self.tracking_data.append([self.run_tracking[:self.parent_len],self.keep_tracking[:]+[[3]]])
+                if self.min_keep_deep == self.now_deep:
+                    self.tracking_data.append([self.run_tracking[:self.parent_len],self.keep_tracking[:]+[[3]]])
+                else:
+                    self.parent_len = self.yf_point[self.yf_point.index(self.now_deep)-1] -1
+                    print('back_parent_len',self.parent_len)
             
             del self.run_tracking[-1]
-        
+
+            parent__keep_tracking = run_titles[1]
+            print('p != ',self.keep_tracking)
+            self.keep_tracking = parent__keep_tracking[:]
+            print('p == ',self.keep_tracking)
+
         else:
             print(run_title)
       
@@ -814,7 +830,6 @@ class SetPrint:
         range_keep_type = None
         self.yf_point = []
         for deep in range(self.max_keep_deep-self.min_keep_deep+1):
-            print(deep,deep + self.min_keep_deep)
             if (deep + self.min_keep_deep) in self.keep_start.keys():
                 range_keep_type = self.keep_start[deep + self.min_keep_deep]
                 remake_keep_settings[deep + self.min_keep_deep] = range_keep_type
@@ -1433,7 +1448,7 @@ class SetPrint:
         # 格納情報、次元情報、文字数を取得する為の処理
 
         # <t:キープ初期化>
-        self.maintenance_run('キープ初期化')
+        parent__keep_tracking = self.maintenance_run('キープ初期化')
 
 
         # 格納情報の保存
@@ -1506,9 +1521,10 @@ class SetPrint:
         
         # <t:範囲内>
         self.maintenance_run('start','In_range')
-
-        print('s_X',self.range_idx)
-        print('s_Y',self.Y_keep_index[parent_y_keep_index])
+        print('start')
+        print(' < X.      ',self.range_idx)
+        print(' < Y.      ',self.Y_keep_index[parent_y_keep_index])
+        print(' < tracking',self.keep_tracking)
         
         if type(datas) == dict:
             # self.now_key.append('')
@@ -1629,11 +1645,14 @@ class SetPrint:
                         now_len = int(self.line_ber_len*(linenum+1))
                         print('\033[F\033[K{ '+'-'*now_len+' '*(self.ber_len-now_len)+' }')
 
-        print('r_X',self.range_idx)
-        print('r_Y',self.Y_keep_index[parent_y_keep_index])
-                
+        print('return')
+        print(' > X.      ',self.range_idx)
+        print(' > Y.      ',self.Y_keep_index[parent_y_keep_index])
+        print(' > tracking',self.keep_tracking)
+        print()
+
         # <t:キープ範囲調査完了>
-        self.maintenance_run('キープ範囲調査完了')
+        self.maintenance_run('キープ範囲調査完了', parent__keep_tracking)
 
         # ber_print(2)
         if self.ber_print:
@@ -1733,7 +1752,6 @@ class SetPrint:
 
         # 情報更新
         self.MAX_index[parent_x_keep_index] = self.range_idx # 存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
-        print('range_idx',self.range_idx)
         
         # 情報復元
         self.keep_index = parent__keep_index

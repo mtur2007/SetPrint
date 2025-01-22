@@ -97,7 +97,7 @@ list_data = SetPrint(test_data)
 list_data.set_text_style(style_settings) # set_listの前
 
 # データの整形                                         {1:'y',2:'x',3:'y',4:'yf',6:'yf'}
-set_datas = list_data.set_list(guide=True,keep_start={1:'y',2:'y',3:'yf',5:'y',7:'x'})
+set_datas = list_data.set_list(guide=True,keep_start={1:'y',2:'y',3:'yf',5:'yf',7:'x'})
 #set_datas = list_data.set_list(guide=True,keep_start={1:'y',7:'x'})
 # 表示
 # for line in set_datas['grid_slice']:
