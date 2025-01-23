@@ -1,5 +1,206 @@
-import os
 from pynput import keyboard
+import os
+
+# 現在の位置情報を保持するインデックスリスト
+current_indices = [-1]  # 必要な次元のみ保持q
+current_depth = 0
+
+# 現在のインデックスに基づいてデータを取得する関数
+def get_current_element(data, indices):
+    element = data
+    for idx in indices:
+        if isinstance(element, list) and idx < len(element):
+            element = element[idx]
+        else:
+            break
+    return element
+
+def list_deep_search(data,idx):
+    if type(data) == list :
+        idx.append(len(data)-1)
+        list_deep_search(data[len(data)-1],idx)
+
+    return idx[:-1]
+
+def display_cards_horizontally(indices):
+    """
+    指定されたインデックスのカードを横に並べて表示する関数。
+
+    Parameters:
+        card_list (list): カードデザインが格納されたリスト。
+        indices (list): 表示するカードのインデックスを指定するリスト。
+    """
+    
+    # 2段目（3次元目）
+    card_lines = [cards[index].splitlines() for index in indices]
+    max_lines = max(len(lines) for lines in card_lines)
+    max_widths = [max(len(line) for line in lines) for lines in card_lines]
+    padded_cards = []
+
+    for lines, width in zip(card_lines, max_widths):
+        padded_card = [line.ljust(width) for line in lines]
+        padded_card += [" " * width] * (max_lines - len(lines))
+        padded_cards.append(padded_card)
+    
+    for i in range(max_lines):
+        print("   ".join(padded_cards[j][i] for j in range(len(padded_cards))))
+
+# 現在の要素とその詳細を表示する関数
+def display_current_element(data,indices):
+
+    os.system('cls' if os.name == 'nt' else 'clear')  # 画面をクリア
+
+    print('\n要素指定(キーボード操作) : a(次), d(前)')
+    print(f"現在のインデックス: {indices}")
+    #route_index = route_index[-1]q
+    #route_index[-1] -= 1
+    for line in range(len(indices)-1):
+        idx = indices[:line+1]
+        idx[-1] -= 1
+        element = get_current_element(data, idx)
+        
+        parent_element = get_current_element(data, idx[:-1])
+        parent_len = 0
+        line_index = idx[-1]
+        for linenum,p_line in enumerate(parent_element):
+            if type(p_line[0]) != list:
+                parent_len += 1
+            else:
+                if linenum <= idx[-1]:
+                    line_index -= 1
+
+        
+        print(str(line_index+1)+'/'+str(parent_len))
+        
+        display_cards_horizontally(element)
+        # print()
+
+        # print(line*' ' + str(idx))
+        # print(line*' ' + str(element))
+    
+
+    element = get_current_element(data, indices)
+
+    parent_element = get_current_element(data, indices[:-1])
+    parent_len = 0
+    line_index = indices[-1]
+    for linenum,p_line in enumerate(parent_element):
+        if type(p_line[0]) != list:
+            parent_len += 1
+        else:
+            if linenum <= indices[-1]:
+                line_index -= 1
+    
+    print(str(line_index+1)+'/'+str(parent_len))
+
+    display_cards_horizontally(element)
+        
+    # print()
+    # print((len(indices)-1) * ' ' + str(indices))
+    # print((len(indices)-1) * ' ' + str(element))
+
+
+# インデックスを更新する関数
+def update_indices(direction, indices):
+
+    global data
+
+    element = get_current_element(data, indices)
+    global current_indices
+
+    parent_element = get_current_element(data, indices[:-1])
+
+    indices[-1] += direction
+    
+    if 0 <= indices[-1] <= len(parent_element)-1:
+
+        element = get_current_element(data, indices)
+        
+        if direction >= 0:
+            if isinstance(element[0], list):
+                indices.append(-1)  # 次の次元に進む
+                update_indices(direction, indices)
+            
+            else:
+                
+                display_current_element(data,indices)
+                print()
+                print('->_pri ; ', element)
+                
+                # print()
+        else:
+            
+            # print(indices)
+            before_element = get_current_element(data, indices)
+            # print()
+            # print('<-_index  ',indices)
+            # print('   element',element)
+
+            indices = list_deep_search(before_element,indices)
+            
+            # print('back_index',indices)
+            before_element = get_current_element(data, indices)
+
+            display_current_element(data,indices)
+            print()
+            print('<-_pri ; ', before_element)
+        
+
+    else:
+        # インデックスの範囲外
+
+        if len(indices) >= 2:
+
+            if indices[-1] > len(parent_element)-1:
+                # ( over )
+                print('over')
+                # print('out_range_(over > before)',indices)
+                del indices[-1]
+                indices[-1] += 1
+
+                # print('out_range_(over ▷ after)',indices)
+            else:
+                # ( Under )
+                print('Under')
+                del indices[-1]
+
+                indices[-1] -= 1
+
+                print(indices)
+                
+                if 0 <= indices[-1] <= len(parent_element)-1:
+                    indices = list_deep_search(parent_element[indices[-1]],indices)
+                    # print('back_index',indices)
+                    
+        else:
+            if indices[-1] > len(parent_element)-1:
+                print('0_over')
+                indices = [-1]
+            else:
+                print('0_Under')
+                indices = list_deep_search(data[-1],[len(parent_element)-1])
+
+            # print('in_range_y0',indices)
+
+        direction = 0
+        update_indices(direction, indices)
+        
+    current_indices[:] = indices
+    # display_current_element()
+
+
+# キー操作の処理
+def on_press(key):
+    try:
+        if key.char == 'd':  # 次の要素に進む
+            update_indices(1, current_indices)
+        elif key.char == 'a':  # 前の要素に戻る
+            update_indices(-1, current_indices)
+        elif key.char == 'q':  # 終了
+            print("終了キー 'q' が押されました。プログラムを終了します。")
+            return False
+    except AttributeError:
+        pass
 
 cards = [
     """
@@ -162,107 +363,24 @@ cards = [
 
 ]
 
-# 0 範囲内
-# 1 範囲内 int/str型
-# 2 範囲内 配列型
-# 3 配列の調査完了
-# 4 範囲外
-# 5 アンワインド
+    # サンプルデータ
 
-def clear_screen():
-    """画面をクリアする関数"""
-    #os.system('cls' if os.name == 'nt' else 'clear')
-    print("\033c", end="")  # ANSIエスケープシーケンスで画面クリア
+data = []
 
-def print_cards_in_blocks(blocks, outer_index, inner_index):
-    """
-    1段目に2次元目、2段目に3次元目を表示する関数。
+def image_print(run_tracking):
 
-    :param blocks: ブロックリスト
-    :param outer_index: 1次元目のインデックス
-    :param inner_index: 3次元目のインデックス
-    """
-    clear_screen()
-    block = blocks[outer_index]
+    global data
 
-    # 1段目（2次元目）
-    first_layer = block[0]
-    card_lines = [cards[index].splitlines() for index in first_layer]
-    max_lines = max(len(lines) for lines in card_lines)
-    max_widths = [max(len(line) for line in lines) for lines in card_lines]
-    padded_cards = []
+    data = run_tracking
 
-    for lines, width in zip(card_lines, max_widths):
-        padded_card = [line.ljust(width) for line in lines]
-        padded_card += [" " * width] * (max_lines - len(lines))
-        padded_cards.append(padded_card)
 
-    outer_air = len(str(len(blocks)-1))
-    outer_count = (outer_air-len(str(outer_index))) * ' ' + str(outer_index)+' / '+str(len(blocks)-1)
+    # data = [[5], [6], [[0], [2], [[0], [2], [2, 0], [2, 1], [2, 2], [[0], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [2, 4], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [4], [2], [[0], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [4]], [9], [6], [[0], [2], [[0], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [4], [2], [[0], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [4]], [9], [8]]
 
-    inner_air = len(str(len(block[1])-1))
-    inner_count = (inner_air-len(str(inner_index))) * ' ' + str(inner_index)+' / '+str(len(block[1])-1)
-    
-    print('action_key normal : a - d')
-    print('action_key keep   : w - s')
-    print()
-    if (outer_index == len(blocks)-1) and (inner_index == len(block[1])-1):
-        print('[ normal : ' + outer_count + ' - keep : ' + inner_count + ' ] ----- ▶ Finish')
-    elif inner_index == len(block[1])-1:
-        print('[ normal : ' + outer_count + ' - keep : ' + inner_count + ' ] ----- ▶ Next ▷')
-    else:
-        print('[ normal : ' + outer_count + ' - keep : ' + inner_count + ' ] Start ▽')
-    for i in range(max_lines):
-        print("   ".join(padded_cards[j][i] for j in range(len(padded_cards))))
-    print("\n")  # 段間の空行
 
-    # 2段目（3次元目）
-    second_layer = block[1][inner_index]
-    card_lines = [cards[index].splitlines() for index in second_layer]
-    max_lines = max(len(lines) for lines in card_lines)
-    max_widths = [max(len(line) for line in lines) for lines in card_lines]
-    padded_cards = []
+    # 初期状態を表示
+    # display_current_element()
 
-    for lines, width in zip(card_lines, max_widths):
-        padded_card = [line.ljust(width) for line in lines]
-        padded_card += [" " * width] * (max_lines - len(lines))
-        padded_cards.append(padded_card)
-    
-    print('[ keep : ' + inner_count + ' ] Start ▷' if inner_index != len(block[1])-1 else '[ keep : ' + inner_count + ' ] ----- ▶ Finish ▲')
-    for i in range(max_lines):
-        print("   ".join(padded_cards[j][i] for j in range(len(padded_cards))))
-    print("\n")
-
-def image_print(blocks):
-    outer_index = 0  # 初期の1次元目のインデックス
-    inner_index = 0  # 初期の3次元目のインデックス
-
-    print_cards_in_blocks(blocks, outer_index, inner_index)
-
-    def on_press(key):
-        nonlocal outer_index, inner_index
-        try:
-            if key.char == 'a':  # 1次元目を左移動
-                outer_index = (outer_index - 1) % len(blocks)
-                inner_index = 0
-                print_cards_in_blocks(blocks, outer_index, inner_index)
-            elif key.char == 'd':  # 1次元目を右移動
-                outer_index = (outer_index + 1) % len(blocks)
-                inner_index = 0
-                print_cards_in_blocks(blocks, outer_index, inner_index)
-            elif key.char == 'w':  # 3次元目を前移動
-                inner_index = (inner_index - 1) % len(blocks[outer_index][1])
-                print_cards_in_blocks(blocks, outer_index, inner_index)
-            elif key.char == 's':  # 3次元目を後移動
-                inner_index = (inner_index + 1) % len(blocks[outer_index][1])
-                print_cards_in_blocks(blocks, outer_index, inner_index)
-            elif key.char == 'q':  # 終了
-                print("終了します。")
-                return False  # リスナーを停止
-        except AttributeError:
-            pass
-
+    # メインループ
+    print("\n操作: 'd'で次の要素、'a'で前の要素、'q'で終了")
     with keyboard.Listener(on_press=on_press) as listener:
         listener.join()
-
-

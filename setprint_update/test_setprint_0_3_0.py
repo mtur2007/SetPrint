@@ -668,10 +668,9 @@ class SetPrint:
      - (P:2); キープブロック化 (キープデータへ格納情報を格納)
     '''
 
-    def maintenance_run(self,*run_titles):
+    def maintenance_run(self,*run_datas):
         
-        run_title = run_titles[0]     
-        range_type = run_titles[1] if len(run_titles) > 1 else None
+        run_title = run_datas[0]
 
         if run_title == '初期化':
             self.parent_len = 0
@@ -688,58 +687,75 @@ class SetPrint:
             return parent__keep_tracking
         
 
-        elif run_title in ('start','int/str_type','collection_type','配列の調査結果の受け取り'):
+        elif run_title in ('start','int/str_type','collection_type','配列の調査結果の受け取り','配列の調査完了'):
+
+            range_type = run_datas[1]
 
             if run_title == 'start':
                 self.run_tracking.append(0 if range_type == 'In_range' else 5)
+                run_point = self.run_tracking
 
             elif run_title == 'int/str_type':
                 self.run_tracking[-1] = 1 if range_type == 'In_range' else 7
-                
+                run_point = self.run_tracking
+
             elif run_title == 'collection_type':
                 self.run_tracking[-1] = 2 if range_type == 'In_range' else 6
+                run_point = self.run_tracking
             
             elif run_title == '配列の調査結果の受け取り':
                 self.run_tracking[-1] = 4 if range_type == 'In_range' else 9
-            
-            if range_type == 'In_range':
-                self.run_tracking[self.parent_len:]
-                self.keep_tracking.append(self.run_tracking[self.parent_len:])
+                run_point = self.run_tracking
                 
-            else:
-                self.tracking_data.append([self.run_tracking[:],[[10]]])
+            elif run_title == '配列の調査完了':
+                del self.run_tracking[-1]
+                run_point = self.run_tracking + [3] if range_type == 'In_range' else [8]
+
+            if range_type == 'In_range':    
+                self.keep_tracking.append(run_point[self.parent_len:])
+            
+            if range_type == 'Out_of_range':
+                if run_title == 'start':
+                    parent__keep_tracking = self.keep_tracking[:]
+                    print('out_of_range',parent__keep_tracking)
+                    self.keep_tracking = []
+
+                    self.keep_tracking.append([run_point[-1]])
+
+                    return parent__keep_tracking
+
+                self.keep_tracking.append([run_point[-1]])
+
+                if run_title == '配列の調査完了':
+                    #self.tracking_data.append([self.run_tracking[:],[[10]]])
+                    print(run_datas)
+                    parent__keep_tracking = run_datas[2]
+
+                    self.keep_tracking = parent__keep_tracking + [ self.keep_tracking ]
+                
+                
+
+                # else:
+                #     self.tracking_data.append([self.run_tracking[:],[[10]]])
+            
 
                 #self.tracking_data.append([self.run_tracking[:],[[0]]])
-        
-        elif run_title == '配列の調査完了':
-            self.run_tracking[-1] = 3 if range_type == 'In_range' else 8
-            if range_type == 'In_range':
-                self.run_tracking[self.parent_len:]
-                self.keep_tracking.append(self.run_tracking[self.parent_len:])
-            else:
-                self.tracking_data.append([self.run_tracking[:],[[10]]])
-
-            del self.run_tracking[-1]
     
         
         elif run_title == 'キープ範囲調査完了':
 
-            if self.keep_start == 1:
-                self.tracking_data.append([self.run_tracking[:self.parent_len]+[10],self.keep_tracking[:]+[[3]]])
-            else:
-                if self.min_keep_deep == self.now_deep:
-                    self.tracking_data.append([self.run_tracking[:self.parent_len],self.keep_tracking[:]+[[3]]])
-                else:
-                    self.parent_len = self.yf_point[self.yf_point.index(self.now_deep)-1] -1
-                    print('back_parent_len',self.parent_len)
+            if self.min_keep_deep != self.now_deep:
+                self.parent_len = self.yf_point[self.yf_point.index(self.now_deep)-1] -1
+                print('back_parent_len',self.parent_len)
             
             del self.run_tracking[-1]
 
-            parent__keep_tracking = run_titles[1]
-            print('p != ',self.keep_tracking)
-            self.keep_tracking = parent__keep_tracking[:]
-            print('p == ',self.keep_tracking)
+            parent__keep_tracking = run_datas[1]
+            print('parent',parent__keep_tracking)
+            
+            self.keep_tracking = parent__keep_tracking + [ self.keep_tracking ]
 
+            
         else:
             print(run_title)
       
@@ -884,7 +900,7 @@ class SetPrint:
             max_indexlen = 0
 
             # <t:範囲外>
-            self.maintenance_run('start','Out_of_range')
+            parent__keep_tracking = self.maintenance_run('start','Out_of_range')
 
             for linenum in range(len(datas)):
                 #self.Xline_blocks = []
@@ -948,7 +964,7 @@ class SetPrint:
                         print('\033[F\033[K{ '+'='*now_len+' '*(self.ber_len-now_len)+' }')
 
             # <t:範囲外>
-            self.maintenance_run('配列の調査完了','Out_of_range')
+            self.maintenance_run('配列の調査完了','Out_of_range',parent__keep_tracking)
 
             # keep_liens_data = [keep_liens_data]
 
@@ -970,6 +986,9 @@ class SetPrint:
         for key,value in self.Y_keep_index.items():
             print(key,value)
         print()
+        print('run_tracking')
+        print(self.keep_tracking[0])
+        # print(self.tracking_data)
         
         # set_border_list = self.blocks_border_print(All_blocks = All_blocks, line_title = line_title, guide = guide)
 
@@ -1138,7 +1157,7 @@ class SetPrint:
         else:
 
             # <t:範囲外>
-            self.maintenance_run('start','Out_of_range')
+            parent__keep_tracking = self.maintenance_run('start','Out_of_range')
 
             txt_index = ''
             for i in self.now_index:
@@ -1226,7 +1245,7 @@ class SetPrint:
             # self.keep_txts_data[insert_index] = [parent_index,max_keylen+max_txtlen+3,mapping_point,mapping_key]
 
             # <t:配列の調査完了>
-            self.maintenance_run('配列の調査完了','Out_of_range')
+            self.maintenance_run('配列の調査完了','Out_of_range',parent__keep_tracking)
 
         del self.now_index[-1] #インデックスの調査が終わったら戻す
         # del self.now_key[-1]
@@ -1364,7 +1383,7 @@ class SetPrint:
         else:
 
             # <t:範囲外>
-            self.maintenance_run('start','Out_of_range')
+            parent__keep_tracking = self.maintenance_run('start','Out_of_range')
 
             txt_index = ''
             for i in self.now_index:
@@ -1437,7 +1456,7 @@ class SetPrint:
             # self.keep_txts_data[insert_index] = [parent_index, max_indexlen]
 
             # <t:配列の調査完了>
-            self.maintenance_run('配列の調査完了','Out_of_range')
+            self.maintenance_run('配列の調査完了','Out_of_range',parent__keep_tracking)
 
         del self.now_index[-1] #インデックスの調査が終わったら戻す
         self.now_deep -= 1

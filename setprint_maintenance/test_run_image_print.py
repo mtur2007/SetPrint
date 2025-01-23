@@ -1,14 +1,6 @@
 from pynput import keyboard
 import os
 
-# サンプルデータ
-data = [
-    [0],[[0, 0],[0, 1],[[0, 1, 0],[0, 1, 1],[[0, 1, 1, 0],[0, 1, 1, 1]],[0, 1, 2]],[0,2]],[1]
-
-    #[0],[[1, 0],[1, 1],[[1, 2, 0],[1, 2, 1],[[1, 2, 2, 0],[1, 2, 2, 1]],[1, 2, 3]],[1,3]],[2]
-
-]
-
 # 現在の位置情報を保持するインデックスリスト
 current_indices = [-1]  # 必要な次元のみ保持q
 current_depth = 0
@@ -30,7 +22,7 @@ def list_deep_search(data,idx):
 
     return idx[:-1]
 
-def display_cards_horizontally(card_list, indices):
+def display_cards_horizontally(indices):
     """
     指定されたインデックスのカードを横に並べて表示する関数。
 
@@ -38,24 +30,26 @@ def display_cards_horizontally(card_list, indices):
         card_list (list): カードデザインが格納されたリスト。
         indices (list): 表示するカードのインデックスを指定するリスト。
     """
-    # 指定されたインデックスのカードを抽出し、行単位に分割
-    selected_cards = [card_list[i].splitlines() for i in indices]
+    
+    # 2段目（3次元目）
+    card_lines = [cards[index].splitlines() for index in indices]
+    max_lines = max(len(lines) for lines in card_lines)
+    max_widths = [max(len(line) for line in lines) for lines in card_lines]
+    padded_cards = []
 
-    # 各カードの最大行数を取得
-    max_lines = max(len(card) for card in selected_cards)
-
-    # 全てのカードの行を揃える
-    for card in selected_cards:
-        while len(card) < max_lines:
-            card.append(" " * len(card[0]))
-
-    # 横に並べて表示
-    for line_group in zip(*selected_cards):
-        print("   ".join(line_group))
+    for lines, width in zip(card_lines, max_widths):
+        padded_card = [line.ljust(width) for line in lines]
+        padded_card += [" " * width] * (max_lines - len(lines))
+        padded_cards.append(padded_card)
+    
+    for i in range(max_lines):
+        print("   ".join(padded_cards[j][i] for j in range(len(padded_cards))))
 
 # 現在の要素とその詳細を表示する関数
 def display_current_element(data,indices):
+
     os.system('cls' if os.name == 'nt' else 'clear')  # 画面をクリア
+
     print("\n現在の要素を解析します:")
     print(f"現在のインデックス: {indices}")
     #route_index = route_index[-1]q
@@ -78,7 +72,7 @@ def display_current_element(data,indices):
         
         print(str(line_index+1)+'/'+str(parent_len))
         
-        display_cards_horizontally(card_designs_half_width,element)
+        display_cards_horizontally(element)
         # print()
 
         # print(line*' ' + str(idx))
@@ -99,7 +93,7 @@ def display_current_element(data,indices):
     
     print(str(line_index+1)+'/'+str(parent_len))
 
-    display_cards_horizontally(card_designs_half_width,element)
+    display_cards_horizontally(element)
         
     # print()
     # print((len(indices)-1) * ' ' + str(indices))
@@ -108,6 +102,8 @@ def display_current_element(data,indices):
 
 # インデックスを更新する関数
 def update_indices(direction, indices):
+
+    global data
 
     element = get_current_element(data, indices)
     global current_indices
@@ -206,33 +202,185 @@ def on_press(key):
     except AttributeError:
         pass
 
-card_designs_half_width = [
+cards = [
     """
-    +---+
-    | 0 |
-    +---+
+    0_ In_range
+        ┌┄┄┄┄┄┄ ‹ › ┄┄┄┄┄┄┄┄ [↺:(1,2)]
+        ┆                     ˅   ˆ
+        ┆                     ┃   ┆
+        ┆           ┌┄┄ ‹ ┄(if:0) ┆
+        ˆ           ┆   ┌ › ┄ ┃ ┄┄┤ 
+        ˇ         ( ⤹   ↰  :  ⤹   ↰  / for:0 )
+        ┆           ┆   ┆     ┆   ┆
+        ┆        (if:1)┄┤  (if:1)┄┤
+        ┆           ┆   ┆     ┆   ┆
+        ├┄ ________ ‹ ┄┄┄┄┄┄┄┄┘   ┆
+        └┄ › ________ ┄┄┴┄┄┄┄┄┄┄┄┄┘
     """,
+#----------------------------------------
     """
-    +---+
-    | 1 |
-    +---+
+    1_ In_range : int/str_type
+        ┌┄┄┄┄┄┄ ‹ › ┄┄┄┄┄┄┄┄ [↺:(1,2)]
+        ┆                     ˇ   ˆ
+        ┆                     ┆   ┆
+        ┆           ┌┄┄ ‹ ┄(if:0) ┆
+        ˆ           ┆   ┌ › ┄ ┆ ┄┄┤ 
+        ˇ         ( ⤹   ↰  :  ⤹   ↰  / for:0 )
+        ┆           ┆   ┆     ┃   ┃
+        ┆        (if:1)┄┤  (if:1)━┩
+        ┆           ┆   ┆     ┆   ┆
+        ├┄ ________ ‹ ┄┄┄┄┄┄┄┄┘   ┆
+        └┄ › ________ ┄┄┴┄┄┄┄┄┄┄┄┄┘
     """,
+#----------------------------------------
     """
-    +---+
-    | 2 |
-    +---+
+    2_ In_range : collection_type
+        ┏━━━━━━━━━ > ━━━━━━━ [↺:(1,2)]
+        ┃                     ˇ   ˆ
+        ┃                     ┆   ┆
+        ┃           ┌┄┄ ‹ ┄(if:0) ┆
+        ^           ┆   ┌ › ┄ ┆ ┄┄┤ 
+                  ( ⤹   ↰  :  ⤹   ↰  / for:0 )
+        ┃           ┆   ┆     ┃   ┆
+        ┃        (if:1)┄┤  (if:1)┄┤
+        ┃           ┆   ┆     ┃   ┆
+        ┡━ ________ < ━━━━━━━━┛   ┆
+        └┄ › ________ ┄┄┴┄┄┄┄┄┄┄┄┄┘
     """,
+#----------------------------------------
     """
-    +---+
-    | 3 |
-    +---+
+    3_ In_range : 配列の調査完了
+        ┌┄┄┄┄┄┄ ‹ › ┄┄┄┄┄┄┄┄ [↺:(1,2)]
+        ┆                     ˇ   ^
+        ┆                     ┆   ┃
+        ┆           ┌┄┄ ‹ ┄(if:0) ┃
+        ˆ           ┆   ┌ › ┄ ┆ ┄┄┨
+        ˇ         ( ⤹   ↰  :  ⤹   ↰  / for:0 )
+        ┆           ┆   ┆     ┆   ┆
+        ┆        (if:1)┄┤  (if:1)┄┤
+        ┆           ┆   ┆     ┆   ┆
+        ├┄ ________ ‹ ┄┄┄┄┄┄┄┄┘   ┆
+        └┄ › ________ ┄┄┴┄┄┄┄┄┄┄┄┄┘
+    """,
+#----------------------------------------
     """
+    4_ In_range : 配列の調査結果の受け取り
+        ┏━━━━━━━━ < ━━━━━━━━ [↺:(1,2)]
+        ┃                     ˇ   ˆ
+        ┃                     ┆   ┆
+        ┃           ┌┄┄ ‹ ┄(if:0) ┆
+                    ┆   ┌ › ┄ ┆ ┄┄┤ 
+        ˅         ( ⤹   ↰  :  ⤹   ↰  / for:0 )
+        ┃           ┆   ┆     ┆   ┃
+        ┃        (if:1)┄┤  (if:1)┄┨
+        ┃           ┆   ┆     ┆   ┃
+        ┠┄ ________ ‹ ┄┄┄┄┄┄┄┄┘   ┃
+        ┗━━ > _______ ━━┷━━━━━━━━━┛
+        """,
+#----------------------------------------
+    """
+    5_ Out_of_range
+        ┌┄┄┄┄┄┄ ‹ › ┄┄┄┄┄┄┄┄ [↺:(1,2)]
+        ┆                     ˅   ˆ
+        ┆                     ┃   ┆
+        ┆           ┏━━ < ━(if:0) ┆
+        ˆ           ┃   ┌ › ┄ ┆ ┄┄┤ 
+        ˇ         ( ⤹   ↰  :  ⤹   ↰  / for:0 )
+        ┆           ┆   ┆     ┆   ┆
+        ┆        (if:1)┄┤  (if:1)┄┤
+        ┆           ┆   ┆     ┆   ┆
+        ├┄ ________ ‹ ┄┄┄┄┄┄┄┄┘   ┆
+        └┄ › ________ ┄┄┴┄┄┄┄┄┄┄┄┄┘
+    """,
+
+#----------------------------------------
+    """
+    6_ Out_of_range : collection_type
+        ┏━━━━━━━━━ > ━━━━━━━ [↺:(1,2)]
+        ┃                     ˇ   ˆ
+        ┃                     ┆   ┆
+        ┃           ┌┄┄ ‹ ┄(if:0) ┆
+        ^           ┆   ┌ › ┄ ┆ ┄┄┤ 
+                  ( ⤹   ↰  :  ⤹   ↰  / for:0 )
+        ┃           ┃   ┆     ┆   ┆
+        ┃        (if:1)┄┤  (if:1)┄┤
+        ┃           ┃   ┆     ┆   ┆
+        ┡━ ________ < ┄┄┄┄┄┄┄┄┘   ┆
+        └┄ › ________ ┄┄┴┄┄┄┄┄┄┄┄┄┘
+    """,
+
+
+#----------------------------------------
+    """
+    7_ Out_of_range : int/str_type
+        ┌┄┄┄┄┄┄ ‹ › ┄┄┄┄┄┄┄┄ [↺:(1,2)]
+        ┆                     ˇ   ˆ
+        ┆                     ┆   ┆
+        ┆           ┌┄┄ ‹ ┄(if:0) ┆
+        ˆ           ┆   ┌ › ┄ ┆ ┄┄┤ 
+        ˇ         ( ⤹   ↰  :  ⤹   ↰  / for:0 )
+        ┆           ┃   ┃     ┆   ┆
+        ┆        (if:1)━┩  (if:1)┄┤
+        ┆           ┆   ┆     ┆   ┆
+        ├┄ ________ ‹ ┄┄┄┄┄┄┄┄┘   ┆
+        └┄ › ________ ┄┄┴┄┄┄┄┄┄┄┄┄┘
+    """,
+
+#----------------------------------------
+    """
+    8_ Out_of_range : 配列の調査完了
+        ┌┄┄┄┄┄┄ ‹ › ┄┄┄┄┄┄┄┄ [↺:(1,2)]
+        ┆                     ˇ   ^
+        ┆                     ┆   ┃
+        ┆           ┌┄┄ ‹ ┄(if:0) ┃
+        ˆ           ┆   ┏ > ━ ┆ ━━┩
+        ˇ         ( ⤹   ↰  :  ⤹   ↰  / for:0 )
+        ┆           ┆   ┆     ┆   ┆
+        ┆        (if:1)┄┤  (if:1)┄┤
+        ┆           ┆   ┆     ┆   ┆
+        ├┄ ________ ‹ ┄┄┄┄┄┄┄┄┘   ┆
+        └┄ › ________ ┄┄┴┄┄┄┄┄┄┄┄┄┘
+    """,
+#----------------------------------------
+    """
+    9_ Out_of_range : 配列の調査結果の受け取り
+        ┏━━━━━━━━ < ━━━━━━━━ [↺:(1,2)]
+        ┃                     ˇ   ˆ
+        ┃                     ┆   ┆
+        ┃           ┌┄┄ ‹ ┄(if:0) ┆
+                    ┆   ┌ › ┄ ┆ ┄┄┤ 
+        ˅         ( ⤹   ↰  :  ⤹   ↰  / for:0 )
+        ┃           ┆   ┃     ┆   ┆
+        ┃        (if:1)┄┨  (if:1)┄┤
+        ┃           ┆   ┃     ┆   ┆
+        ┠┄ ________ ‹ ┄┄┄┄┄┄┄┄┘   ┆
+        ┗━ > ________ ━━┹┄┄┄┄┄┄┄┄┄┘
+    """,
+#----------------------------------------
+    """
+    # 10_ None
+    """,
+
 ]
 
-# 初期状態を表示
-# display_current_element()
+    # サンプルデータ
 
-# メインループ
-print("\n操作: 'd'で次の要素、'a'で前の要素、'q'で終了")
-with keyboard.Listener(on_press=on_press) as listener:
-    listener.join()
+data = []
+
+def image_print(run_tracking):
+
+    global data
+
+    data = run_tracking
+
+
+    # data = [[5], [6], [[0], [2], [[0], [2], [2, 0], [2, 1], [2, 2], [[0], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [2, 4], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [4], [2], [[0], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [4]], [9], [6], [[0], [2], [[0], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [4], [2], [[0], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [4]], [9], [8]]
+
+
+    # 初期状態を表示
+    # display_current_element()
+
+    # メインループ
+    print("\n操作: 'd'で次の要素、'a'で前の要素、'q'で終了")
+    with keyboard.Listener(on_press=on_press) as listener:
+        listener.join()

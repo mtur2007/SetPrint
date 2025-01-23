@@ -87,7 +87,7 @@ test_data = [
 ]
 
 # n = np.ndarray(0)
-test_data = [[((0,(0,(0,0)),0)),((0,[0,0],0))],[('aafdrgf'),('►list')]]
+test_data = [[[[1,[[1,1],[1,1]]],[1,1]],[[0,0],[0,0]]],[[[2,2],[2,2]],[[3,3],[3,3]]]]
 
 # test_data = []
 
@@ -97,10 +97,12 @@ list_data = SetPrint(test_data)
 list_data.set_text_style(style_settings) # set_listの前
 
 # データの整形
-set_datas,tracking_data = list_data.set_list(guide=True,keep_start=2,keep_range='all')
-print(tracking_data)
 
-image_print(tracking_data)
+# データの整形                                             {1:'y',2:'x',3:'y',4:'yf',6:'yf'}
+keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',2:'yf',3:'yf',5:'yf',7:'x'})
+# keep_tracking = list_data.set_list(guide=True,keep_start=2,keep_range='all')
+
+image_print(keep_tracking)
 
 # # 表示
 # for line in set_datas['grid_slice']:
