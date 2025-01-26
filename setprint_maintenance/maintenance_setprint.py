@@ -182,7 +182,6 @@ def transform_keep_index(keep_deeps,parent_index):
         else:
             return tuple(x_keep_index),tuple(y_keep_index)
 
-
 '''
 =============================================================================================================================================================
 ・初歩的な整列
@@ -805,6 +804,12 @@ class SetPrint:
         # All_blocks = []
         # keep_Ylines_data = []
 
+        self.MAX_index = {} # X_keep_index(変更予定の変数名)
+        self.Y_keep_index = {}
+        self.keep_index = []
+        self.range_idx = []
+        self.y_flat_index = []
+
         # <t:初期化>
         self.maintenance_run('初期化')
 
@@ -863,11 +868,6 @@ class SetPrint:
         print('yf_point     ',self.yf_point)
         print('yf_range     ',self.keep_range)
         
-        if self.now_deep == self.min_keep_deep:
-            self.MAX_index = {} # X_keep_index(変更予定の変数名)
-            self.Y_keep_index = {}
-            self.keep_index = []
-            self.range_idx = []
 
         # (P:1)
         if 1 in self.yf_point:
@@ -1012,11 +1012,11 @@ class SetPrint:
         
         self.now_deep += 1 #deepはインデックスの次元測定
 
-        if self.now_deep == self.min_keep_deep:
-            self.MAX_index = {} # X_keep_index(変更予定の変数名)
-            self.Y_keep_index = {}
-            self.keep_index = []
-            self.range_idx = []
+        # if self.now_deep == self.min_keep_deep:
+        #     self.MAX_index = {} # X_keep_index(変更予定の変数名)
+        #     self.Y_keep_index = {}
+        #     self.keep_index = []
+        #     self.range_idx = []
 
         # (P:2)
         # キープ範囲内にある次元の配列から情報を取得する。
@@ -1258,11 +1258,11 @@ class SetPrint:
 
         self.now_deep += 1 #deepはインデックスの次元測定
         
-        if self.now_deep == self.min_keep_deep:
-            self.MAX_index = {} # X_keep_index(変更予定の変数名)
-            self.Y_keep_index = {}
-            self.keep_index = []
-            self.range_idx = []
+        # if self.now_deep == self.min_keep_deep:
+        #     self.MAX_index = {} # X_keep_index(変更予定の変数名)
+        #     self.Y_keep_index = {}
+        #     self.keep_index = []
+        #     self.range_idx = []
     
         # (P:2)
         # キープ範囲内にある次元の配列から情報を取得する。
@@ -1283,12 +1283,15 @@ class SetPrint:
             
             if (insert_index in self.range_idx) == False:
                 self.range_idx.append(insert_index)
+            
+            self.y_flat_index.append((self.now_index[self.now_deep-3:-1]))
+            
             #     self.MAX_indexlen.append([0,1])
             # else:
             #     if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < 1:
             #         self.MAX_indexlen[self.MAX_index.index(insert_index)][1] = 1
 
-            # <p:範囲内>
+            # <t:start,In_range>
             self.maintenance_run('start','In_range')
 
             for linenum in range(len(datas)):
@@ -1299,10 +1302,11 @@ class SetPrint:
                 self.now_index[-1] = linenum
 
                 insert_index = self.keep_index.copy()
+                self.y_flat_index.append(self.now_index[self.now_deep-3:])
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
-                    # <p:配列型>
+                    # <t:collection_type,In_range>
                     self.maintenance_run('collection_type','In_range')
                     
                     value_txt = self.collections[str(type(line).__name__)][0]
@@ -1313,10 +1317,11 @@ class SetPrint:
                     else:
                         self.search_sequence(line)
 
+                    # <t:配列の調査結果の受け取り,In_range>
                     self.maintenance_run('配列の調査結果の受け取り','In_range')
                 else:
                     
-                    # <p:範囲内 int/str型>
+                    # <t:int/str_type,In_range>
                     self.maintenance_run('int/str_type','In_range')
 
                     value_txt = str(line)
@@ -1325,6 +1330,7 @@ class SetPrint:
                 #存在するインデックスの情報の新規作成/更新
                 if (insert_index in self.range_idx) == False:
                     self.range_idx.append(insert_index)
+                
                 #     self.MAX_indexlen.append([0,len(value_txt)])
                 # else:
                 #     if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < len(value_txt):
@@ -1341,6 +1347,8 @@ class SetPrint:
 
             if (insert_index in self.range_idx) == False:
                 self.range_idx.append(insert_index)
+            
+            self.y_flat_index.append(self.now_index[self.now_deep-3:])
             #     self.MAX_indexlen.append([0,1])
             # else:
             #     if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < 1:
@@ -1356,7 +1364,7 @@ class SetPrint:
 
             del self.keep_index[-1]
 
-            # <t:範囲内 配列の調査完了>
+            # <t:配列の調査完了,In_range>
             self.maintenance_run('配列の調査完了','In_range')
         
         # (P:1)
@@ -1383,7 +1391,7 @@ class SetPrint:
         # (P:0)
         else:
 
-            # <t:範囲外>
+            # <t:start,Out_of_range>
             parent__keep_tracking = self.maintenance_run('start','Out_of_range')
 
             txt_index = ''
@@ -1415,7 +1423,7 @@ class SetPrint:
                 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
                     
-                    # <p:配列型>
+                    # <t:collection_type,Out_of_range>
                     self.maintenance_run('collection_type','Out_of_range')
 
                     if type(line) == dict:
@@ -1423,13 +1431,13 @@ class SetPrint:
                     else:
                         self.search_sequence(line)
 
-                    # <p:配列型>
+                    # <t:配列の調査結果の受け取り,Out_of_range>
                     self.maintenance_run('配列の調査結果の受け取り','Out_of_range')
                     
                     keep_liens_data.append(f'data_type: {type(line)}')
                 else:
 
-                    # <p:配列型>
+                    # <t:int/str_type,Out_of_range>
                     self.maintenance_run('int/str_type','Out_of_range')
 
                     keep_liens_data.append(str(line))
@@ -1456,7 +1464,7 @@ class SetPrint:
 
             # self.keep_txts_data[insert_index] = [parent_index, max_indexlen]
 
-            # <t:配列の調査完了>
+            # <t:配列の調査完了,Out_of_range>
             self.maintenance_run('配列の調査完了','Out_of_range',parent__keep_tracking)
 
         del self.now_index[-1] #インデックスの調査が終わったら戻す
@@ -1474,6 +1482,7 @@ class SetPrint:
         # 格納情報の保存
         parent__keep_index = self.keep_index
         parent__range_idx = self.range_idx
+        parent__y_flat_index = self.y_flat_index
         print('parent',parent__range_idx)
 
         # parent__MAX_index     = self.MAX_index # 存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
@@ -1539,7 +1548,7 @@ class SetPrint:
         # self.keep_txts_data.append('')
         # insert_index = len(self.Xline_blocks)-1
         
-        # <t:範囲内>
+        # <t:start,In_range>
         self.maintenance_run('start','In_range')
         print('start')
         print(' < X.      ',self.range_idx)
@@ -1563,7 +1572,7 @@ class SetPrint:
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
                     
-                    # <p:配列型>
+                    # <t:collection_type,In_range>
                     self.maintenance_run('collection_type','In_range')
                     
                     # self.keep_1line_data = [] #1列の配列情報を格納するリスト
@@ -1576,13 +1585,14 @@ class SetPrint:
                     else:
                         self.search_sequence(line)
                     
+                    # <t:配列の調査結果の受け取り,In_range>
                     self.maintenance_run('配列の調査結果の受け取り','In_range')
                 
                     # keep_liens_data.append(self.keep_1line_data)
                 
                 else:
 
-                    # <p:範囲内 int/str型>
+                    # <t:int/str_type,In_range>
                     self.maintenance_run('int/str_type','In_range')
 
                     value_line = str(line)
@@ -1612,10 +1622,19 @@ class SetPrint:
                 line = datas[linenum]
                 
                 self.now_index[-1] = linenum
+
+                # インデックスのキープ化
+                x_keep_index,y_keep_index = transform_keep_index(self.keep_start,self.now_index)
+                
+                if y_keep_index not in self.Y_keep_index:
+                    self.Y_keep_index[y_keep_index] = []
+                
+                self.y_flat_index = self.Y_keep_index[y_keep_index]
+
                 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
-                    # <p:配列型>
+                    # <t:collection_type,In_range>
                     self.maintenance_run('collection_type','In_range')
 
                     # self.keep_1line_data = [] #1列の配列情報を格納するリスト
@@ -1629,24 +1648,18 @@ class SetPrint:
                         self.search_mapping(line)
                     else:
                         self.search_sequence(line)
-                
+
+                    # <t:配列の調査結果の受け取り,In_range>
                     self.maintenance_run('配列の調査結果の受け取り','In_range')
 
                     # keep_liens_data.append(self.keep_1line_data)
 
                 else:
-
-                    # <p:範囲内 int/str型>
+                    # <t:int/str_type,In_range>
                     self.maintenance_run('int/str_type','In_range')
 
                     value_txt = str(line)
                     # keep_liens_data.append([[self.keep_index,value_txt]])
-
-                # インデックスのキープ化
-                x_keep_index,y_keep_index = transform_keep_index(self.keep_start,self.now_index)
-                
-                if y_keep_index not in self.Y_keep_index:
-                    self.Y_keep_index[y_keep_index] = []
                 
                 ''' 親インデックスの方に格納する
                 #存在するインデックスの情報の新規作成/更新
@@ -1776,6 +1789,7 @@ class SetPrint:
         # 情報復元
         self.keep_index = parent__keep_index
         self.range_idx = parent__range_idx
+        self.y_flat_index = parent__y_flat_index
         
         #self.MAX_indexlen = parent__MAX_indexlen + self.MAX_indexlen # インデックスに格納されている配列の文字数を格納する。
         # self.pivot_value = parent__pivot_value # 親インデックスのキー以降をmapping_keyに格納するための基準値設定。
@@ -2159,3 +2173,11 @@ class SetPrint:
         #キーボードのリスナーを開始
         with keyboard.Listener(on_press=self.on_press) as listener:
             listener.join()
+
+
+
+'''
+次元毎にリスト配列と整合性を取る形で文字の長さなのどを格納し、インデックスで指定できるようにする。
+y,yf , x の部分はインデックスが0の箇所として格納する。
+[10,20[5,3,2]]
+'''
