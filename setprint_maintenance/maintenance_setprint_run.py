@@ -85,9 +85,40 @@ test_data = [
      'dict' :{'zero': 0, 'frst': {'zero': 0, 'one': 1}, 2:2}}
 
 ]
-
+'''
 # n = np.ndarray(0)
-test_data = [[[[1,[[1,1],[1,1]]],[1,1]],[[0,0],[0,0]]],[[[2,2],[2,2]],[[3,3],[3,3]]]]
+test_data = [
+    
+    [
+        [
+          [0,     0],   [0,     0],
+          [0,     0],   [0,     0]
+        ],
+    [
+        [
+          [0,     0],   [0,     0],
+          [0,      ],   [0,     0]
+        
+             [0,0]         [0,0]
+             [0,0]         [0,0]
+           
+        ]
+    
+    ]
+'''
+test_data = [[[ [0,0],[0,1] ], [[0,0],[0,0]]],[[ [0,0],[0,[[0,0],[0,0]]] ], [[0,0],[0,[[0,0],[0,0]]]]]]
+# keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',2:'x',3:'yf',5:'y',7:'x'})
+
+# test_data = [[[0,0],[[0,0],0]],[[0,0],[0,[0,0]]]]
+# keep_tracking = list_data.set_list(guide=True,keep_start={1:'x',2:'yf',4:'y'})
+'''
+[
+   q
+   [  [  0,     0],   [  [  0,     0],
+      [        ,0],      [        ,0]  
+          [0,0]     ],       [0,0]    ]
+]
+'''
 
 # test_data = []
 
@@ -98,6 +129,7 @@ list_data.set_text_style(style_settings) # set_listの前
 
 # データの整形                                             {1:'y',2:'x',3:'y',4:'yf',6:'yf'}
 keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',2:'x',3:'yf',5:'y',7:'x'})
+
 # keep_tracking = list_data.set_list(guide=True,keep_start=2,keep_range='all')
 
 image_print(keep_tracking)
