@@ -703,7 +703,6 @@ class SetPrint:
             if range_type == 'Out_of_range':
                 if run_title == 'start':
                     parent__keep_tracking = self.keep_tracking[:]
-                    print('out_of_range',parent__keep_tracking)
                     self.keep_tracking = []
 
                     self.keep_tracking.append([run_point[-1]])
@@ -714,7 +713,6 @@ class SetPrint:
 
                 if run_title == '配列の調査完了':
                     #self.tracking_data.append([self.run_tracking[:],[[10]]])
-                    print(run_datas)
                     parent__keep_tracking = run_datas[2]
 
                     self.keep_tracking = parent__keep_tracking + [ self.keep_tracking ]
@@ -747,7 +745,6 @@ class SetPrint:
 
     def transform_keep_index(self,index):
 
-        print(index)
         x_keep_index = index[:]
         y_keep_index = index[:]
         
@@ -797,7 +794,7 @@ class SetPrint:
         self.keep_start = keep_start
 
         #初期化
-        self.now_deep = 1 #now_deepはインデックスの次元測定
+        self.now_deep = 0 #now_deepはインデックスの次元測定
         self.now_index = [] # 調べている場所のインデックスを格納する。
         # self.now_key = [] # now_indexに辞書型のキーが必要な箇所とキーを格納
         # self.Xline_blocks = []
@@ -814,6 +811,8 @@ class SetPrint:
         self.range_idx = []
         self.y_flat_index = []
         self.X_keep_index = []
+
+        now_keep_index = []
 
         # <t:初期化>
         self.maintenance_run('初期化')
@@ -871,111 +870,10 @@ class SetPrint:
         print('\n\nall_deep_settings\n',keep_settings)
         self.keep_settings = keep_settings
         
-
-        # (P:1)
-        if self.keep_settings[0] == 'yf':
-            
-            self.now_index = [0]
-
-            # keep_deep = max([keep_deep for keep_deep, value in self.keep_start.items() if keep_deep <= self.now_deep])
-            # keep_type = self.keep_start[keep_deep]
-            
-            parent_index = self.now_index.copy()
-        
-            # インデックスのキープ化
-            x_keep_index,y_keep_index = self.transform_keep_index(parent_index)
-        
-            if x_keep_index not in self.MAX_index:
-                self.MAX_index[x_keep_index] = []
-            
-            if y_keep_index not in self.Y_keep_index:
-                self.Y_keep_index[y_keep_index] = []
-
-            self.yf_setup(datas,parent_index)
-
-            # keep_Ylines_data = [self.keep_txts_data]
-            # All_blocks = [self.Xline_blocks]
-            # line_title = ['']
-            
-        # (P:0)
+        if isinstance(datas, self.mapping_type):
+            self.search_mapping(datas)
         else:
-            # line_title = ['']
-            max_indexlen = 0
-
-            # <t:範囲外>
-            parent__keep_tracking = self.maintenance_run('start','Out_of_range')
-
-            for linenum in range(len(datas)):
-                #self.Xline_blocks = []
-                #self.keep_txts_data = []
-                line = datas[linenum]
-                self.now_index = [linenum]
-
-                if isinstance(line, (list, tuple, np.ndarray, dict)):
-
-                    # <p:配列型>
-                    self.maintenance_run('collection_type','Out_of_range')
-                    
-                    if type(line) == dict:
-                        self.search_mapping(line)
-                    else:
-                        self.search_sequence(line)
-                
-
-                    # <p:配列型>
-                    self.maintenance_run('配列の調査結果の受け取り','Out_of_range')
-
-                    # All_blocks.append(self.Xline_blocks)
-                    # keep_Ylines_data.append(self.keep_txts_data)
-
-                    # keep_liens_data.append(f'data_type: {type(line)}')
-                    # line_title.append(linenum)
-
-                else:
-
-                    # <p:配列型>
-                    self.maintenance_run('nt/str_type','Out_of_range')
-
-                    # keep_liens_data.append(str(line))
-                    # All_blocks.append([[f'[{str(linenum)}]{{n}}','index_Err']])
-                    # keep_Ylines_data.append([[[linenum,0],9]])
-
-                    # line_title.append(linenum)
-
-                if self.keep_settings[self.now_deep-1] != None:
-
-                    parent_index = self.now_index.copy()
-                    
-                    # インデックスのキープ化
-
-                    # インデックスのキープ化
-                    x_keep_index,y_keep_index = self.transform_keep_index(parent_index)
-                
-                    if x_keep_index not in self.MAX_index:
-                        self.MAX_index[x_keep_index] = []
-                    
-                    if y_keep_index not in self.Y_keep_index:
-                        self.Y_keep_index[y_keep_index] = []
-                    
-
-                # if len(keep_liens_data[linenum+1]) > max_indexlen:
-                #     max_indexlen = len(keep_liens_data[linenum+1])
-            
-                # ber_print(2)
-                if self.ber_print:
-                    now_len = int(self.line_ber_len*(linenum+1))
-                    if self.ber_print:
-                        print('\033[F\033[K{ '+'='*now_len+' '*(self.ber_len-now_len)+' }')
-
-            # <t:範囲外>
-            self.maintenance_run('配列の調査完了','Out_of_range',parent__keep_tracking)
-
-            # keep_liens_data = [keep_liens_data]
-
-            # txt_keep_index = ['n']
-            # keep_Ylines_data.insert(0,[[txt_keep_index,max_indexlen]])
-
-            # All_blocks.insert(0,keep_liens_data)
+            self.search_sequence(datas)
 
         # ber_print(3)
         if self.ber_print:
@@ -1258,7 +1156,7 @@ class SetPrint:
         self.now_deep -= 1
 
     # [↺:2] シーケンス型を調べる
-    def search_sequence(self, datas):
+    def search_sequence(self, datas, Kdeep_index=[]):
 
         self.now_deep += 1 #deepはインデックスの次元測定
         
@@ -1385,6 +1283,11 @@ class SetPrint:
             print()
             print('deep',self.now_deep)
         
+            if len(Kdeep_index) == 0:
+                Kdeep_index = [['y'],[]]
+
+            direction_index = 0
+
             # txt_index = ''
             # for i in self.now_index:
             #     txt_index += '['+str(i)+']'
@@ -1404,6 +1307,8 @@ class SetPrint:
 
             # <t:start,Out_of_range>
             parent__keep_tracking = self.maintenance_run('start','Out_of_range')
+
+            len_Kdeep_index = len(Kdeep_index)-1
 
             txt_index = ''
             for i in self.now_index:
@@ -1427,20 +1332,31 @@ class SetPrint:
             max_indexlen = 0
             # self.keep_txts_data.append('')
 
+            keep_x = self.keep_settings[self.now_deep-1] in ('x','f')
+            if not keep_x: 
+                if len_Kdeep_index == -1:
+                    Kdeep_index = [['y'],[]]
+                direction_index = 0
+
             for linenum in range(len(datas)):
                 line = datas[linenum]
 
                 self.now_index[-1] = linenum
                 
-                if isinstance(line, (list, tuple, np.ndarray, dict)):
+                if keep_x:    
+                    if len_Kdeep_index < linenum:
+                        Kdeep_index.append([linenum])
+                    direction_index = linenum
                     
+                if isinstance(line, (list, tuple, np.ndarray, dict)):
+                        
                     # <t:collection_type,Out_of_range>
                     self.maintenance_run('collection_type','Out_of_range')
 
                     if type(line) == dict:
                         self.search_mapping(line)
                     else:
-                        self.search_sequence(line)
+                        Kdeep_index[linenum][0] = [self.search_sequence(line,Kdeep_index[direction_index][0])]
 
                     # <t:配列の調査結果の受け取り,Out_of_range>
                     self.maintenance_run('配列の調査結果の受け取り','Out_of_range')
@@ -1481,6 +1397,8 @@ class SetPrint:
         del self.now_index[-1] #インデックスの調査が終わったら戻す
         self.now_deep -= 1
 
+        return Kdeep_index
+
     # [→:3] キープデータの初期化/作成後の後処理
     def yf_setup(self,datas,parent_index):
         
@@ -1495,6 +1413,7 @@ class SetPrint:
         parent__range_idx = self.range_idx
         parent__y_flat_index = self.y_flat_index
         parent__X_keep_index = self.X_keep_index
+        now_keep_index = self.X_keep_index
         print('parent',parent__range_idx)
 
         # parent__MAX_index     = self.MAX_index # 存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
