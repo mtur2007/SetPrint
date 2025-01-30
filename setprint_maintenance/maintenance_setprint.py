@@ -1221,7 +1221,7 @@ class SetPrint:
 
                 if len_Kdeep_index < linenum:
                     Kdeep_index.append([linenum,[]])
-
+               
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
                     # <t:collection_type,In_range>
@@ -1321,8 +1321,6 @@ class SetPrint:
             # <t:start,Out_of_range>
             parent__keep_tracking = self.maintenance_run('start','Out_of_range')
 
-            len_Kdeep_index = len(Kdeep_index)-1
-
             txt_index = ''
             for i in self.now_index:
                 txt_index += '['+str(i)+']'
@@ -1346,10 +1344,12 @@ class SetPrint:
             # self.keep_txts_data.append('')
 
             keep_x = self.keep_settings[self.now_deep-1] in ('x','f')
-            if not keep_x: 
-                if len_Kdeep_index == -1:
-                    Kdeep_index = [['y',[]]]
-                direction_index = 0
+            direction_index = 0
+            
+            if not keep_x:
+                if len(Kdeep_index) == 0:
+                    Kdeep_index = [['y',Kdeep_index]]
+            len_Kdeep_index = len(Kdeep_index)-1
 
             for linenum in range(len(datas)):
                 line = datas[linenum]
@@ -1495,8 +1495,6 @@ class SetPrint:
         # insert_index = len(self.Xline_blocks)-1
         
 
-        len_Kdeep_index = len(Kdeep_index)-1
-
         # <t:start,In_range>
         self.maintenance_run('start','In_range')
         print('start')
@@ -1506,6 +1504,8 @@ class SetPrint:
 
         if len(Kdeep_index) == 0:
             Kdeep_index = [['yf',[]]]
+        
+        len_Kdeep_index = len(Kdeep_index)-1
 
         if type(datas) == dict:
             # self.now_key.append('')
@@ -1582,9 +1582,6 @@ class SetPrint:
                     self.Y_keep_index[y_keep_index] = []
                 
                 self.y_flat_index = self.Y_keep_index[y_keep_index]
-
-                if len_Kdeep_index < linenum:
-                    Kdeep_index.append([linenum,[]])
                 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
@@ -1601,7 +1598,7 @@ class SetPrint:
                     if type(line) == dict:
                         self.search_mapping(line)
                     else:
-                        Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
+                        Kdeep_index[0][1] = self.search_sequence(line,Kdeep_index[0][1])
 
                     # <t:配列の調査結果の受け取り,In_range>
                     self.maintenance_run('配列の調査結果の受け取り','In_range')
