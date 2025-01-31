@@ -1220,9 +1220,12 @@ class SetPrint:
                 self.y_flat_index.append(line_index+self.keep_index)
 
                 if len_Kdeep_index < linenum:
-                    Kdeep_index.append([linenum,[]])
+                    Kdeep_index.append(linenum)
                
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
+
+                    if Kdeep_index[linenum] != list:
+                        Kdeep_index[linenum] = [linenum,[]]
 
                     # <t:collection_type,In_range>
                     self.maintenance_run('collection_type','In_range')
@@ -1348,7 +1351,7 @@ class SetPrint:
             
             if not keep_x:
                 if len(Kdeep_index) == 0:
-                    Kdeep_index = [['y',Kdeep_index]]
+                    Kdeep_index = ['y']
             len_Kdeep_index = len(Kdeep_index)-1
 
             for linenum in range(len(datas)):
@@ -1358,11 +1361,17 @@ class SetPrint:
                 
                 if keep_x:    
                     if len_Kdeep_index < linenum:
-                        Kdeep_index.append([linenum,[]])
+                        Kdeep_index.append(linenum)
                     direction_index = linenum
                     
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
-                        
+
+                    if type(Kdeep_index[direction_index]) != list:
+                        if keep_x:
+                            Kdeep_index[direction_index] = [linenum,[]]
+                        else:
+                            Kdeep_index[direction_index] = ['y',[]]
+
                     # <t:collection_type,Out_of_range>
                     self.maintenance_run('collection_type','Out_of_range')
 
