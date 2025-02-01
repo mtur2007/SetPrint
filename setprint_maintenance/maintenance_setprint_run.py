@@ -105,12 +105,14 @@ test_data = [
         ]
     
     ]
-# '''
-test_data = [[[ [0,0],[0,1] ], [[0,0],[0,0]]],[[ [0,0],[0,[[0,0],[0,0]]] ], [[0,0],[0,[[0,0],[0,0]]]]]]
+'''
+test_data = [[[ [0,0],[0,1] ], [[0,0],[0,0]]],[[ [0,0],['0-00000000',[[0,0],[0,0]],100000] ], [[0,0],[0,[[0,0],[0,0]]]]]]
 # keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',2:'x',3:'yf',5:'y',7:'x'})
 
 # test_data = [[[0,0],[[0,0],0]],[[0,0],[0,[0,0]]]]
 # keep_tracking = list_data.set_list(guide=True,keep_start={1:'x',2:'yf',4:'y'})
+
+
 '''
 [
    q
@@ -128,7 +130,7 @@ list_data = SetPrint(test_data)
 list_data.set_text_style(style_settings) # set_listの前
 
 # データの整形                                             {1:'y',2:'x',3:'y',4:'yf',6:'yf'}
-keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',2:'x',3:'yf',5:'yf',7:'x'})
+keep_tracking = list_data.set_list(guide=True,keep_start={1:'x',2:'y',3:'yf',5:'yf',7:'x'})
 # keep_tracking = list_data.set_list(guide=True,keep_start={1:'x',2:'yf',4:'y'})
 
 # keep_tracking = list_data.set_list(guide=True,keep_start=2,keep_range='all')
@@ -148,3 +150,5 @@ image_print(keep_tracking)
 
 # pick表示を行う
 #list_data.pick_guideprint(file_relative_access('./output_txtfile/pick_guide.txt'))
+
+[[5, [[5, [[5, [1, 1]]]]]], [5, [[5, [[5, [1, [5, [[5, [1, 1]]]]]]]]]]]

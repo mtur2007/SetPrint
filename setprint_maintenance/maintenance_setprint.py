@@ -1224,8 +1224,19 @@ class SetPrint:
                
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
-                    if Kdeep_index[linenum] != list:
-                        Kdeep_index[linenum] = [linenum,[]]
+                    if type(Kdeep_index[linenum]) != list:
+                        
+                        if Kdeep_index[linenum] < self.collections[type(line).__name__][1]:
+                            Kdeep_index[linenum] = [self.collections[type(line).__name__][1],[]]
+                        else:
+                            Kdeep_index[linenum] = [Kdeep_index[linenum],[]]
+                    
+                    else:
+                        
+                        if Kdeep_index[linenum][0] < self.collections[type(line).__name__][1]:
+                            Kdeep_index[linenum][0] = [self.collections[type(line).__name__][1],[]]
+
+                        #Kdeep_index[linenum] = [Kdeep_index[linenum],[]]
 
                     # <t:collection_type,In_range>
                     self.maintenance_run('collection_type','In_range')
@@ -1240,8 +1251,17 @@ class SetPrint:
 
                     # <t:配列の調査結果の受け取り,In_range>
                     self.maintenance_run('配列の調査結果の受け取り','In_range')
+
                 else:
                     
+                    if type(Kdeep_index[linenum]) != list:
+                        if Kdeep_index[linenum] < len(str(line)):
+                            Kdeep_index[linenum] = len(str(line))
+                    else:
+                        if Kdeep_index[linenum][0] < len(str(line)):
+                            Kdeep_index[linenum][0] =  len(str(line))
+                    
+
                     # <t:int/str_type,In_range>
                     self.maintenance_run('int/str_type','In_range')
 
@@ -1295,7 +1315,9 @@ class SetPrint:
         # キープする次元と現在の次元が同じなら、キープ用の処理に移る。
             
         # elif self.now_deep in self.yf_point:
+
         elif set_keep_type == 'yf':
+
             print(' < yf',Kdeep_index)
             
             print()
@@ -1313,12 +1335,11 @@ class SetPrint:
             # print('p_range',len(parent_index)-1)
             Kdeep_index = self.yf_setup(datas,parent_index,Kdeep_index)
 
-
             print(' > yf',Kdeep_index)
-            
 
         # (P:0)
         else:
+
             print(' < y.x',Kdeep_index)
 
             # <t:start,Out_of_range>
@@ -1351,7 +1372,9 @@ class SetPrint:
             
             if not keep_x:
                 if len(Kdeep_index) == 0:
-                    Kdeep_index = ['y']
+                    Kdeep_index = [0]
+                    #Kdeep_index = ['y']
+
             len_Kdeep_index = len(Kdeep_index)-1
 
             for linenum in range(len(datas)):
@@ -1367,10 +1390,16 @@ class SetPrint:
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
                     if type(Kdeep_index[direction_index]) != list:
-                        if keep_x:
-                            Kdeep_index[direction_index] = [linenum,[]]
+                        if Kdeep_index[direction_index] < self.collections[type(line).__name__][1]:
+                            Kdeep_index[direction_index] = [self.collections[type(line).__name__][1],[]]
                         else:
-                            Kdeep_index[direction_index] = ['y',[]]
+                            Kdeep_index[direction_index] = [Kdeep_index[direction_index],[]]
+                    
+                    else:
+                        if Kdeep_index[direction_index][0] < self.collections[type(line).__name__][1]:
+                            Kdeep_index[direction_index][0] = self.collections[type(line).__name__][1]
+
+                        #Kdeep_index[direction_index] = ['y',[]]
 
                     # <t:collection_type,Out_of_range>
                     self.maintenance_run('collection_type','Out_of_range')
@@ -1385,7 +1414,13 @@ class SetPrint:
                     
                     keep_liens_data.append(f'data_type: {type(line)}')
                 else:
-
+                    if type(Kdeep_index[direction_index]) != list:
+                        if Kdeep_index[direction_index] < len(str(line)):
+                            Kdeep_index[direction_index] = len(str(line))
+                    else:
+                        if Kdeep_index[direction_index][0] < len(str(line)):
+                            Kdeep_index[direction_index][0] = len(str(line))
+                    
                     # <t:int/str_type,Out_of_range>
                     self.maintenance_run('int/str_type','Out_of_range')
 
@@ -1512,7 +1547,9 @@ class SetPrint:
         print(' < tracking',self.keep_tracking)
 
         if len(Kdeep_index) == 0:
-            Kdeep_index = [['yf',[]]]
+
+            Kdeep_index = [[0,[]]]
+            #Kdeep_index = [['yf',[]]]
         
         len_Kdeep_index = len(Kdeep_index)-1
 
@@ -1594,6 +1631,15 @@ class SetPrint:
                 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
+                    if type(Kdeep_index[0]) != list:
+                        if Kdeep_index[0] < self.collections[type(line).__name__][1]:
+                            Kdeep_index[0] = self.collections[type(line).__name__][1]
+                    else:
+                        if Kdeep_index[0][0] < self.collections[type(line).__name__][1]:
+                            Kdeep_index[0][0] = self.collections[type(line).__name__][1]
+                
+                    print(':'*20,self.collections[type(line).__name__][1])
+                    print(Kdeep_index[0][0])
                     # <t:collection_type,In_range>
                     self.maintenance_run('collection_type','In_range')
 
@@ -1615,6 +1661,14 @@ class SetPrint:
                     # keep_liens_data.append(self.keep_1line_data)
 
                 else:
+                    
+                    if type(Kdeep_index[0]) != list:
+                        if Kdeep_index[0] < len(str(line)):
+                            Kdeep_index[0] = len(str(line))
+                    else:
+                        if Kdeep_index[0][0] < len(str(line)):
+                            Kdeep_index[0][0] =  len(str(line))
+                    
                     # <t:int/str_type,In_range>
                     self.maintenance_run('int/str_type','In_range')
 
