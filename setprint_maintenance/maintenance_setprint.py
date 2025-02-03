@@ -1184,7 +1184,7 @@ class SetPrint:
             self.keep_index.append(-1)
             self.now_index.append('')
 
-            line_index = [self.now_index[self.now_deep-3]]
+            # line_index = [self.now_index[self.now_deep-3]]
                 
             insert_index = self.keep_index[:]
         
@@ -1196,7 +1196,7 @@ class SetPrint:
             if (insert_index in self.range_idx) == False:
                 self.range_idx.append(insert_index)
             
-            self.y_flat_index.append(line_index+self.keep_index)
+            self.y_flat_index.append(self.keep_index[:])
             
             #     self.MAX_indexlen.append([0,1])
             # else:
@@ -1217,7 +1217,7 @@ class SetPrint:
 
                 insert_index = self.keep_index[:]
 
-                self.y_flat_index.append(line_index+self.keep_index)
+                self.y_flat_index.append(self.keep_index[:])
 
                 if len_Kdeep_index < linenum:
                     Kdeep_index.append(linenum)
@@ -1289,8 +1289,8 @@ class SetPrint:
             if (insert_index in self.range_idx) == False:
                 self.range_idx.append(insert_index)
             
-            keep_index = [self.now_index[self.now_deep-3]]+self.keep_index
-            self.y_flat_index.append(line_index+insert_index)
+            # keep_index = [self.now_index[self.now_deep-3]]+self.keep_index
+            self.y_flat_index.append(insert_index)
             #     self.MAX_indexlen.append([0,1])
             # else:
             #     if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < 1:
@@ -1374,6 +1374,7 @@ class SetPrint:
                 if len(Kdeep_index) == 0:
                     Kdeep_index = [0]
                     #Kdeep_index = ['y']
+                    y_Kdeep_index = []
 
             len_Kdeep_index = len(Kdeep_index)-1
 
@@ -1627,7 +1628,7 @@ class SetPrint:
                 if y_keep_index not in self.Y_keep_index:
                     self.Y_keep_index[y_keep_index] = []
                 
-                self.y_flat_index = self.Y_keep_index[y_keep_index]
+                self.y_flat_index = []
                 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
@@ -1667,7 +1668,7 @@ class SetPrint:
                             Kdeep_index[0] = len(str(line))
                     else:
                         if Kdeep_index[0][0] < len(str(line)):
-                            Kdeep_index[0][0] =  len(str(line))
+                            Kdeep_index[0][0] = len(str(line))
                     
                     # <t:int/str_type,In_range>
                     self.maintenance_run('int/str_type','In_range')
@@ -1685,6 +1686,8 @@ class SetPrint:
                 #     if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(value_txt):
                 #         self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(value_txt)
                 '''
+
+                self.Y_keep_index[y_keep_index].append([self.now_index[:],self.y_flat_index[:]])
 
                 # ber_print(2)
                 if self.ber_print:
@@ -1815,6 +1818,31 @@ class SetPrint:
         # self.mapping_key = parent__mapping_key + self.mapping_key# keep_keyに対応するマッピング型のキー
         
         # self.finish_index = parent__finish_index + self.finish_index #リスト配列の最後尾のインデックスを格納
+
+    def to_tal_X_keep_index(self,x_keep_index,total=0):
+        for index,deep_data in enumerate(x_keep_index):
+            if type(deep_data) == list:
+                x_keep_index[index] = self.to_tal_X_keep_index(deep_data,total)
+            else:
+                x_keep_index[index] = total
+                total += deep_data
+
+        return x_keep_index
+
+    def one_deep_Xkeep(self,x_keep_index,search_index=[],line_txt=''):
+        search_index.append(0)
+        for index,deep_data in enumerate(x_keep_index):
+            search_index[-1] = index
+            if type(deep_data) == list:
+                self.one_deep_Xkeep(search_index)
+
+
+    # [→:4] キープデータの整形
+    def format_keep_data(self,X_keep_index,Y_keep_index):
+
+        for y_keep_index,line_data in Y_keep_index.items():
+            len(y_keep_index)
+
 
     '''
     # [→:4] キープデータの整形
