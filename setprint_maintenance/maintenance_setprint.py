@@ -105,6 +105,15 @@ def access_nested_collection(nested_list,indices):
         value = nested_list
         return value
 
+def access_nested_keep_index(nested_list,indices):
+
+    for index in indices:
+        nested_list = nested_list[index][1]
+        
+    else:
+        value = nested_list
+        return value
+
 #------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # 配列の型変換を行う関数
@@ -157,16 +166,6 @@ def convert_list_to_tuple(data):
     else:
         # 基本データ型はそのまま返す
         return data
-
-def x_keep_index(keep_deeps,parent_index):
-    deep = len(parent_index)
-    for key,value in keep_deeps.items():
-        if deep >= key:
-            if value in ('y','yf'):
-                parent_index[key-1] = value
-
-        else:
-            return tuple(parent_index)
 
 '''
 =============================================================================================================================================================
@@ -887,7 +886,11 @@ class SetPrint:
         print()
         print('flat_X_keep_index')
         print(Kdeep_index)
-            
+        
+        x_keep_index,keep_len = self.flat_x_keep_index(Kdeep_index)
+        print(x_keep_index)
+        print(keep_len)
+
         print()
         print('Y_keep_index')
         for key,value in self.Y_keep_index.items():
@@ -1387,7 +1390,24 @@ class SetPrint:
                     if len_Kdeep_index < linenum:
                         Kdeep_index.append(linenum)
                     direction_index = linenum
+                
+                if self.min_keep_deep <= self.now_deep <= self.max_keep_deep:
+
+                    parent_index = self.now_index.copy()
+
+                    # インデックスのキープ化
+                    x_keep_index,y_keep_index = self.transform_keep_index(parent_index)
+
+                    if x_keep_index not in self.MAX_index:
+                        self.MAX_index[x_keep_index] = []
                     
+                    if y_keep_index not in self.Y_keep_index:
+                            self.Y_keep_index[y_keep_index] = []
+                        
+                    if keep_x:
+                        self.Y_keep_index[y_keep_index].append([self.now_index[:-1],linenum])
+                        
+
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
                     if type(Kdeep_index[direction_index]) != list:
@@ -1428,18 +1448,6 @@ class SetPrint:
                     keep_liens_data.append(str(line))
                     #リストの最下層の場合の処理
                 
-                if self.min_keep_deep <= self.now_deep <= self.max_keep_deep:
-
-                    parent_index = self.now_index.copy()
-
-                    # インデックスのキープ化
-                    x_keep_index,y_keep_index = self.transform_keep_index(parent_index)
-
-                    if x_keep_index not in self.MAX_index:
-                        self.MAX_index[x_keep_index] = []
-                    
-                    if y_keep_index not in self.Y_keep_index:
-                        self.Y_keep_index[y_keep_index] = []
 
                 # if len(keep_liens_data[linenum+1]) > max_indexlen:
                 #     max_indexlen = len(keep_liens_data[linenum+1])
@@ -1819,30 +1827,51 @@ class SetPrint:
         
         # self.finish_index = parent__finish_index + self.finish_index #リスト配列の最後尾のインデックスを格納
 
-    def to_tal_X_keep_index(self,x_keep_index,total=0):
-        for index,deep_data in enumerate(x_keep_index):
+
+    def flat_x_keep_index(self,x_keep_index,index=[],keep_index=[],keep_len=[]):
+
+        for line,deep_data in enumerate(x_keep_index):
             if type(deep_data) == list:
-                x_keep_index[index] = self.to_tal_X_keep_index(deep_data,total)
+                keep_index.append(index+[line])
+                keep_len.append(deep_data[0])
+                keep_index,keep_len = self.flat_x_keep_index(deep_data[1],index+[line],keep_index,keep_len)
             else:
-                x_keep_index[index] = total
-                total += deep_data
-
-        return x_keep_index
-
-    def one_deep_Xkeep(self,x_keep_index,search_index=[],line_txt=''):
-        search_index.append(0)
-        for index,deep_data in enumerate(x_keep_index):
-            search_index[-1] = index
-            if type(deep_data) == list:
-                self.one_deep_Xkeep(search_index)
+                keep_index.append(index+[line])
+                keep_len.append(deep_data)
+            
+        return keep_index,keep_len
 
 
     # [→:4] キープデータの整形
     def format_keep_data(self,X_keep_index,Y_keep_index):
 
         for y_keep_index,line_data in Y_keep_index.items():
+            self.one_line_format(line_data)
+
+
+    def one_line_format(self,line_data,now_index=[],search_index=[],line_txt=''):
+        
+        for y_keep_index,line_data in line_data.items():
+            x_keep_index,y = self.transform_keep_index(self,line_data[0])
+            x_range_index = access_nested_keep_index(line_data[1],x_keep_index)
+
+            now_len = 0
+            search_index = []
+            for indexs in x_range_index:
+
+                for index in indexs:
+
+                    print('a')
+                
+            text_line_len = 0
+            # for index in line_data:
+
+
             len(y_keep_index)
 
+
+
+    # def range_deep_format(x_range_index,,line_txt=''):
 
     '''
     # [→:4] キープデータの整形
