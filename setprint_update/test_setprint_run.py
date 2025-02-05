@@ -3,12 +3,19 @@
 
 # / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict /
 #print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
+# / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test /
+#print('\n'+'/ \033[38;2;255;165;0m\033[1mtest\033[0m / \033[38;5;27mtest\033[0m '*10+'/\n')
+
+# / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict /
+#print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
 # 実行コード
 import pickle
 import numpy as np
+# from run_image_print import image_print
+
 from test_setprint_0_3_0 import SetPrint
-#from demo_setprint_0_3_0 import SetPrint
+
 
 import os
 
@@ -42,73 +49,87 @@ style_settings = (
                        'len'    : 20  }))
 )
 
-if False:
-    # pickleファイルからデータを読み込む
-    file_name = 'ocr_txtdata.pkl'
-    with open(file_name, "rb") as file:
-        loaded_data = pickle.load(file)
 
-    # keyを指定してテキストデータを取得
-    txt_data = loaded_data["Alltxtdatas"]
+test_data = [[[ [0,[[10,10],[10,10]]],[0,0] ], [[1,1],[1,1]]],[[ [2,2],[2,2] ], [[3,3],[[[33,33],[33,33]],3]]]]
+# keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',2:'x',3:'yf',5:'y',7:'x'})
 
-    list_data = SetPrint(txt_data)
+# 他の配列
+# test_data = [[[0,0],[['a',10],0]],[[0,0],[[0,0],0]]]
+# keep_tracking = list_data.set_list(guide=True,keep_start={1:'x',2:'yf',4:'y'})
 
-    list_data.set_text_style(style_settings) # set_listの前
-
-    # インデックスで引数のチェックを行う為、この配列の通りに指定してください。
-    # 制限の範囲内ではなかった値は表示され、デフォルトの値が代入されます。
-
-    set_datas = list_data.set_list(guide=True, keep_start=3, keep_range='all')
-
-#else:
-    # test_dict = [ [0,(0,1,2),2], (0,1,2), {'a':0, 'b':{'zero':0, 'frst':1, 'twe':2}, 'c':2}, {'zero':0, 'frst':1, 'twe':2} ]
-
-    # list_data = SetPrint(test_dict)
-
-    # list_data.set_text_style(style_settings) # set_listの前
-
-    # # ３次元目に各テキストデータが格納されているので、keep_start=3にして実行
-    # set_datas = list_data.set_list(guide=True,keep_start=1,keep_range='all') 
-
-# データの作成
-test_data = [
-    [
-    [0.0, 0.1, 0.2, 0.3, ],
-    {(0,0): [], 'one': 1, 'two': 2},
-    {'zero': 0, 'frst': {'zero': 0, 'one': 1}, 2:2}],
-
-    {
-     'list' :[0.0, 0.1, 0.2, 0.3, ],
-     'tuple':{(0,0): [], 'one': 1, 'two': 2},
-     'dict' :{'zero': 0, 'frst': {'zero': 0, 'one': 1}, 2:2}}
-
-]
-
-# n = np.ndarray(0)
-# test_data = [[[],[]],[n,n],[(),()],[{},{}],[{}]]
-
-# test_data = [[[],[]],[],[(('zero',(0,0),0)),((10,[0,0],0))],[(),()],[{}]]
-test_data = [[[[1,[[1,1],[1,1]]],[1,1]],[[0,0],[0,0]]],[[[2,2],[2,2]],[[3,3],[3,3]]]]
-# test_data = []
 
 # インスタンスを生成
 list_data = SetPrint(test_data)
 
 list_data.set_text_style(style_settings) # set_listの前
 
-# データの整形                                         {1:'y',2:'x',3:'y',4:'yf',6:'yf'}
-set_datas = list_data.set_list(guide=True,keep_start={1:'y',2:'yf',3:'yf',5:'yf',7:'x'})
-#set_datas = list_data.set_list(guide=True,keep_start={1:'y',7:'x'})
-# 表示
-# for line in set_datas['grid_slice']:
-#     print(line[:-1])
+# データの整形
 
-# # スクリプトが存在するディレクトリを基準にする
-# set_data_write = file_relative_access('./output_txtfile/set_data.txt')
+# keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',10:'x'})
 
-# with open(set_data_write,'w') as f:
-#     for line in set_datas['grid_slice']:
-#         f.write(line)
+keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',2:'x',3:'yf',5:'yf',10:'x'})
 
-# # pick表示を行う
-# list_data.pick_guideprint(file_relative_access('./output_txtfile/pick_guide.txt'))
+#image_print(keep_tracking)
+
+
+
+'''
+
+data
+[[[ [0,[[10,10],[10,10]]],[0,0] ], [[1,1],[1,1]]],[[ [2,2],[2,2] ], [[3,3],[[[33,33],[33,33]],3]]]]
+
+keep_settings
+{1:'y',2:'x',3:'yf',5:'yf',10:'x'}
+
+    all_deep_settings
+    ['y', 'x', 'yf', 'f', 'yf', 'f', 'f', 'f', 'f', 'x']
+    
+    
+X_keep_index
+('y',) []
+('y', 0) []
+('y', 0, 'yf') [[-1], [0], [1], [2]]
+('y', 0, 'yf', 1, 'yf') [[-1], [0], [1], [2]]
+('y', 1) []
+('y', 1, 'yf') [[-1], [0], [1], [2]]
+('y', 1, 'yf', 0, 'yf') [[-1], [0], [1], [2]]
+
+
+flat_X_keep_index
+[[5, [[5, [[5, [1, [5, [[5, [2, 2]]]]]]]], [5, [[5, [[5, [[5, [2, 2]]]], 1]]]]]]]
+    
+    one_deep
+    index : [[0], [0, 0], [0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 1, 0], [0, 0, 0, 1, 0, 0], [0, 0, 0, 1, 0, 1], [0, 1], [0, 1, 0], [0, 1, 0, 0], [0, 1, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 1], [0, 1, 0, 1]]
+    len   : [5, 5, 5, 1, 5, 5, 2, 2, 5, 5, 5, 5, 2, 2, 1]
+
+
+Y_keep_index
+(0,) [[[], [[0]]], [[0], [[0]]], [[0], [[1]]]]
+(0, 0) [[[0, 0, 0], [[], [0], [1]]], [[0, 1, 0], [[], [0], [1]]]]
+(0, 0, 0) [[[0, 0, 0, 1, 0], [[], [0], [1]]]]
+(0, 0, 1) [[[0, 0, 0, 1, 1], [[], [0], [1]]]]
+(0, 1) [[[0, 0, 1], [[], [0], [1]]], [[0, 1, 1], [[], [0], [1]]]]
+(1,) [[[], [[1]]], [[1], [[0]]], [[1], [[1]]]]
+(1, 0) [[[1, 0, 0], [[], [0], [1]]], [[1, 1, 0], [[], [0], [1]]]]
+(1, 1) [[[1, 0, 1], [[], [0], [1]]], [[1, 1, 1], [[], [0], [1]]]]
+(1, 1, 0) [[[1, 1, 1, 0, 0], [[], [0], [1]]]]
+(1, 1, 1) [[[1, 1, 1, 0, 1], [[], [0], [1]]]]
+
+run_tracking
+[[5], [6], [[5], [6], [[0], [2], [2, 0], [2, 1], [2, 2], [[0], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [2, 4], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [9], [6], [[0], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [9], [8]], [9], [6], [[5], [6], [[0], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [9], [6], [[0], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4], [2], [2, 0], [2, 2], [[0], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4], [2], [2, 0], [2, 1], [2, 1], [2, 3], [4]], [2, 4], [2, 1], [2, 3], [4]], [9], [8]], [9], [8]]
+
+
+out_put
+
+::::: :::::                           ::::: 
+            ::::: 0 :::::                   :::::     1             1 
+                          ::::: 10 10 
+                          ::::: 10 10 
+            ::::: 0     0                   :::::     1             1 
+::::: :::::                           ::::: 
+            ::::: 2     2                   :::::     3             3 
+            ::::: 2     2                   ::::: :::::             3 
+                                                        ::::: 33 33 
+                                                        ::::: 33 33 
+
+'''
