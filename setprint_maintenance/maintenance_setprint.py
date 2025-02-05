@@ -745,17 +745,14 @@ class SetPrint:
     def transform_keep_index(self,index):
 
         x_keep_index = index[:]
-        y_keep_index = index[:]
-        
-        self.keep_settings
+        y_keep_index = []
         
         for deepnum in range(len(index)):
             set_type = self.keep_settings[deepnum]
             if set_type in ('y','yf'):
                 x_keep_index[deepnum] = set_type
-            else:
-                y_keep_index[deepnum] = set_type
-
+                y_keep_index.append(index[deepnum])
+           
         return tuple(x_keep_index),tuple(y_keep_index)
     
     # リストを整型する際の条件を整理 / １次元目の格納情報を整形 [→:#0]
@@ -872,7 +869,7 @@ class SetPrint:
         if isinstance(datas, self.mapping_type):
             self.search_mapping(datas)
         else:
-            Kdeep_index = self.search_sequence(datas,[])
+            x_keep_index = self.search_sequence(datas,[])
 
         # ber_print(3)
         if self.ber_print:
@@ -885,11 +882,11 @@ class SetPrint:
 
         print()
         print('flat_X_keep_index')
-        print(Kdeep_index)
-        
-        x_keep_index,keep_len = self.flat_x_keep_index(Kdeep_index)
         print(x_keep_index)
-        print(keep_len)
+        
+        # x_keep_index,keep_len = self.flat_x_keep_index(x_keep_index)
+        # print(x_keep_index)
+        # print(keep_len)
 
         print()
         print('Y_keep_index')
@@ -898,6 +895,9 @@ class SetPrint:
         print()
         print('run_tracking')
         print(self.keep_tracking[0])
+
+        self.format_keep_data(x_keep_index,self.Y_keep_index)
+
         return self.keep_tracking[0]
         # print(self.tracking_data)
         
@@ -1199,7 +1199,7 @@ class SetPrint:
             if (insert_index in self.range_idx) == False:
                 self.range_idx.append(insert_index)
             
-            self.y_flat_index.append(self.keep_index[:])
+            #self.y_flat_index.append(self.keep_index[:])
             
             #     self.MAX_indexlen.append([0,1])
             # else:
@@ -1293,7 +1293,9 @@ class SetPrint:
                 self.range_idx.append(insert_index)
             
             # keep_index = [self.now_index[self.now_deep-3]]+self.keep_index
-            self.y_flat_index.append(insert_index)
+
+            #self.y_flat_index.append(insert_index)
+            
             #     self.MAX_indexlen.append([0,1])
             # else:
             #     if self.MAX_indexlen[self.MAX_index.index(insert_index)][1] < 1:
@@ -1402,10 +1404,16 @@ class SetPrint:
                         self.MAX_index[x_keep_index] = []
                     
                     if y_keep_index not in self.Y_keep_index:
-                            self.Y_keep_index[y_keep_index] = []
+                        self.Y_keep_index[y_keep_index] = []
+
+                        print(self.now_index)
+                        for key in self.Y_keep_index.keys():
+                            print(key)
+                    
+                    print()
+                    self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
+
                         
-                    if keep_x:
-                        self.Y_keep_index[y_keep_index].append([self.now_index[:-1],linenum])
                         
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
@@ -1636,7 +1644,7 @@ class SetPrint:
                 if y_keep_index not in self.Y_keep_index:
                     self.Y_keep_index[y_keep_index] = []
                 
-                self.y_flat_index = []
+                self.y_flat_index = [[]]
                 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
@@ -1831,6 +1839,10 @@ class SetPrint:
     def flat_x_keep_index(self,x_keep_index,index=[],keep_index=[],keep_len=[]):
 
         for line,deep_data in enumerate(x_keep_index):
+            
+            # if self.keep_settings[len(index)-1] in ('y','yf'):
+            #     line = 0
+                
             if type(deep_data) == list:
                 keep_index.append(index+[line])
                 keep_len.append(deep_data[0])
@@ -1845,31 +1857,64 @@ class SetPrint:
     # [→:4] キープデータの整形
     def format_keep_data(self,X_keep_index,Y_keep_index):
 
-        for y_keep_index,line_data in Y_keep_index.items():
-            self.one_line_format(line_data)
+        print('---------',self.input_list[0][0][1])
 
-
-    def one_line_format(self,line_data,now_index=[],search_index=[],line_txt=''):
+        print()
+        self.a = X_keep_index
+        x_keep_index,keep_len = self.flat_x_keep_index(X_keep_index)
+        print(x_keep_index)
+        print(keep_len)
         
-        for y_keep_index,line_data in line_data.items():
-            x_keep_index,y = self.transform_keep_index(self,line_data[0])
-            x_range_index = access_nested_keep_index(line_data[1],x_keep_index)
+        # キーを辞書順（インデックス順）でソート
+        Y_keep_index = {k: Y_keep_index[k] for k in sorted(Y_keep_index)}
 
-            now_len = 0
-            search_index = []
-            for indexs in x_range_index:
+        for y_keep_index,y_line_data in Y_keep_index.items():
+            # print(y_keep_index)
+            now_line = 0
+            line_txt = ''
+            for parent,y_x_indexs in y_line_data:
 
-                for index in indexs:
+                keep_parent = parent[:]
+                now_deep = len(parent)
 
-                    print('a')
+                for deep in range(now_deep):
+                    if self.keep_settings[deep] in ('y','yf'):
+                        keep_parent[deep] = 0
+               
+                # print(keep_parent)
                 
-            text_line_len = 0
-            # for index in line_data:
+                # print(parent,y_x_indexs,now_line)
+                
+                #print(search_index)
+                parent_list = access_nested_collection(self.input_list,parent)
 
+                for y_x_index in y_x_indexs:
 
-            len(y_keep_index)
+                    keep_y_x_index = y_x_index[:]
+                    for deep in range(len(y_x_index)):
+                        if self.keep_settings[now_deep+deep] in ('y','yf'):
+                            keep_y_x_index[deep] = 0
+                    
+                    # print('search',keep_parent + keep_y_x_index)
 
+                    while x_keep_index[now_line] != keep_parent + keep_y_x_index:
+                        # print('False ',x_keep_index[now_line],keep_parent + y_x_index)
+                        line_txt += keep_len[now_line]*' ' + ' '
+                        now_line += 1
 
+                    # print('True  ',x_keep_index[now_line],keep_parent + keep_y_x_index)
+                    # print()
+                    
+                    value = access_nested_collection(parent_list,y_x_index)
+                    if type(value) in (int,str):
+                        line_txt += ' ' * (keep_len[now_line] - len(str(value))) + str(value) + ' '
+                      
+                    else:
+                        line_txt += keep_len[now_line]*':' + ' '
+                    now_line += 1
+
+            print(line_txt)
+            
 
     # def range_deep_format(x_range_index,,line_txt=''):
 
