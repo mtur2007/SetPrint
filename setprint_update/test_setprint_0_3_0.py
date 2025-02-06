@@ -756,7 +756,6 @@ class SetPrint:
         self.min_keep_deep = min(keep_deeps)
         self.max_keep_deep = max(keep_deeps)
 
-        print(keep_deeps)
         keep_settings = []
 
         range_keep_type = None
@@ -775,7 +774,9 @@ class SetPrint:
                 else:
                     keep_settings.append(range_keep_type)
         
-        print('\n\nall_deep_settings\n',keep_settings)
+        print()
+        print('all_deep_settings\n',keep_settings)
+
         self.keep_settings = keep_settings
         
         if isinstance(datas, self.mapping_type):
@@ -787,23 +788,7 @@ class SetPrint:
         if self.ber_print:
             print('\033[F\033[F\033[KThe search_collection process has been successfully completed.\n' + '{ '+'='*self.ber_len+' }')
         
-        print()
-        print('X_keep_index')
-        for key,value in self.MAX_index.items():
-            print(key,value)
-
-        print()
-        print('flat_X_keep_index')
-        print(x_keep_index)
-        
-        # x_keep_index,keep_len = self.flat_x_keep_index(x_keep_index)
-        # print(x_keep_index)
-        # print(keep_len)
-
-        print()
-        print('Y_keep_index')
-        for key,value in self.Y_keep_index.items():
-            print(key,value)
+        # <a:keep_index>
         
         # <t:print>
 
@@ -1095,7 +1080,6 @@ class SetPrint:
         
         set_keep_type = self.keep_settings[self.now_deep-1]
         if set_keep_type == 'f':
-            print(' < f',Kdeep_index)
             
             self.keep_index.append(-1)
             self.now_index.append('')
@@ -1171,27 +1155,18 @@ class SetPrint:
 
             # <t:配列の調査完了,In_range>
 
-            print(' > f',Kdeep_index)
         
         # (P:1)
         # キープする次元と現在の次元が同じなら、キープ用の処理に移る。
             
         elif set_keep_type == 'yf':
-
-            print(' < yf',Kdeep_index)
-            
-            print()
-            print('deep',self.now_deep)
             
             parent_index = self.now_index.copy() + [0]
             Kdeep_index = self.yf_setup(datas,parent_index,Kdeep_index)
 
-            print(' > yf',Kdeep_index)
 
         # (P:0)
         else:
-
-            print(' < y.x',Kdeep_index)
 
             # <t:start,Out_of_range>
 
@@ -1239,11 +1214,6 @@ class SetPrint:
                     if y_keep_index not in self.Y_keep_index:
                         self.Y_keep_index[y_keep_index] = []
 
-                        print(self.now_index)
-                        for key in self.Y_keep_index.keys():
-                            print(key)
-                    
-                    print()
                     self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
 
                 
@@ -1284,7 +1254,6 @@ class SetPrint:
             
             # <t:配列の調査完了,Out_of_range>
 
-            print(' > y.x',Kdeep_index)
 
         del self.now_index[-1] #インデックスの調査が終わったら戻す
         self.now_deep -= 1
@@ -1296,45 +1265,26 @@ class SetPrint:
         
         # 格納情報、次元情報、文字数を取得する為の処理
 
-        # <t:キープ初期化>
-
         # 格納情報の保存
         parent__keep_index = self.keep_index
         parent__range_idx = self.range_idx
         parent__y_flat_index = self.y_flat_index
         parent__X_keep_index = self.X_keep_index
-        now_keep_index = self.X_keep_index
-        print('parent',parent__range_idx)
 
-        # parent__MAX_index     = self.MAX_index # 存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
-        # parent__MAX_indexlen  = self.MAX_indexlen # インデックスに格納されている配列の文字数を格納する。
-
-        # parent__paretnt_key     = parent_key # 親インデックスのキー
-        # parent__pivot_value     = self.pivot_value # 親インデックスのキー以降をmapping_keyに格納するための基準値設定。
-
-        # parent__mapping_point   = self.mapping_point # 辞書型が存在している場所を格納する。
-        # parent__mapping_key      = self.mapping_key # keep_keyに対応するマッピング型のキー
-        
-        # parent__keep_liens_data = keep_liens_data # 1列毎の配列情報を格納するリスト
-        
-        # parent__finish_index    = self.finish_index #リスト配列の最後尾のインデックスを格納
-
-        # 格納情報の初期化
-
-        # インデックスのキープ化
+        # 親キープインデックス
         parent_x_keep_index,parent_y_keep_index = self.transform_keep_index(parent_index)
 
+        # インデックスのキープ化        
         if parent_x_keep_index not in self.MAX_index:
             self.MAX_index[parent_x_keep_index] = []
         
         if parent_y_keep_index not in self.Y_keep_index:
             self.Y_keep_index[parent_y_keep_index] = []
 
+        # <t:キープ初期化>
 
         self.keep_index = []
         self.range_idx = self.MAX_index[parent_x_keep_index]
-        print('X_range_idx',self.range_idx)
-        print('Y_range_idx',self.Y_keep_index[parent_y_keep_index])
         
         # in_range_indices
         # self.MAX_indexlen  = [] # インデックスに格納されている配列の文字数を格納する。
@@ -1466,9 +1416,6 @@ class SetPrint:
                         if Kdeep_index[0][0] < self.collections[type(line).__name__][1]:
                             Kdeep_index[0][0] = self.collections[type(line).__name__][1]
                 
-                    print(':'*20,self.collections[type(line).__name__][1])
-                    print(Kdeep_index[0][0])
-
                     # <t:collection_type,In_range>
 
                     # self.keep_1line_data = [] #1列の配列情報を格納するリスト
@@ -1658,14 +1605,16 @@ class SetPrint:
     # [→:4] キープデータの整形
     def format_keep_data(self,X_keep_index,Y_keep_index):
 
-        print('---------',self.input_list[0][0][1])
-
-        print()
         self.a = X_keep_index
         x_keep_index,keep_len = self.flat_x_keep_index(X_keep_index)
-        print(x_keep_index)
-        print(keep_len)
         
+        map_width = sum(keep_len) + len(keep_len) -1
+
+        print()
+        print('out_put')
+        print('-'*map_width)
+        print()
+
         # キーを辞書順（インデックス順）でソート
         Y_keep_index = {k: Y_keep_index[k] for k in sorted(Y_keep_index)}
 
@@ -1715,6 +1664,10 @@ class SetPrint:
                     now_line += 1
 
             print(line_txt)
+        
+        print()
+        print('-'*map_width)
+        print()
             
 
     # def range_deep_format(x_range_index,,line_txt=''):

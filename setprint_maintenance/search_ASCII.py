@@ -188,12 +188,12 @@ special_blocks = find_special_blocks(grid, special_symbols)
 #map_special_blocks_to_labels(grid, special_blocks)
 
 # Branch directions for if-like blocks
+
+'''
+侵入先の経路も可変的にする
+'''
 branch_directions = {
-           
-           '''
-           可変的にする
-           '''
-           
+
 (5, 33): ( 'ˆ', ['ˇ', '›'] ),  # O : ┤
 (6, 29): ( 'ˇ', ['›', 'ˆ'] ),  # P : ┤
 (9, 29): ( 'ˇ', ['›', 'ˆ'] ),  # Q : ┤

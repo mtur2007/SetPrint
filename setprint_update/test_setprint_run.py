@@ -3,17 +3,8 @@
 
 # / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict /
 #print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
-# / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test /
-#print('\n'+'/ \033[38;2;255;165;0m\033[1mtest\033[0m / \033[38;5;27mtest\033[0m '*10+'/\n')
-
-# / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict /
-#print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
 # 実行コード
-import pickle
-import numpy as np
-# from run_image_print import image_print
-
 from test_setprint_0_3_0 import SetPrint
 
 
@@ -55,7 +46,7 @@ test_data = [
     [  [ ['(0)-{0}-0','(0)-{0}-1'],['(0)-{0}-2','(0)-{0}-3'] ], [ ['(0)-{1}-0','(0)-{1}-1'],['(0)-{1}-2','(0)-{1}-3'] ]  ],
     [  [ ['(1)-{0}-0','(1)-{0}-1'],[
 
-                                     [['(1)-(0)-{0}-0','(1)-(0)-{0}-1'],['(1)-(0)-{0}-2','(1)-(0)-{0}-3'] ]
+                                     [['(1)-(0)-{2}-0','(1)-(0)-{2}-1'],['(1)-(0)-{2}-2','(1)-(0)-{2}-3'] ]
                                        
                                                ,'(1)-{0}-3'] ], [ ['(1)-{1}-0','(1)-{1}-1'],['(1)-{1}-2','(1)-{1}-3'] ]  ],
     
@@ -86,26 +77,13 @@ test_data = [
 
 '''
 
-# keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',2:'x',3:'yf',5:'y',7:'x'})
-
-# 他の配列
-# test_data = [[[0,0],[['a',10],0]],[[0,0],[[0,0],0]]]
-# keep_tracking = list_data.set_list(guide=True,keep_start={1:'x',2:'yf',4:'y'})
-
-
 # インスタンスを生成
 list_data = SetPrint(test_data)
 
 list_data.set_text_style(style_settings) # set_listの前
 
 # データの整形
-
-# keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',10:'x'})
-
 keep_tracking = list_data.set_list(guide=True,keep_start={1:'x',2:'y',3:'yf',5:'yf',10:'x'})
-
-#image_print(keep_tracking)
-
 
 
 '''
