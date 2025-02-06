@@ -1244,7 +1244,7 @@ class SetPrint:
                             print(key)
                     
                     print()
-                    self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[direction_index]]])
+                    self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
 
                 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
