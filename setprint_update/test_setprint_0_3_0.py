@@ -657,13 +657,14 @@ class SetPrint:
     def transform_keep_index(self,index):
 
         x_keep_index = index[:]
-        y_keep_index = []
+        y_keep_index = index[:]
         
         for deepnum in range(len(index)):
             set_type = self.keep_settings[deepnum]
             if set_type in ('y','yf'):
                 x_keep_index[deepnum] = set_type
-                y_keep_index.append(index[deepnum])
+            else:
+                y_keep_index[deepnum] = 0
            
         return tuple(x_keep_index),tuple(y_keep_index)
     
@@ -1229,10 +1230,8 @@ class SetPrint:
                 
                 if self.min_keep_deep <= self.now_deep <= self.max_keep_deep:
 
-                    parent_index = self.now_index.copy()
-
                     # インデックスのキープ化
-                    x_keep_index,y_keep_index = self.transform_keep_index(parent_index)
+                    x_keep_index,y_keep_index = self.transform_keep_index(self.now_index.copy())
 
                     if x_keep_index not in self.MAX_index:
                         self.MAX_index[x_keep_index] = []
@@ -1245,7 +1244,7 @@ class SetPrint:
                             print(key)
                     
                     print()
-                    self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
+                    self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[direction_index]]])
 
                 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):

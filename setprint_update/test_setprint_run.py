@@ -67,7 +67,7 @@ list_data.set_text_style(style_settings) # set_listの前
 
 # keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',10:'x'})
 
-keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',2:'x',3:'yf',5:'yf',10:'x'})
+keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',2:'x',3:'yf',5:'x',10:'x'})
 
 #image_print(keep_tracking)
 
