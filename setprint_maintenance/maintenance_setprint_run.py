@@ -74,7 +74,7 @@ output_file = "/Users/matsuurakenshin/WorkSpace/development/setprint_package/set
 # tracking_image : 処理のASCIIアート的なトラッキング (キー操作で処理の流れを確認する)
 # tracking_rog   : 処理の時系列順のログ
 
-insert_text_after_match_with_indent(input_file, output_file, keep_index=True, tracking_image=False, tracking_rog=False)
+insert_text_after_match_with_indent(input_file, output_file, keep_index=True, tracking_image=True, tracking_rog=False)
 
 
 # メンテナンス用 データの整形
@@ -83,7 +83,8 @@ from maintenance_setprint import SetPrint
 test_data = [
     [  [ ['#','#'],['#','#'] ], [ ['#','#'],['#','#'] ]  ],
     [  [ ['#',[['#','#'],['#','#']]],['#','#'] ], [ ['#','#'],['#','#'] ]  ],
-    [  [ ['#','#'],['#','#'] ] ],
+    [  [ ['#','#'],['#',['#','#']] ] ],
+    [  [ ['#',[['#','#'],['#','#']]],['#','#'] ], [ ['#','#'],['#','#'] ]]
 ]
 
 keep_setting={1:'y',2:'x',3:'yf',5:'y',10:'x'}

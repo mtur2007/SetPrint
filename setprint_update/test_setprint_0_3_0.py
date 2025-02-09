@@ -169,164 +169,6 @@ def convert_list_to_tuple(data):
 
 '''
 =============================================================================================================================================================
-・初歩的な整列
-'''
-
-# リストに格納されている情報を文字とみて整列させる関数(main)
-def set_txt(txtslist,mode,position):
-
-    if mode == 0:
-        Max = 0
-        len_list = []
-
-        for line in txtslist:
-            len_list.append(len(line))
-            if len(line) > Max:
-                Max = len(line)
-
-        New_list = []
-        Line_list = []
-        for nouse in range(Max):
-            New_list.append("")
-
-        for line in txtslist:
-            Set_list = New_list[:]
-
-            for number in range(len(line)):
-                Set_list[number] = line[number]
-            
-            Line_list.append(Set_list)
-        
-        Line_list = np.array(Line_list)
-
-        search_list = []
-        for num in range(np.shape(Line_list)[1]):
-            search_list.append(Line_list[:,num])
-
-        search_list = np.array(set_txt(search_list,1,position))
-
-        Line_list = []
-        
-        for num in range(np.shape(search_list)[1]):
-            Line_list.append(search_list[:,num])
-        
-        returndata = []
-
-        for line in range (np.shape(Line_list)[0]):
-            cut = len_list[line]
-            listline = Line_list[line].tolist()
-            returndata.append(listline[:cut])
-
-        return returndata
-
-    
-    elif mode == 1:
-
-        for line in range(len(txtslist)):
-            Maxtxtlen = 0
-
-            for num in txtslist[line]:
-
-                if len(str(num)) > Maxtxtlen:
-                    Maxtxtlen = len(str(num))
-
-            Maxlen = Maxtxtlen
-
-            for nowread in range(len(txtslist[line])):
-                txt = txtslist[line][nowread]
-                Air = Maxlen - len(str(txt))
-
-                if position == 0:
-
-                    txtslist[line][nowread] = str(txt) + (Air * " ")
-                elif position == 1:
-                    txtslist[line][nowread] = (Air//2 * " ") + str(txt) + ((Air//2 + Air%2) * " ")
-                elif position == 2:
-                    txtslist[line][nowread] = (Air * " ") + str(txt)
-
-        return txtslist#[:-1]
-
-# リストに格納されている情報を文字とみて整列させる関数(引数処理)
-def set_txts(txtslist,mode,position):
-
-    if isinstance(txtslist[0], list) == False:
-        txtslist = [txtslist]
-        mode = 1
-
-    if position == "left":
-        position = 0
-    if position == "center":
-        position = 1
-    if position == "right":
-        position = 2
-
-    txtslist = set_txt(txtslist,mode,position)
-
-    return txtslist
-
-'''
-=============================================================================================================================================================
-・配列のフラット化
-'''
-
-# 3次元配列を2次元にフラット化する関数
-def slice_blocks(datas,mode):
-
-    if isinstance(datas[0][0], list) == False:
-        datas = [datas]
-        mode = 1
-
-    Allprint_txt = []
-    Lineslist = []
-
-    #リストの２次元配列ごとに, 3次元配列同士の要素を縦方向毎になる様に入れ変える
-    for line in datas:
-        # [[],[],[]]
-        #  ^  ^  ^
-        max= 0
-        for data in line:
-            # [ [ [],[] ], [ [],[] ] ,[ [],[] ] ]
-            #      ^  ^       ^  ^       ^  ^
-
-            if len(data) > max:
-                max = len(data)
-
-        printline = []
-        for nouse in range(max):
-            printline.append([])
-        for data in line:
-            if len(data) == 0:
-                data.append("")
-            for dataline in range(len(data)):
-                printline[dataline].append(data[dataline])
-
-            for num in range((max-1 - dataline)):
-                printline[dataline + num+1].append('')
-
-        for line in printline:
-            Allprint_txt.append(line)
-        
-        Lineslist.append(len(Allprint_txt)-1)
-    
-    set_datas = set_txts(Allprint_txt,mode,0)
-
-    set_shape = []
-    start = 0
-    finish = Lineslist[0] + 1
-    set_shape.append(set_datas[start:finish])
-
-
-    for linenum in range(len(Lineslist)-1):
-        linenum += 1
-
-        start = Lineslist[linenum-1] + 1
-        finish = Lineslist[linenum] + 1
-        set_shape.append(set_datas[start:finish])
-
-    return set_shape
-
-'''
-=============================================================================================================================================================
 配列をフラット化・整形するクラス
 '''
 
@@ -500,141 +342,6 @@ class SetPrint:
                     
                     # 最後のキーで値を更新
                     target[current_index[-1]] = new_value
-
-    '''
-    =============================================================================================================================================================
-    ・ブロック状の配列にボーダーをつけ見やすくする関数。
-    '''
-    # ボーダーを追加する関数
-    def blocks_border_print(self, **kwargs):
-
-        #引数チェック
-        key_list = ['All_blocks','line_title','guide']
-        diff_key = list(kwargs.keys())
-        for key in key_list:
-            if key in kwargs:
-                diff_key.remove(key)
-        
-        if len(diff_key) > 0:
-            print(str(diff_key) + '存在しないキーです。')
-            return KeyError
-        
-        if 'All_blocks' in kwargs:
-            All_blocks = kwargs['All_blocks']
-        else:
-            All_blocks = self.input_list
-        
-        if 'line_title' in kwargs:
-            line_title = kwargs['line_title']
-
-        if 'guide' in kwargs:
-            guide = kwargs['guide']
-        else:
-            guide = False
-
-        # ボックス状の配列をスライスする。
-        slice_data = slice_blocks(All_blocks,0)
-        printlist = []
-        linelen0 = 0
-
-        if guide == True:
-            maxlen_ytitle = 0
-            for line in line_title:
-                if maxlen_ytitle < len(str(line)):
-                    maxlen_ytitle = len(str(line))
-            maxlen_ytitle += 2
-            sample_guide = f" {maxlen_ytitle * ' '} |  "
-        else:
-            sample_guide = "|  "
-
-        list_index = []
-        for linenum in range(len(slice_data)):
-            dataline = slice_data[linenum]
-            if len(dataline) != 0:
-                writeline = []
-
-                #それぞれのラインに横枠をつける
-                list_index.append(dataline[0])
-                printline = sample_guide + str(dataline[0][0]) + '   '
-                
-                for linenum in range(len(dataline)-1):
-                    line = dataline[linenum+1]
-                    printline = sample_guide
-                    for txt in line:
-                        printline +=  txt + "  |  "
-                    printline = printline[:-2]
-
-                    writeline.append(printline)
-
-                linelen1 = len(sample_guide)+sum([len(str(line))+5 for line in dataline[0]])-2
-                
-                #横枠の作成...表示文字列列の以前の長さと現在の長さによって長さの基準を変える
-                if linelen0 > linelen1:
-                    printlist.append(f"{'='*linelen0}\n")
-                    printlist.append('\n')
-                else:
-                    printlist.append(f"{'='*linelen1}\n")
-                    printlist.append('\n')
-
-                linelen0 = linelen1
-
-                for line in writeline:
-                    printlist.append(f"{line}\n")
-
-                printlist.append('\n') # <※0>
-            
-            else:
-                printlist.append(f"{'='*linelen0}\n")
-                printlist.append('\n')
-                if linenum != len(slice_data)-1:
-                    printlist.append(f" >> Xx__No_data__xX\n")
-                    printlist.append('\n')
-                else:
-                    printlist.append(f" >> Xx__No_data__xX\n")
-                linelen0 = 0
-
-        if len(slice_data[-1]) != 0:
-            printlist.append(f"{'='*linelen1}\n")
-
-        #ガイド(index)を追加する場合の処理
-        if guide == True:
-
-            sample_guide = f" {maxlen_ytitle * ' '} "
-            set_index = 1
-            for linenum in range(len(slice_data)):
-                line = slice_data[linenum]
-                indexline = list_index[linenum]
-
-                if len(line) != 0:
-                    if len(line_title)-1 >= linenum: 
-                        txt = '{' + str(line_title[linenum]) + '}'
-                    else:
-                        txt = '{}'
-
-                    air = (maxlen_ytitle - len(txt)) * ' '
-                    guidex0 = ' ' + air + str(txt) + ' |  '
-                    
-                    guidex1 = sample_guide + '|--'
-                    guidex2 = sample_guide + ':  '
-
-                    for txtnum in range(len(line[0])):
-                        txt_index = indexline[txtnum]
-
-                        guidex0 += str(txt_index) + "  |  "
-                        guidex1 += len(line[0][txtnum]) * "-" + "--|--"
-                        guidex2 += len(line[0][txtnum]) * " " + "  :  "
-
-                    printlist.insert(set_index,guidex0[:-2]+'\n')
-                    printlist.insert(set_index+1,guidex1[:-2]+'\n')
-
-                    printlist[set_index+2] = guidex2[:-2] + '\n' #更新場所プログラム内の印<※0>
-
-                    set_index += len(line)+2 + 2
-
-                else: #データがない時は1文で表示される為、例外処理
-                    set_index += 1 +3
-
-        return printlist
 
     '''
     =============================================================================================================================================================
@@ -815,7 +522,6 @@ class SetPrint:
         # self.set_data_dict = set_data_dict
         
         # return set_data_dict,self.tracking_data
-
 
  
     # [↺:1] マッピング型を調べる
@@ -1260,6 +966,7 @@ class SetPrint:
 
         return Kdeep_index
 
+
     # [→:3] キープデータの初期化/作成後の後処理
     def yf_setup(self,datas,parent_index,Kdeep_index):
         
@@ -1315,10 +1022,6 @@ class SetPrint:
         """
         
         self.now_index.append('')
-        # self.Xline_blocks.append('')
-        # self.keep_txts_data.append('')
-        # insert_index = len(self.Xline_blocks)-1
-        
 
         # <t:start,In_range>
 
@@ -1328,22 +1031,14 @@ class SetPrint:
         # print(' < tracking',self.keep_tracking)
 
         if len(Kdeep_index) == 0:
-
             Kdeep_index = [[0,[]]]
-            #Kdeep_index = [['yf',[]]]
-        
-        len_Kdeep_index = len(Kdeep_index)-1
 
         if type(datas) == dict:
-            # self.now_key.append('')
             
             for linenum, (key, line) in enumerate(datas.items()):
 
                 self.now_index[-1] = linenum
-                # self.now_key[-1] = [self.now_deep-1,key]
-
                 self.keep_line = [linenum]
-
                 self.keep_index = []
 
                 # self.mapping_point.append(self.keep_line + self.keep_index)
@@ -1352,10 +1047,6 @@ class SetPrint:
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
                     
                     # <t:collection_type,In_range>
-                    
-                    # self.keep_1line_data = [] #1列の配列情報を格納するリスト
-                    value_txt = self.collections[str(type(line).__name__)][0]
-                    # self.keep_1line_data.append([self.keep_index,value_txt,key])
 
                     # 以降の格納要素についてのキープデータ作成は search_ mapping,sequence 関数を使用する。
                     if type(line) == dict:
@@ -1365,27 +1056,17 @@ class SetPrint:
                     
                     # <t:配列の調査結果の受け取り,In_range>
                 
-                    # keep_liens_data.append(self.keep_1line_data)
                 
                 else:
 
                     # <t:int/str_type,In_range>
 
                     value_line = str(line)
-                    # keep_liens_data.append([[self.keep_index,value_line,key]])
                 
                 #存在するインデックスの情報の新規作成/更新
                 if (self.keep_index in self.range_idx) == False:
                     self.range_idx.append(self.keep_index.copy())
-                    # self.MAX_indexlen.append([len(str(key)),len(value_txt)])
-                # else:
-                #     if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] < len(str(key)):
-                #         self.MAX_indexlen[self.MAX_index.index(self.keep_index)][0] = len(str(key))
 
-                #     if self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] < len(value_txt):
-                #         self.MAX_indexlen[self.MAX_index.index(self.keep_index)][1] = len(value_txt)
-
-                # ber_print(2)
                 if self.ber_print:
                     if self.keep_start == 1:
                         now_len = int(self.line_ber_len*(linenum+1))
@@ -1418,11 +1099,8 @@ class SetPrint:
                 
                     # <t:collection_type,In_range>
 
-                    # self.keep_1line_data = [] #1列の配列情報を格納するリスト
 
                     value_txt = self.collections[str(type(line).__name__)][0]
-                    # self.keep_1line_data.append([self.keep_index,value_txt])
-
                     # 以降の格納要素についてのキープデータ作成は search_ mapping,sequence 関数を使用する。
 
                     if type(line) == dict:
@@ -1431,8 +1109,6 @@ class SetPrint:
                         Kdeep_index[0][1] = self.search_sequence(line,Kdeep_index[0][1])
 
                     # <t:配列の調査結果の受け取り,In_range>
-
-                    # keep_liens_data.append(self.keep_1line_data)
 
                 else:
                     
@@ -1670,8 +1346,6 @@ class SetPrint:
         print()
             
 
-    # def range_deep_format(x_range_index,,line_txt=''):
-
     '''
     # [→:4] キープデータの整形
     def format_keep_data(self,keep_liens_data):
@@ -1829,225 +1503,6 @@ class SetPrint:
 
         return format_txtdata,mismatch_indices
     '''
-    '''
-    =============================================================================================================================================================
-    ・set_listで大まかなガイドが表示されるが、さらに詳しい格納情報を見ることが出来るようにする関数。
-    '''
-
-    # ブロック状の整形データにアクセスし、詳細を出力する関数
-    def Block_GuidePrint(self, y,x,gx,gy):
-
-        y = abs(self.y % len(self.block_keep_data))
-        x = abs(self.x % len(self.block_keep_data[y]))
-        if y == 0:
-            self.y = 0
-        if x == 0:
-            self.x = 0
-        
-        k_data = self.block_keep_data[y][x]
-
-        y_lens = len(self.block[y][x])-1
-
-        if y_lens == 0:
-
-            guide_index = ''
-            no_color_ver = ''
-            for line in k_data[0][:-1]:
-                guide_index += f'[\033[38;2;127;82;0m{str(line)}\033[0m]'
-                no_color_ver += '['+str(line)+']'
-                
-            # 行1を更新
-            print("\033[F\033[F\033[Kindex \\ " + guide_index)
-            # 行2を更新
-            print(' value \\ \033[K'+'\033[1;32m_no_in_data_\033[30m'+'\033[0m')
-
-            with open(self.output_path ,'w') as f:
-                f.write('{guide}' + no_color_ver + '\n\n')
-
-            return
-
-        if len(k_data) == 6:
-            class_index = k_data[0][:-1]
-            indexs = k_data[1]
-            x_lens = k_data[2]
-            positions = k_data[3]
-            mapping_point = k_data[4]
-            mapping_key = k_data[5]
-
-        elif len(k_data) >= 2:
-            class_index = k_data[0][:-1]
-            indexs = [[]]
-            x_lens = [k_data[1]]
-            positions = [0]
-            if len(k_data) == 4:
-                mapping_point = k_data[2]
-                mapping_key = k_data[3]
-            else:
-                mapping_point = []
-                mapping_key = []
-        
-        gy = abs(gy%y_lens)
-        gx = abs(gx%len(positions))
-        if gx == 0:
-            self.gx = 0
-        if gy == 0:
-            self.gy = 0
-
-        guide_index = ''
-        no_color_ver = ''
-        for line in class_index:
-            guide_index += f'[\033[38;2;127;82;0m{str(line)}\033[0m]'
-            no_color_ver += '['+str(line)+']'
-        
-        guide_index += f'{{\033[38;2;255;165;0m\033[1m{str(gy)}\033[0m}}'
-        no_color_ver += '{'+str(gy)+'}'
-        
-
-        collection_index = [gy] + indexs[gx]
-        this = class_index+collection_index
-        matching_index = check_matching_elements(mapping_point, collection_index)
-        if matching_index != -1:
-            
-            key_data = mapping_key[matching_index]
-            
-            for line in key_data:
-                this[line[0]] = line[1]
-            
-            for line in this[len(class_index):]:
-                guide_index += f'[\033[1;34m{str(line)}\033[0m]'
-                no_color_ver += '['+str(line)+']'
-
-        else:
-
-            for line in indexs[gx]:
-                guide_index += f'[\033[1;34m{str(line)}\033[0m]'
-                no_color_ver += '['+str(line)+']'
-
-        value = access_nested_collection(self.input_list,this)
-        
-        value_txt = str(value).replace(', ', ',').replace('\n', '')
-        value_txt = value_txt if len(value_txt) < 140 else value_txt[:140] + ' ~'
-        
-        if isinstance(value,(list,tuple,np.ndarray)):
-            in_data_txt = '\033[1;32m'+value_txt+'\033[30m : \033[1;34m'+ type(value).__name__ +'\033[0m'
-        else:
-            in_data_txt = '\033[1;32m'+value_txt+'\033[30m : \033[1;34m'+ type(value).__name__ +'\033[0m'
-        
-        # 行1を更新
-        print("\033[F\033[F\033[Kindex \\ " + guide_index)
-        # 行2を更新
-        print(' value \\ \033[K'+in_data_txt+'\033[0m')
-        
-        guide = ' '
-        for line in range(gx):
-            guide += (positions[line]+1 - len(guide)) * ' '
-            line = x_lens[line]
-            guide += (line//2) * ' ' + '>'
-        
-        guide += (positions[gx]+1 - len(guide)) * ' '+ (x_lens[gx]//2)*' ' + ' ▼' + no_color_ver
-        data = self.block[y][x]
-        write_txt = []
-
-        start = positions[gx]
-        finish = start + x_lens[gx]
-        for linenum in range(len(data)-1):
-            line = data[linenum+1]
-            write_txt.append(' ' + line[:start] +' '+ line[start:finish] +' '+ line[finish:])
-
-        guide_line = '━' * len(write_txt[0])
-        write_txt.insert(gy,guide_line)
-        write_txt.insert(gy+2,guide_line)
-
-
-        line = write_txt[gy]
-        write_txt[gy] = line[:start] +' ┏'+ x_lens[gx]*' ' +'┓ '+ line[finish+4:]
-
-        line = write_txt[gy+1]
-        write_txt[gy+1] = line[:start] +'  '+ line[start+2:finish+2] + '  ' + line[finish+4:]
-
-        line = write_txt[gy+2]
-        write_txt[gy+2] = line[:start] +' ┗'+ x_lens[gx]*' ' +'┛ '+ line[finish+4:]
-
-
-        with open(self.output_path ,'w') as f:
-            
-            f.write('{guide}' + guide + '\n\n')
-            for line in write_txt:
-                f.write('       ' + line + '\n')
-
-            # f.write('\n')
-            # keep_data = self.block_keep_data[y][x]
-            # if len(keep_data) == 4:
-            #     f.write((keep_data[3][gx]+8)*' '+str(keep_data[0])+'\n')
-            #     for line in keep_data[1:]:
-            #         f.write((keep_data[3][gx]+8)*' '+str(line[gx]) + '\n')
-            # else:
-            #     for line in keep_data:
-            #         f.write(str(line)+'\n')
-
-    # 入力キーに応じて ブロック間の場所(y,x)とブロック内の場所(gy,gx) の値を処理する関数
-    def on_press(self, key):
-        try:
-            
-            key = key.char
-
-            if key in ('w','s','a','d'):
-                if key == 'w':
-                    self.gy -= 1
-                elif key == 's':
-                    self.gy += 1
-                elif key == 'a':
-                    self.gx -= 1
-                elif key == 'd':
-                    self.gx += 1
-            else:
-                if key == 't':
-                    self.y -= 1
-                elif key == 'g':
-                    self.y += 1
-                elif key == 'f':
-                    self.x -= 1
-                elif key == 'h':
-                    self.x += 1
-                
-            self.Block_GuidePrint(self.y,self.x,self.gx,self.gy)
-
-
-        except AttributeError:
-            if key == keyboard.Key.esc:
-                # ESC キーが押された場合に終了
-                return False
-
-    # 位置の初期化とキーボードのリスナーを開始する関数
-    def pick_guideprint(self, output_path):
-
-        # リスト内包表記を使って、キーに対応する値を取り出す
-        try:
-            set_data_dict = self.set_data_dict
-        except:
-            print('`pick_guidePrint`関数を実行するには "set_list"関数 を先に実行してください。')
-            return
-        
-        self.input_list      = set_data_dict['input_list']
-        self.block           = set_data_dict['grid_block']
-        self.block_keep_data = set_data_dict['block_keep_data']
-
-        self.output_path = output_path
-
-        self.y,self.x = 0,0
-        self.gy,self.gx = 0,0
-
-        print()
-        print('連動先のファイル : '+self.output_path)
-        print()
-        print()
-        print()
-        self.Block_GuidePrint(self.y,self.x,self.gx,self.gy)
-        #キーボードのリスナーを開始
-        with keyboard.Listener(on_press=self.on_press) as listener:
-            listener.join()
-
-
 
 '''
 次元毎にリスト配列と整合性を取る形で文字の長さなのどを格納し、インデックスで指定できるようにする。
