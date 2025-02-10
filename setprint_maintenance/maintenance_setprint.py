@@ -912,7 +912,7 @@ class SetPrint:
                 self.y_flat_index.append(self.keep_index[:])
 
                 if len_Kdeep_index < linenum:
-                    Kdeep_index.append(linenum)
+                    Kdeep_index.append(0)
                
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
@@ -1017,7 +1017,7 @@ class SetPrint:
                 
                 if keep_x:    
                     if len_Kdeep_index < linenum:
-                        Kdeep_index.append(linenum)
+                        Kdeep_index.append(0)
                     direction_index = linenum
                 
                 if self.min_keep_deep <= self.now_deep <= self.max_keep_deep:
@@ -1481,168 +1481,46 @@ class SetPrint:
         print()
         print('-'*map_width)
         print()
-            
 
-    '''
-    # [→:4] キープデータの整形
-    def format_keep_data(self,keep_liens_data):
-           
-        1列毎に調査された内容毎をfor構文で回し、
-        存在したインデックスが格納された配列と比べて整えていく。
-        
-        # その為には、両者の格納を昇降順にソートする必要があるのでsorted関数を使用する。
-        sort_MAX_index = sorted(self.MAX_index)
-        sort_MAX_indexlen = []
-        for linenum,indexline in enumerate(sort_MAX_index):
-            a = self.MAX_index.index(indexline)
-            sort_MAX_indexlen.append(self.MAX_indexlen[a])
+    #------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        self.MAX_index,self.MAX_indexlen = sort_MAX_index,sort_MAX_indexlen
-        
-        linenum = 0
-        format_txtdata = []
+    # def format_keep_data(self,X_keep_index):
+    #     if isinstance(self.input_list, self.sequence_type):
+    #         self.format_sequence( self.input_list, X_keep_index )
 
-        # 格納情報の中には リストである事を表す為に '[', "]" の情報が格納されており、pick_guideprint関数では扱われないようにする為、それらサブで調べる。
+    # def format_sequence(self,datas,range_keep_x,now_deep=0,now_index=[],format_texts=[],total=0):
 
-        # 他の列と格納状況が異なる箇所を格納する変数。存在だけを確認するのでset()。結果を用いて、見た目を変更する。
-        mismatch_indices = set()
-        
-        for keep_linenum in range(len(keep_liens_data)):
-            keep_line = keep_liens_data[keep_linenum]
-            txt = ''
-            
-            linenum = 0
-            for keep_txtnum in range(len(keep_line)):
-                keep_txts = keep_line[keep_txtnum]
-                index_line = self.MAX_index[linenum]
-                noput_point = []
+    #     set_keep_type = self.keep_settings[now_deep]
+    #     if set_keep_type == 'f':
+    #         print('f')
+    #     elif set_keep_type == 'yf':
+    #         print('yf')
 
-                # 両者のインデックスが同じだった場合。
-                if keep_txts[0] == index_line:
+    #     else:
 
-                    index_len = self.MAX_indexlen[linenum]
+    #         keep_y = self.keep_settings[now_deep] in ('y')
 
-                    if index_len[0] == 0:
-                        value = (index_len[1] - len(keep_txts[1])) * self.padding_value + str(keep_txts[1])
-                        txt += value + ' '
+    #         direction_index = 0
+    #         line_len = len(format_texts)-1
 
-                    else:
-                        if len(keep_txts) == 2:
-                            key_empty = index_len[0] * self.empty_key
-                            value = (index_len[1] - len(keep_txts[1])) * self.padding_value + str(keep_txts[1])
-                            txt += key_empty + self.empty_colon + value + ' '
-                        else:
-                            key = (index_len[0] - len(str(keep_txts[2]))) * self.padding_key + str(keep_txts[2])
-                            value = (index_len[1] - len(keep_txts[1])) * self.padding_value + str(keep_txts[1])
-                            txt += key + self.padding_colon + value + ' '
+    #         for index,line in enumerate(datas):
 
-                else:
-                    #違かった場合、配列数が足りない 又は、違う次元があるのかを調べる
-                    #         [ a, b, 'c', d ] 　   [ a, b, '[' a,b,c ], d  ]
-                    #         [ a, b  "]"  -     　 [ a, b,  ^  ^ ^ ^ ^ 'd' ]
+    #             if keep_y:
+    #                 direction_index = index
+                
+    #             if line_len < index:
+    #                 format_texts.append('')
 
-                    if keep_txts[0] == 'finish':
-                        #配列が足りない場合は同じ次元の終わりのインデックスを検索項目にする。
-                        search_finish = keep_txts[1][:-1]
-                        search_finish.append(self.finish_index[str(search_finish)])
-                        finish_value = keep_txts[2]
-                    else:
-                        #違う次元がある場合は現在のインデックスを検索項目にする。
-                        search_finish = keep_txts[0]
-                        finish_value = keep_txts[1]
+    #             if isinstance(line, (list, tuple, np.ndarray, dict)):
 
-                    while True:
-                        #検索項目のインデックスが出てくるまで空白を挿入
-                        index_len = self.MAX_indexlen[linenum]
+    #                 if type(format_texts[direction_index]) != list:
+    #                     format_texts[direction_index] = [format_texts[direction_index],['']]
+                
+    #                 if isinstance(self.input_list, self.sequence_type):
+    #                     format_texts[direction_index],total = self.format_sequence(datas,now_deep+1,range_keep_x[direction_index][1],now_index+[index],format_texts[direction_index],total)
+                
+    #             else:
 
-                        if search_finish == self.MAX_index[linenum]:
-                        
-                            value_txt = str(finish_value)
-                            value_txt = (index_len[1] - len(value_txt)) * self.padding_value + value_txt
+    #                 if 
 
-                            if index_len[0] == 0:
-                                txt += value_txt + ' '
-
-                            else:
-                                if len(keep_txts) == 2:
-                                    key_empty = index_len[0] * self.empty_key
-                                    txt += key_empty + self.empty_colon + value_txt + ' '
-                                else:
-                                    key = (index_len[0] - len(str(keep_txts[2]))) * self.padding_key + str(keep_txts[2])
-                                    txt += key + self.padding_colon + value_txt + ' '
-                            
-                            break
-                        else:
-                            # 穴埋め時に他次元の情報が見つかったら、格納状況が異なる箇所として扱う
-                            if self.MAX_index[linenum][-1] == -1:
-                            
-                                mismatch_indices.add(tuple(self.MAX_index[linenum][:-1]))
-                        
-                                key_index = self.MAX_index[linenum][:-1]
-                                key_index.append(self.finish_index[str(key_index)])
-                                noput_point.append(self.MAX_index.index(key_index))
-
-                                txt += (index_len[1] * ' ') + ' '
-
-                            else:
-                                # 穴埋め時、格納状況が異なる箇所だった場合、空白ではなく '-' を挿入。
-                                if (linenum in noput_point) != True:
-                                    value_empty = index_len[1] * self.empty_value
-                                    if index_len[0] == 0:
-                                        txt += value_empty + ' '
-                                    else:
-                                        key_empty = index_len[0] * self.empty_key
-                                        txt += key_empty + self.empty_colon + value_empty + ' '
-                                else:
-                                    del noput_point[noput_point.index(linenum)]
-                                    txt += (index_len[1] * ' ') + ' '
-                    
-                        linenum += 1
-                linenum += 1
-
-            # 余った配列の穴埋め
-            # [[~~~],[~~~], [========] ]
-            # [[~~~],[~~~]] ^--------^
-            for i in range(len(self.MAX_index) - linenum):
-                i_index = self.MAX_index[linenum + i]
-
-                if i_index[-1] == -1:
-
-                    mismatch_indices.add(tuple(self.MAX_index[linenum][:-1]))    
-
-                    key_index = i_index[:-1]
-                    key_index.append(self.finish_index[str(key_index)])
-                    noput_point.append(self.MAX_index.index(key_index))
-                    txt += (self.MAX_indexlen[linenum + i][1] * ' ') + ' '
-                else:
-                    if ((linenum + i) in noput_point) != True:
-
-                        index_len = self.MAX_indexlen[linenum + i]
-                        value_empty = index_len[1] * self.empty_value
-
-                        if index_len[0] == 0:
-                            txt += value_empty + ' '
-                        else:
-                            key_empty = index_len[0] * self.empty_key
-                            txt += key_empty + self.empty_colon + value_empty + ' '
-                    else:
-
-                        del noput_point[noput_point.index(linenum + i)]
-                        txt += (self.MAX_indexlen[linenum + i][1] * ' ') + ' '
-
-            format_txtdata.append(txt)
-
-            # ber_print(3)
-            if self.ber_print:
-                if self.keep_start == 1:
-                    now_len = int(self.line_ber_len*(keep_linenum+1))
-                    print('\033[F\033[K{ '+'='*now_len+'-'*(self.ber_len-now_len)+' }')
-
-        return format_txtdata,mismatch_indices
-    '''
-
-'''
-次元毎にリスト配列と整合性を取る形で文字の長さなのどを格納し、インデックスで指定できるようにする。
-y,yf , x の部分はインデックスが0の箇所として格納する。
-[10,20[5,3,2]]
-'''
+    #         return format_texts,total
