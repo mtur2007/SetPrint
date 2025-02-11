@@ -5,8 +5,8 @@
 #print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
 # 実行コード
-# from test_setprint_0_3_0 import SetPrint
-from demo_setprint_0_3_0 import SetPrint
+from test_setprint_0_3_0 import SetPrint
+#from demo_setprint_0_3_0 import SetPrint
 
 import os
 
@@ -84,7 +84,7 @@ list_data = SetPrint(test_data)
 list_data.set_text_style(style_settings) # set_listの前
 
 # データの整形
-keep_tracking = list_data.set_list(guide=True,keep_start={1:'x',10:'x'})
+keep_tracking = list_data.set_list(guide=True,keep_start={1:'x',2:'y',10:'x'})
 
 
 '''
