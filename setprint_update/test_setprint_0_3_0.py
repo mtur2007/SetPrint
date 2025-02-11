@@ -1282,6 +1282,8 @@ class SetPrint:
     def format_keep_data(self,X_keep_index,Y_keep_index):
         
         x_keep_index,keep_len = self.flat_x_keep_index(X_keep_index)
+
+        print(X_keep_index)
         
         map_width = sum(keep_len) + len(keep_len) -1
 
@@ -1344,6 +1346,19 @@ class SetPrint:
         print('-'*map_width)
         print()
 
+        print('b',X_keep_index)
+        total_x_keep_deata = self.total_x_keep_deata(X_keep_index)
+        print('n',total_x_keep_deata)
+
+        # <仮置き> -----------------------------------------------
+        self.format_texts=[]
+        self.y_keep_line = [list(t) for t in Y_keep_index.keys()]
+        #--------------------------------------------------------
+
+        # self.format_route(self.input_list, total_x_keep_deata[0])
+        
+        self.format_route(self.input_list, X_keep_index)
+                        
     #------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     # def format_keep_data(self,X_keep_index):
@@ -1400,55 +1415,91 @@ class SetPrint:
     #------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-    #x_keep_total_len=[]
-    def total_x_keep_deata(self,x_keep_data,total_len=5,x_keep_total_len=[]):
-        for line,deep_data in enumerate(x_keep_data):
-            
-            if type(deep_data) == list:
-                x_keep_total_len.append([total_len,[self.total_x_keep_deata(deep_data[1],total_len)]])
-                total_len += deep_data[0]
+    def total_x_keep_deata(self,x_keep_data,total_len=0):
 
+        x_keep_total_len = []
+            
+        for line,deep_data in enumerate(x_keep_data):
+
+            if type(deep_data) == list:
+
+                p_total_len = total_len
+                x_range_total_len,total_len = self.total_x_keep_deata(deep_data[1],total_len + deep_data[0] + 1)
+                if total_len == 104:
+                    x_keep_total_len.append([p_total_len,x_range_total_len])
+                else:
+                    x_keep_total_len.append([p_total_len,x_range_total_len])
             else:
                 x_keep_total_len.append(total_len)
-                total_len += deep_data
+                total_len += deep_data +1
+                # if total_len == 104:
+                #     print('!!!')
         
-        return x_keep_data
+        return x_keep_total_len,total_len
         
 
+    '''
+    total_x_keep_deata = self.total_x_keep_deata(self,x_keep_data)
+    '''
 
-    # def format_route(self,datas,now_deep=0,write_line):
-    
-    #     set_keep_type = self.keep_settings[now_deep]
-    #     if set_keep_type == 'f':
-    #         print('f')
-    #     elif set_keep_type == 'yf':
-    #         print('yf')
+    def format_route(self,datas,total_x_keep_data,now_deep=0,now_y_keep_index=[]):
 
-    #         # for direction_index,line in enumerate(datas):
+        set_keep_type = self.keep_settings[now_deep]
+        print('deep',now_deep,' : ','type',set_keep_type)
+        print('total',total_x_keep_data)
+        
+        if set_keep_type == 'f':
+            print('f')
 
-    #         #     if isinstance(line, (list, tuple, np.ndarray, dict)):
+            for index,line in enumerate(datas):
 
-    #         #         if type(format_texts[direction_index]) != list:
-    #         #             format_texts[direction_index] = [format_texts[direction_index],['']]
-                
-    #         #         if isinstance(self.input_list, self.sequence_type):
-    #         #             format_texts[direction_index] = self.format_sequence(datas,now_deep+1,range_keep_x[direction_index][1],now_index+[index],format_texts[direction_index])
+                if isinstance(line, (list, tuple, np.ndarray, dict)):
+
+                    if isinstance(line, self.sequence_type):
+                        # self.format_texts[y_line] = self.format_route(datas,now_deep+1,now_y_keep_index+[index],total_x_keep_data[index][1])
+                        self.format_route(line,total_x_keep_data[index][1],now_deep+1,now_y_keep_index+[index])
 
 
-    #     else:
 
-    #         keep_y = self.keep_settings[now_deep] in ('y')
+        if set_keep_type == 'yf':
+            print('yf')
 
-    #         direction_index = 0
+            x_line = total_x_keep_data[0] if type(total_x_keep_data[0]) != list else total_x_keep_data[0][0]
+            y_line = self.y_keep_line.index(now_y_keep_index+[0])
 
-    #         for index,line in enumerate(datas):
+            for index,line in enumerate(datas):
 
-    #             if keep_y:
-    #                 direction_index = index
-                
-    #             if isinstance(line, (list, tuple, np.ndarray, dict)):
+                y_line = self.y_keep_line.index(now_y_keep_index+[0])
 
-    #                 if isinstance(self.input_list, self.sequence_type):
-    #                     format_texts[direction_index] = self.format_route(datas,now_deep+1,range_keep_x[direction_index][1],now_index+[index],format_texts[direction_index])
+                if isinstance(line, (list, tuple, np.ndarray, dict)):
+
+                    if isinstance(line, self.sequence_type):
+                        # self.format_texts[y_line] = self.format_route(datas,now_deep+1,now_y_keep_index+[0],total_x_keep_data[0][1])
+                        self.format_route(line,total_x_keep_data[0][1],now_deep+1,now_y_keep_index+[0])
+
+
+        else:
+
+            keep_x = set_keep_type == 'x'
+
+            x_line = total_x_keep_data[0] if type(total_x_keep_data[0]) != list else total_x_keep_data[0][0]
+            y_line = self.y_keep_line.index(now_y_keep_index+[0])
+
+            x_keep = 0
+            y_keep = 0
+
+            for index,line in enumerate(datas):
             
-    #         return format_texts
+                if keep_x:
+                    x_keep = index
+                    x_line = total_x_keep_data[index] if type(total_x_keep_data[index]) != list else total_x_keep_data[index][0]
+                else:
+                    y_keep = index
+                    y_line = self.y_keep_line.index(now_y_keep_index+[0])
+
+                if isinstance(line, (list, tuple, np.ndarray, dict)):
+
+                    if isinstance(line, self.sequence_type):
+                        # self.format_texts[y_line] = self.format_route(datas,now_deep+1,now_y_keep_index+[direction_index],total_x_keep_data[direction_index][1])
+
+                        self.format_route(line,total_x_keep_data[x_keep][1],now_deep+1,now_y_keep_index+[y_keep])
