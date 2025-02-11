@@ -84,7 +84,7 @@ list_data = SetPrint(test_data)
 list_data.set_text_style(style_settings) # set_listの前
 
 # データの整形
-keep_tracking = list_data.set_list(guide=True,keep_start={1:'x',2:'y',10:'x'})
+keep_tracking = list_data.set_list(guide=True,keep_start={1:'y',2:'x',3:'yf',5:'yf',10:'x'})
 
 
 '''

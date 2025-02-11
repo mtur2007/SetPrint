@@ -1449,33 +1449,38 @@ class SetPrint:
         print('total',total_x_keep_data)
         
         if set_keep_type == 'f':
-            print('f')
+            print('s_f')
 
             for index,line in enumerate(datas):
+                print(line)
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
                     if isinstance(line, self.sequence_type):
                         # self.format_texts[y_line] = self.format_route(datas,now_deep+1,now_y_keep_index+[index],total_x_keep_data[index][1])
+                        print('In')
                         self.format_route(line,total_x_keep_data[index][1],now_deep+1,now_y_keep_index+[index])
 
+            print('f_f')
+      
 
-
-        if set_keep_type == 'yf':
-            print('yf')
+        elif set_keep_type == 'yf':
+            print('s_yf')
 
             x_line = total_x_keep_data[0] if type(total_x_keep_data[0]) != list else total_x_keep_data[0][0]
             y_line = self.y_keep_line.index(now_y_keep_index+[0])
 
             for index,line in enumerate(datas):
 
-                y_line = self.y_keep_line.index(now_y_keep_index+[0])
+                y_line = self.y_keep_line.index(now_y_keep_index+[index])
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
                     if isinstance(line, self.sequence_type):
                         # self.format_texts[y_line] = self.format_route(datas,now_deep+1,now_y_keep_index+[0],total_x_keep_data[0][1])
-                        self.format_route(line,total_x_keep_data[0][1],now_deep+1,now_y_keep_index+[0])
+                        self.format_route(line,total_x_keep_data[0][1],now_deep+1,now_y_keep_index+[index])
+                        
+            print('e_yf')
 
 
         else:
@@ -1495,7 +1500,7 @@ class SetPrint:
                     x_line = total_x_keep_data[index] if type(total_x_keep_data[index]) != list else total_x_keep_data[index][0]
                 else:
                     y_keep = index
-                    y_line = self.y_keep_line.index(now_y_keep_index+[0])
+                    y_line = self.y_keep_line.index(now_y_keep_index+[index])
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
