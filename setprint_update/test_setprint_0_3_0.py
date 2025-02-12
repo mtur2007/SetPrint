@@ -1282,8 +1282,6 @@ class SetPrint:
     def format_keep_data(self,X_keep_index,Y_keep_index):
         
         x_keep_index,keep_len = self.flat_x_keep_index(X_keep_index)
-
-        print(X_keep_index)
         
         map_width = sum(keep_len) + len(keep_len) -1 +6
 
@@ -1349,7 +1347,7 @@ class SetPrint:
         self.format_texts.insert(0,'***** ')
         self.y_keep_line = [list(t) for t in Y_keep_index.keys()]
         self.y_keep_line.insert(0,'')
-        
+
         print()
         print('out_put')
         print('-'*map_width)
