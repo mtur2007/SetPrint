@@ -1285,12 +1285,8 @@ class SetPrint:
 
         print(X_keep_index)
         
-        map_width = sum(keep_len) + len(keep_len) -1
+        map_width = sum(keep_len) + len(keep_len) -1 +6
 
-        print()
-        print('out_put')
-        print('-'*map_width)
-        print()
 
         # キーを辞書順（インデックス順）でソート
         Y_keep_index = {k: Y_keep_index[k] for k in sorted(Y_keep_index)}
@@ -1335,29 +1331,38 @@ class SetPrint:
                     
                     value = access_nested_collection(parent_list,y_x_index)
                     if type(value) in (int,str):
-                        line_txt += ' ' * (keep_len[now_line] - len(str(value))) + str(value) + ' '
+                        line_txt += (keep_len[now_line] - len(str(value)))*' ' + str(value) + ' '
                       
                     else:
                         line_txt += keep_len[now_line]*':' + ' '
                     now_line += 1
 
-            print(line_txt)
             format_texts.append(line_txt)
         
+
+        self.format_texts=format_texts
+
+        total_x_keep_data,nouse = self.total_x_keep_deata(X_keep_index,6)
+        for line_num,line in enumerate(self.format_texts):
+            self.format_texts[line_num] = '      ' + line
+       
+        self.format_texts.insert(0,'***** ')
+        self.y_keep_line = [list(t) for t in Y_keep_index.keys()]
+        self.y_keep_line.insert(0,'')
+        
+        print()
+        print('out_put')
+        print('-'*map_width)
+        print()
+
+        for line in self.format_texts:
+            print(line)
+
         print()
         print('-'*map_width)
         print()
 
-        print('b',X_keep_index)
-        total_x_keep_data = self.total_x_keep_deata(X_keep_index)
-        print('n',total_x_keep_data)
-
-        self.format_texts=format_texts
-        self.y_keep_line = [list(t) for t in Y_keep_index.keys()]
-
-        # self.format_route(self.input_list, total_x_keep_deata[0])
-        
-        self.format_route(self.input_list, total_x_keep_data[0])
+        self.format_route(self.input_list, total_x_keep_data, [0,5])
 
         print()
         print('out_put / with_route')
@@ -1456,7 +1461,6 @@ class SetPrint:
         set_keep_type = self.keep_settings[now_deep]
         
         if set_keep_type == 'f':
-            print('s_f')
             for index,line in enumerate(datas):
                     
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
@@ -1465,33 +1469,38 @@ class SetPrint:
                         # self.format_texts[y_line] = self.format_route(datas,now_deep+1,now_y_keep_index+[index],total_x_keep_data[index][1])
                         self.format_route(line,total_x_keep_data[index][1],total_x_keep_data[index][0],now_deep+1,now_y_keep_index+[0])
 
-            print('f_f')
-      
-
         elif set_keep_type == 'yf':
-            print('s_yf')
-
-            parent_x = parent_x[0] + parent_x[1]//2 # + x_line[1]%2 中心より右側の場合
+            
+            parent_x_diff = parent_x[1]//2
+            parent_x = parent_x[0] + parent_x_diff # + x_line[1]%2 中心より右側の場合
+            previous = self.y_keep_line.index(now_y_keep_index+[0])
 
             for index,line in enumerate(datas):
 
                 # y_line ,parent_x
                 y_line = self.y_keep_line.index(now_y_keep_index+[index])
 
+                for line_plus in range (y_line - previous):
+                    line_text = self.format_texts[previous+line_plus+1]  
+                    if len(line_text) > parent_x:
+                        self.format_texts[previous+line_plus+1] = line_text[:parent_x] + '┃' + line_text[parent_x+1:]
+                    else:
+                        self.format_texts[previous+line_plus+1] = line_text[:] + (parent_x - len(line_text))*' ' + '┃' + line_text[parent_x+1:]
+
                 line_text = self.format_texts[y_line]
-                self.format_texts[y_line] = line_text[:parent_x] + '┣' + line_text[parent_x+1:]
+                self.format_texts[y_line] = line_text[:parent_x] + '┣' + '━'*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
+
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
                     if isinstance(line, self.sequence_type):
                         # self.format_texts[y_line] = self.format_route(datas,now_deep+1,now_y_keep_index+[0],total_x_keep_data[0][1])
                         self.format_route(line,total_x_keep_data[0][1],total_x_keep_data[0][0],now_deep+1,now_y_keep_index+[index])
-            
-            line_text = self.format_texts[y_line]
-            self.format_texts[y_line] = line_text[:parent_x] + '┗' + line_text[parent_x+1:]
-                        
-            print('e_yf')
 
+                previous = y_line
+
+            line_text = self.format_texts[y_line]
+            self.format_texts[y_line] = line_text[:parent_x] + '┗' + '━'*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
 
         else:
 
@@ -1500,9 +1509,13 @@ class SetPrint:
             x_keep = 0
             y_keep = 0
 
-            parent_x = parent_x[0] + parent_x[1]//2 # + x_line[1]%2 中心より右側の場合
+            parent_x_diff = parent_x[1]//2
+            parent_x = parent_x[0] + parent_x_diff # + x_line[1]%2 中心より右側の場合
+            
             parent_y = self.y_keep_line.index(now_y_keep_index+[0]) -1
-        
+
+            line_x_0 = total_x_keep_data[0] if type(total_x_keep_data[0][0]) != list else total_x_keep_data[0][0]
+            previous = line_x_0[0] if keep_x else self.y_keep_line.index(now_y_keep_index+[0])
 
             for index,line in enumerate(datas):
             
@@ -1515,10 +1528,9 @@ class SetPrint:
                     x_line = x_line[0] + x_line[1]//2 # + x_line[1]%2 中心より右側の場合
 
                     line_text = self.format_texts[parent_y]
-                    if len(line_text) <= x_line:
-                        self.format_texts[parent_y] =  line_text[:x_line] + (x_line - (len(line_text))) * ' ' + '┳'
-                    else:
-                        self.format_texts[parent_y] = line_text[:x_line] + '┳' + line_text[x_line+1:]
+                    self.format_texts[parent_y] = line_text[:previous] + (x_line - previous) * '━' + '┳' + line_text[x_line+1:]
+
+                    previous = x_line +1
         
                 else:
 
@@ -1526,11 +1538,18 @@ class SetPrint:
                     y_keep = index
                     y_line = self.y_keep_line.index(now_y_keep_index+[index])
 
-                    line_text = self.format_texts[y_line]
-                    self.format_texts[y_line] = line_text[:parent_x] + '┣' + line_text[parent_x+1:]
-                
+                    for line_plus in range (y_line - previous):
+                        line_text = self.format_texts[previous+line_plus+1]  
+                        if len(line_text) > parent_x:
+                            self.format_texts[previous+line_plus+1] = line_text[:parent_x] + '┃' + line_text[parent_x+1:]
+                        else:
+                            self.format_texts[previous+line_plus+1] = line_text[:] + (parent_x - len(line_text))*' ' + '┃' + line_text[parent_x+1:]
 
-                # self.format_texts[y_line] = 
+                    line_text = self.format_texts[y_line]
+                    self.format_texts[y_line] = line_text[:parent_x] + '┣' + '━'*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
+
+                    previous = y_line
+            
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
@@ -1542,12 +1561,16 @@ class SetPrint:
             if keep_x:
                 
                 line_text = self.format_texts[parent_y]
-                
-                if len(line_text) <= x_line:
-                    self.format_texts[parent_y] =  line_text[:x_line] + (x_line - (len(line_text))) * ' ' + '┓'
-                else:
-                    self.format_texts[parent_y] = line_text[:x_line] + '┓' + line_text[x_line+1:]
+                self.format_texts[parent_y] = line_text[:x_line] + '┓' + line_text[x_line+1:]
+
                     
             else:
+                for line_plus in range (y_line - previous):
+                    line_text = self.format_texts[previous+line_plus+1]  
+                    if len(line_text) > parent_x:
+                        self.format_texts[previous+line_plus+1] = line_text[:parent_x] + '┃' + line_text[parent_x+1:]
+                    else:
+                        self.format_texts[previous+line_plus+1] = line_text[:] + (parent_x - len(line_text))*' ' + '┃' + line_text[parent_x+1:]
+
                 line_text = self.format_texts[y_line]
-                self.format_texts[y_line] = line_text[:parent_x] + '┗' + line_text[parent_x+1:]
+                self.format_texts[y_line] = line_text[:parent_x] + '┗' + '━'*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
