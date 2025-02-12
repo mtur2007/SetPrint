@@ -1294,6 +1294,7 @@ class SetPrint:
 
         # キーを辞書順（インデックス順）でソート
         Y_keep_index = {k: Y_keep_index[k] for k in sorted(Y_keep_index)}
+        format_texts = []
 
         for y_keep_index,y_line_data in Y_keep_index.items():
             # print(y_keep_index)
@@ -1341,24 +1342,35 @@ class SetPrint:
                     now_line += 1
 
             print(line_txt)
+            format_texts.append(line_txt)
         
         print()
         print('-'*map_width)
         print()
 
         print('b',X_keep_index)
-        total_x_keep_deata = self.total_x_keep_deata(X_keep_index)
-        print('n',total_x_keep_deata)
+        total_x_keep_data = self.total_x_keep_deata(X_keep_index)
+        print('n',total_x_keep_data)
 
-        # <仮置き> -----------------------------------------------
-        self.format_texts=[]
+        self.format_texts=format_texts
         self.y_keep_line = [list(t) for t in Y_keep_index.keys()]
-        #--------------------------------------------------------
 
         # self.format_route(self.input_list, total_x_keep_deata[0])
         
-        self.format_route(self.input_list, X_keep_index)
-                        
+        self.format_route(self.input_list, total_x_keep_data[0])
+
+        print()
+        print('out_put / with_route')
+        print('-'*map_width)
+        print()
+
+        for line in self.format_texts:
+            print(line)
+         
+        print()
+        print('-'*map_width)
+        print()
+               
     #------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     # def format_keep_data(self,X_keep_index):
@@ -1425,12 +1437,9 @@ class SetPrint:
 
                 p_total_len = total_len
                 x_range_total_len,total_len = self.total_x_keep_deata(deep_data[1],total_len + deep_data[0] + 1)
-                if total_len == 104:
-                    x_keep_total_len.append([p_total_len,x_range_total_len])
-                else:
-                    x_keep_total_len.append([p_total_len,x_range_total_len])
+                x_keep_total_len.append([[p_total_len,deep_data[0]],x_range_total_len])
             else:
-                x_keep_total_len.append(total_len)
+                x_keep_total_len.append([total_len,deep_data])
                 total_len += deep_data +1
                 # if total_len == 104:
                 #     print('!!!')
@@ -1442,24 +1451,19 @@ class SetPrint:
     total_x_keep_deata = self.total_x_keep_deata(self,x_keep_data)
     '''
 
-    def format_route(self,datas,total_x_keep_data,now_deep=0,now_y_keep_index=[]):
+    def format_route(self,datas,total_x_keep_data,parent_x=[0,0],now_deep=0,now_y_keep_index=[]):
 
         set_keep_type = self.keep_settings[now_deep]
-        print('deep',now_deep,' : ','type',set_keep_type)
-        print('total',total_x_keep_data)
         
         if set_keep_type == 'f':
             print('s_f')
-
             for index,line in enumerate(datas):
-                print(line)
-
+                    
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
                     if isinstance(line, self.sequence_type):
                         # self.format_texts[y_line] = self.format_route(datas,now_deep+1,now_y_keep_index+[index],total_x_keep_data[index][1])
-                        print('In')
-                        self.format_route(line,total_x_keep_data[index][1],now_deep+1,now_y_keep_index+[index])
+                        self.format_route(line,total_x_keep_data[index][1],total_x_keep_data[index][0],now_deep+1,now_y_keep_index+[0])
 
             print('f_f')
       
@@ -1467,18 +1471,24 @@ class SetPrint:
         elif set_keep_type == 'yf':
             print('s_yf')
 
-            x_line = total_x_keep_data[0] if type(total_x_keep_data[0]) != list else total_x_keep_data[0][0]
-            y_line = self.y_keep_line.index(now_y_keep_index+[0])
+            parent_x = parent_x[0] + parent_x[1]//2 # + x_line[1]%2 中心より右側の場合
 
             for index,line in enumerate(datas):
 
+                # y_line ,parent_x
                 y_line = self.y_keep_line.index(now_y_keep_index+[index])
+
+                line_text = self.format_texts[y_line]
+                self.format_texts[y_line] = line_text[:parent_x] + '┣' + line_text[parent_x+1:]
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
                     if isinstance(line, self.sequence_type):
                         # self.format_texts[y_line] = self.format_route(datas,now_deep+1,now_y_keep_index+[0],total_x_keep_data[0][1])
-                        self.format_route(line,total_x_keep_data[0][1],now_deep+1,now_y_keep_index+[index])
+                        self.format_route(line,total_x_keep_data[0][1],total_x_keep_data[0][0],now_deep+1,now_y_keep_index+[index])
+            
+            line_text = self.format_texts[y_line]
+            self.format_texts[y_line] = line_text[:parent_x] + '┗' + line_text[parent_x+1:]
                         
             print('e_yf')
 
@@ -1487,24 +1497,57 @@ class SetPrint:
 
             keep_x = set_keep_type == 'x'
 
-            x_line = total_x_keep_data[0] if type(total_x_keep_data[0]) != list else total_x_keep_data[0][0]
-            y_line = self.y_keep_line.index(now_y_keep_index+[0])
-
             x_keep = 0
             y_keep = 0
+
+            parent_x = parent_x[0] + parent_x[1]//2 # + x_line[1]%2 中心より右側の場合
+            parent_y = self.y_keep_line.index(now_y_keep_index+[0]) -1
+        
 
             for index,line in enumerate(datas):
             
                 if keep_x:
+
+                    # parent_y ,x_line
                     x_keep = index
-                    x_line = total_x_keep_data[index] if type(total_x_keep_data[index]) != list else total_x_keep_data[index][0]
+                    x_line = total_x_keep_data[index] if type(total_x_keep_data[index][0]) != list else total_x_keep_data[index][0]
+
+                    x_line = x_line[0] + x_line[1]//2 # + x_line[1]%2 中心より右側の場合
+
+                    line_text = self.format_texts[parent_y]
+                    if len(line_text) <= x_line:
+                        self.format_texts[parent_y] =  line_text[:x_line] + (x_line - (len(line_text))) * ' ' + '┳'
+                    else:
+                        self.format_texts[parent_y] = line_text[:x_line] + '┳' + line_text[x_line+1:]
+        
                 else:
+
+                    # y_line ,parent_x
                     y_keep = index
                     y_line = self.y_keep_line.index(now_y_keep_index+[index])
+
+                    line_text = self.format_texts[y_line]
+                    self.format_texts[y_line] = line_text[:parent_x] + '┣' + line_text[parent_x+1:]
+                
+
+                # self.format_texts[y_line] = 
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
 
                     if isinstance(line, self.sequence_type):
                         # self.format_texts[y_line] = self.format_route(datas,now_deep+1,now_y_keep_index+[direction_index],total_x_keep_data[direction_index][1])
 
-                        self.format_route(line,total_x_keep_data[x_keep][1],now_deep+1,now_y_keep_index+[y_keep])
+                        self.format_route(line,total_x_keep_data[x_keep][1],total_x_keep_data[x_keep][0],now_deep+1,now_y_keep_index+[y_keep])
+
+            if keep_x:
+                
+                line_text = self.format_texts[parent_y]
+                
+                if len(line_text) <= x_line:
+                    self.format_texts[parent_y] =  line_text[:x_line] + (x_line - (len(line_text))) * ' ' + '┓'
+                else:
+                    self.format_texts[parent_y] = line_text[:x_line] + '┓' + line_text[x_line+1:]
+                    
+            else:
+                line_text = self.format_texts[y_line]
+                self.format_texts[y_line] = line_text[:parent_x] + '┗' + line_text[parent_x+1:]
