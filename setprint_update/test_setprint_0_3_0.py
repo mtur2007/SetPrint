@@ -633,8 +633,6 @@ class SetPrint:
             for i in self.now_index:
                 txt_index += '['+str(i)+']'
             txt_index += '{n}' 
-        
-            keep_liens_data = [txt_index]
 
             self.now_index.append('')
 
@@ -696,8 +694,7 @@ class SetPrint:
                         Kdeep_index[direction_index][1] = self.search_sequence(line,Kdeep_index[direction_index][1])
 
                     # <t:配列の調査結果の受け取り,Out_of_range>
-                    
-                    keep_liens_data.append(f'data_type: {type(line)}')
+                
                 else:
                     if type(Kdeep_index[direction_index]) != list:
                         if Kdeep_index[direction_index] < len(str(line)):
@@ -707,8 +704,6 @@ class SetPrint:
                             Kdeep_index[direction_index][0] = len(str(line))
                     
                     # <t:int/str_type,Out_of_range>
-
-                    keep_liens_data.append(str(line))
             
             # <t:配列の調査完了,Out_of_range>
 
@@ -828,8 +823,6 @@ class SetPrint:
             for i in self.now_index:
                 txt_index += '['+str(i)+']'
             txt_index += '{n}' 
-        
-            keep_liens_data = [txt_index]
 
             self.now_index.append('')
 
@@ -869,31 +862,37 @@ class SetPrint:
                         self.Y_keep_index[y_keep_index] = []
 
                     self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
-
                 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
-
-                    if type(Kdeep_index[direction_index]) != list:
-                        if Kdeep_index[direction_index] < self.collections[type(line).__name__][1]:
-                            Kdeep_index[direction_index] = [self.collections[type(line).__name__][1],[]]
-                        else:
-                            Kdeep_index[direction_index] = [Kdeep_index[direction_index],[]]
                     
-                    else:
-                        if Kdeep_index[direction_index][0] < self.collections[type(line).__name__][1]:
-                            Kdeep_index[direction_index][0] = self.collections[type(line).__name__][1]
-
-        
                     # <t:collection_type,Out_of_range>
 
-                    if type(line) == dict:
-                        Kdeep_index[direction_index][1] = self.search_mapping(line,Kdeep_index[direction_index][1])
-                    else:
-                        Kdeep_index[direction_index][1] = self.search_sequence(line,Kdeep_index[direction_index][1])
+                    if len(line) != 0:                        
+                        if type(Kdeep_index[direction_index]) != list:
+                            if Kdeep_index[direction_index] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[direction_index] = [self.collections[type(line).__name__][1],[]]
+                            else:
+                                Kdeep_index[direction_index] = [Kdeep_index[direction_index],[]]
 
-                    # <t:配列の調査結果の受け取り,Out_of_range>
+                        else:
+                            if Kdeep_index[direction_index][0] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[direction_index][0] = self.collections[type(line).__name__][1]
+
+                        if type(line) == dict:
+                            Kdeep_index[direction_index][1] = self.search_mapping(line,Kdeep_index[direction_index][1])
+                        else:
+                            Kdeep_index[direction_index][1] = self.search_sequence(line,Kdeep_index[direction_index][1])
+
+                        # <t:配列の調査結果の受け取り,Out_of_range>
                     
-                    keep_liens_data.append(f'data_type: {type(line)}')
+                    else:
+                        if type(Kdeep_index[direction_index]) != list:
+                            if Kdeep_index[direction_index] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[direction_index] = self.collections[type(line).__name__][1]
+                        else:
+                            if Kdeep_index[direction_index][0] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[direction_index][0] = self.collections[type(line).__name__][1]
+
                 else:
                     if type(Kdeep_index[direction_index]) != list:
                         if Kdeep_index[direction_index] < len(str(line)):
@@ -903,8 +902,6 @@ class SetPrint:
                             Kdeep_index[direction_index][0] = len(str(line))
                     
                     # <t:int/str_type,Out_of_range>
-
-                    keep_liens_data.append(str(line))
             
             # <t:配列の調査完了,Out_of_range>
 
@@ -1271,6 +1268,8 @@ class SetPrint:
     def format_keep_data(self,X_keep_index,Y_keep_index):
         
         x_keep_index,keep_len = self.flat_x_keep_index(X_keep_index)
+
+        print(x_keep_index,keep_len)
         
         map_width = sum(keep_len) + len(keep_len) -1 +6
 
@@ -1310,7 +1309,7 @@ class SetPrint:
 
                     while x_keep_index[now_line] != keep_parent + keep_y_x_index:
                         # print('False ',x_keep_index[now_line],keep_parent + y_x_index)
-                        line_txt += keep_len[now_line]*' ' + ' '
+                        line_txt += keep_len[now_line]*' ' + '|'
                         now_line += 1
 
                     # print('True  ',x_keep_index[now_line],keep_parent + keep_y_x_index)
@@ -1318,10 +1317,10 @@ class SetPrint:
                     
                     value = self.map_sequence_indices(parent_list,y_x_index)
                     if type(value) in (int,str):
-                        line_txt += (keep_len[now_line] - len(str(value)))*' ' + str(value) + ' '
+                        line_txt += (keep_len[now_line] - len(str(value)))*' ' + str(value) + '|'
                       
                     else:
-                        line_txt += keep_len[now_line]*':' + ' '
+                        line_txt += keep_len[now_line]*':' + '|'
                     now_line += 1
 
             format_texts.append(line_txt)
