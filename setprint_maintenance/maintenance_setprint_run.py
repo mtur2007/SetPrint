@@ -7,6 +7,8 @@ from run_image_print import image_print
 from to_maintenance_setprint import insert_text_after_match_with_indent
 import os
 
+import numpy as np
+
 
 def file_relative_access(relative_path):
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -17,8 +19,8 @@ def file_relative_access(relative_path):
 style_settings = (
 
    (("Collections" ,
-     {  'image'   : { 'list'    : '►list' ,
-                      'tuple'   : '▷tupl' ,
+     {  'image'   : { 'list'    : '++@_fter' ,
+                      'tuple'   : '-@_fter' ,
                       'ndarray' : '>Ndry' ,
                       'dict'    : '◆dect'}}),
 
@@ -76,18 +78,71 @@ output_file = "/Users/matsuurakenshin/WorkSpace/development/setprint_package/set
 
 insert_text_after_match_with_indent(input_file, output_file, keep_index=True, tracking_image=True, tracking_rog=False)
 
+list_array  = [np.array(10)]
+array_array = np.array(((10,0)))
+
+print(array_array)
+
+print('l[0] == a[0]',list_array[0] == array_array[0])
+print('l[0] == str ',isinstance(list_array[0], int))
+print('a[0] == str ',isinstance(array_array[0], int))
 
 # メンテナンス用 データの整形
 from maintenance_setprint import SetPrint
 
 test_data = [
-    [  [ ['#','#'],['#','#'] ], [ ['#','#'],['#','#'] ]  ],
-    [  [ ['#',[['#','#'],['#','#']]],['#','#'] ], [ ['#','#'],['#','#'] ]  ],
-    [  [ ['#','#'],['#',['#','#']] ] ],
-    [  [ ['#',[['#','#'],['#','#']]],['#','#'] ], [ ['#','#'],['#','#'] ]]
+    [
+        [
+            '-before',
+            '++@_fter',
+        ],
+
+        [
+            '++before',
+            '-@_fter'
+        ]
+    ],
+    #------------------------
+    [
+        [
+            '-before',
+            ['++@_fter']
+        ],
+
+        [
+            '++before',
+            ('-@_fter',)
+        ]
+    ],
+    #------------------------
+    [
+        [
+            ('-before',),
+            ['++@_fter']
+        ],
+
+        [
+            ['++before'],
+            ('-@_fter',)
+        ],
+    ],
+    # /f/ ==================================
+    [
+        [
+            ('-before',('-before',)),
+            ['++@_fter',['++@_fter']]
+        ],
+
+        [
+            ['++before',['++@_fter']],
+            ('-@_fter',('-before',))
+        ],
+    ]
 ]
 
-keep_setting={1:'y',2:'x',3:'yf',5:'y',10:'x'}
+keep_setting={1:'x',3:'x',100:'y'}
+keep_setting={1:'x',3:'y',100:'y'}
+keep_setting={1:'x',3:'yf',100:'y'}
 
 
 # '#'部分のインデックスを自動追加 - 親インデックスを自動強調

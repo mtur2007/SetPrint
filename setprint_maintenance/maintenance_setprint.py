@@ -182,8 +182,8 @@ class SetPrint:
         self.int_type = (int)
         self.str_type = (str)
         self.sequence_type = (list,tuple,np.ndarray)
-        self.mapping_type = (dict)
-        #self.collection_type = self.sequence_type+self.mapping_type
+        self.mapping_type = (dict,)
+        self.collection_type = tuple(list(self.sequence_type) + list(self.mapping_type))
 
         # 入力データ('#'は引数の受け取り箇所)
         self.style_settings = (
@@ -666,7 +666,7 @@ class SetPrint:
                 if len_Kdeep_index < linenum:
                     Kdeep_index.append(0)
                
-                if isinstance(line, (list, tuple, np.ndarray, dict)):
+                if isinstance(line, self.collections):
 
                     # <t:collection_type,In_range>
                     self.maintenance_run('collection_type','In_range')
@@ -789,7 +789,7 @@ class SetPrint:
                     self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
 
                 
-                if isinstance(line, (list, tuple, np.ndarray, dict)):
+                if isinstance(line, self.collection_type):
 
                     # <t:collection_type,Out_of_range>
                     self.maintenance_run('collection_type','Out_of_range')
@@ -890,7 +890,7 @@ class SetPrint:
                 if len_Kdeep_index < linenum:
                     Kdeep_index.append(0)
                
-                if isinstance(line, (list, tuple, np.ndarray, dict)):
+                if isinstance(line, self.collection_type):
                     
                     # <t:collection_type,In_range>
                     self.maintenance_run('collection_type','In_range')
@@ -1014,7 +1014,7 @@ class SetPrint:
 
                     self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
                 
-                if isinstance(line, (list, tuple, np.ndarray, dict)):
+                if isinstance(line, self.collection_type):
                     
                     # <t:collection_type,Out_of_range>
                     self.maintenance_run('collection_type','Out_of_range')
@@ -1157,7 +1157,7 @@ class SetPrint:
                 
                 self.y_flat_index = [[]]
                 
-                if isinstance(line, (list, tuple, np.ndarray, dict)):
+                if isinstance(line, self.collection_type):
                 
                     # <t:collection_type,In_range>
                     self.maintenance_run('collection_type','In_range')
@@ -1228,7 +1228,7 @@ class SetPrint:
                 
                 self.y_flat_index = [[]]
                 
-                if isinstance(line, (list, tuple, np.ndarray, dict)):
+                if isinstance(line, self.collection_type):
                     
                     # <t:collection_type,In_range>
                     self.maintenance_run('collection_type','In_range')
@@ -1534,7 +1534,7 @@ class SetPrint:
         elif set_keep_type == 'yf':
             
             parent_x_diff = parent_x[1]//2
-            parent_x = parent_x[0] + parent_x_diff # + x_line[1]%2 中心より右側の場合
+            parent_x = parent_x[0] + parent_x_diff - (1 - parent_x[1]%2) # 偶数の場合は、中心より左側を中心とする。: - (1 - parent_x[1]%2)
             previous = self.y_keep_line.index(now_y_keep_index+[0])
 
             for index,line in enumerate(datas):
@@ -1569,7 +1569,7 @@ class SetPrint:
             y_keep = 0
 
             parent_x_diff = parent_x[1]//2
-            parent_x = parent_x[0] + parent_x_diff # + x_line[1]%2 中心より右側の場合
+            parent_x = parent_x[0] + parent_x_diff - (1 - parent_x[1]%2) # 偶数の場合は、中心より左側を中心とする。: - (1 - parent_x[1]%2)
             
             parent_y = self.y_keep_line.index(now_y_keep_index+[0]) -1
 
@@ -1584,7 +1584,7 @@ class SetPrint:
                     x_keep = index
                     x_line = total_x_keep_data[index] if type(total_x_keep_data[index][0]) != list else total_x_keep_data[index][0]
 
-                    x_line = x_line[0] + x_line[1]//2 # + x_line[1]%2 中心より右側の場合
+                    x_line = x_line[0] + x_line[1]//2 - (1 - x_line[1]%2) # 偶数の場合は、中心より左側を中心とする。: - (1 - x_line[1]%2)
 
                     line_text = self.format_texts[parent_y]
                     self.format_texts[parent_y] = line_text[:previous] + (x_line - previous) * '━' + '┳' + line_text[x_line+1:]
