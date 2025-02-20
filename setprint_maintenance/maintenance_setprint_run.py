@@ -76,7 +76,7 @@ output_file = "/Users/matsuurakenshin/WorkSpace/development/setprint_package/set
 # tracking_image : 処理のASCIIアート的なトラッキング (キー操作で処理の流れを確認する)
 # tracking_rog   : 処理の時系列順のログ
 
-insert_text_after_match_with_indent(input_file, output_file, keep_index=True, tracking_image=True, tracking_rog=False)
+insert_text_after_match_with_indent(input_file, output_file, keep_index=False, tracking_image=False, tracking_rog=False)
 
 list_array  = [np.array(10)]
 array_array = np.array(((10,0)))
@@ -90,7 +90,7 @@ print('a[0] == str ',isinstance(array_array[0], int))
 # メンテナンス用 データの整形
 from maintenance_setprint import SetPrint
 
-test_data = [
+test_sequence = [
     [
         [
             '-before',
@@ -140,6 +140,57 @@ test_data = [
     ]
 ]
 
+test_mapping = [
+    [
+        {
+            '-before':'--',
+            '++@_fter':'++++',
+        },
+
+        {
+            '++before':'++++',
+            '-@_fter':'--'
+        }
+    ],
+    #------------------------
+    [
+        {
+            '-before':'--',
+            '++@_fter':{'++@_fter':'++++'}
+        },
+
+        {
+            '++before':'++++',
+            '-@_fter':{'-@_fter':'--'}
+        }
+    ],
+    #------------------------
+    [
+        {
+            '-before':{'-before':'--'},
+            '++@_fter':{'++@_fter':'++++'}
+        },
+
+        {
+
+            '++before':{'++before':'++++'},
+            '-@_fter':{'-@_fter':'--'}
+        },
+    ],
+    # /f/ ==================================
+    [
+        {
+            '-before':{'-before':{'-before':'--'}},
+            '++@_fter':{'++@_fter':{'++@_fter':'++++'}}
+        },
+
+        {
+            '++before':{'++before':{'++before':'++++'}},
+            '-@_fter':{'-@_fter':{'-@_fter':'--'}}
+        },
+    ]
+]
+
 keep_setting={1:'x',3:'x',100:'y'}
 keep_setting={1:'x',3:'y',100:'y'}
 keep_setting={1:'x',3:'yf',100:'y'}
@@ -147,6 +198,8 @@ keep_setting={1:'x',3:'yf',100:'y'}
 
 # '#'部分のインデックスを自動追加 - 親インデックスを自動強調
 parent_point = [0] + [ deep-1 if deep_setting == 'yf' else deep for deep, deep_setting in keep_setting.items() ]
+
+test_data = test_sequence
 
 replace_hash_with_custom_indices(test_data)
 

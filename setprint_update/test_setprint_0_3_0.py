@@ -565,7 +565,7 @@ class SetPrint:
                 if len_Kdeep_index < linenum:
                     Kdeep_index.append(0)
                
-                if isinstance(line, self.collections):
+                if isinstance(line, self.collection_type):
 
                     # <t:collection_type,In_range>
 
@@ -615,7 +615,7 @@ class SetPrint:
 
             if (insert_index in self.range_idx) == False:
                 self.range_idx.append(insert_index)
-            
+   
             del self.keep_index[-1]
 
             # <t:配列の調査完了,In_range>
