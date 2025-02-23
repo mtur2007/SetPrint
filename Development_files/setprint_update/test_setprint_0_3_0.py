@@ -1190,7 +1190,7 @@ class SetPrint:
         
         x_keep_index,keep_len = self.flat_x_keep_index(X_keep_index)
         
-        map_width = sum(keep_len) + len(keep_len) +6
+        map_width = max(10,sum(keep_len) + len(keep_len) +6)
 
 
         # キーを辞書順（インデックス順）でソート
@@ -1245,7 +1245,7 @@ class SetPrint:
             format_texts.append(line_txt)
         
 
-        self.format_texts=format_texts
+        self.format_texts=format_texts[:]
 
         total_x_keep_data,nouse = self.total_x_keep_deata(X_keep_index,6)
         for line_num,line in enumerate(self.format_texts):
@@ -1255,32 +1255,63 @@ class SetPrint:
         self.y_keep_line = [list(t) for t in Y_keep_index.keys()]
         self.y_keep_line.insert(0,'')
 
-        print()
-        print('out_put')
-        print('-'*map_width)
-        print()
-
-        for line in self.format_texts:
-            print(line)
-
-        print()
-        print('-'*map_width)
-        print()
+        format_texts = self.format_texts[:]
 
         self.format_route(self.input_list, total_x_keep_data, [0,5])
+        format_texts_with_route = self.format_texts[:]
+   
+        if False:
+            print()
+            print('out_put')
+            print('-'*map_width)
+            print()
 
-        print()
-        print('out_put / with_route')
-        print('-'*map_width)
-        print()
+            for line in format_texts:
+                print(line)
 
-        for line in self.format_texts:
-            print(line)
-         
-        print()
-        print('-'*map_width)
-        print()
-               
+            print()
+            print('-'*map_width)
+            print()
+
+   
+            print()
+            print('with_route')
+            print('-'*map_width)
+            print()
+
+            for line in format_texts_with_route:
+                print(line)
+            
+            print()
+            print('-'*map_width)
+            print()
+
+        else:
+            print()
+            print('with_route'+(map_width-10)*' '+'  / '+'out_put')
+            print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
+            print()
+
+            for line_with_route,line in zip(format_texts_with_route,format_texts):
+                diff_air = (map_width - len(line_with_route))*' '
+                print(' '+line_with_route+diff_air+' :  '+line)
+            
+            print()
+            print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
+            print()
+            
+            # print()
+            # print('with_route'+(map_width-10)*' '+' / '+'out_put')
+            # print('┏━'+'━'*map_width+'━┱─'+'─'*map_width + '┐')
+            # print('┃ '+' '*map_width+' ┃ '+' '*map_width + '│')
+            
+            # for line_with_route,line in zip(format_texts_with_route,format_texts):
+            #     diff_air = (map_width - len(line_with_route))*' '
+            #     print('┃ '+ line_with_route+diff_air +' ┃ '+ line+diff_air +'│')
+
+            # print('┃ '+' '*map_width+' ┃ '+' '*map_width + '│')
+            # print('┗━'+'━'*map_width+'━┹─'+'─'*map_width + '┘')
+            # print()
     #------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     # def format_keep_data(self,X_keep_index):

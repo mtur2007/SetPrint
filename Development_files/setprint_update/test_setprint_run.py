@@ -55,7 +55,19 @@ test_data = [
     [  [ ['(2)-{0}-0','(2)-{0}-1'],['(2)-{0}-2','(2)-{0}-3'],{'a':{'a':"aaaaaa"}} ]],
 ]
 
+test_data = [
+    'a','b','c'
+]
 
+# test_data = [
+#     [[1], [3, 4]],
+#     [[5, 6], [8]],
+    
+#     [
+#         [[1], [3, 4]],
+#         [[5, 6], [8]]
+#     ]
+# ]
 '''
 
 test_data = [
@@ -80,13 +92,20 @@ test_data = [
 
 '''
 
+
 # インスタンスを生成
 list_data = SetPrint(test_data)
 
 list_data.set_text_style(style_settings) # set_listの前
 
+
 # データの整形
-keep_tracking = list_data.set_list(guide=True,keep_start={1:'x',2:'x',3:'yf',5:'yf',10:'x'})
+# keep_tracking = list_data.set_list(guide=True,keep_start={1:'x',2:'x',3:'yf',5:'yf',10:'x'})
+
+keep_tracking = list_data.set_list(guide=True,keep_start={1:'x'})
+
+
+# keep_tracking = list_data.set_list(guide=True,keep_start={1:'yf',3:'x',8:'x'})
 
 '''
 
