@@ -2,13 +2,13 @@
 setprintは、リストの多次元データを簡単に整形し、わかりやすく表示するためのPythonライブラリです。<br>
 次元が混在するデータ構造でも、美しい整形を実現します！
 
-### アップデート情報<br>https://github.com/mtur2007/SetPrint/blob/main/setprint_update/SetPrint_update_image.md
+> ### アップデート情報<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/SetPrint_update_image.md
 
 ## 特徴
   - **可変的なデータ構造に対応**: 多次元リストや混在するデータ構造に対して、自由度の高い整形が可能。
   - **デバッグに便利**: 実行中のデータの構造や内容をわかりやすく整理して表示。
 
-### 識字プログラムの実例<br>https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
+  - > ### 識字プログラムの実例<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/format_data/ocr_data.txt
 
 
 ## メソッド
