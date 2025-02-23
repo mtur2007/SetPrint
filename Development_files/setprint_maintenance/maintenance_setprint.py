@@ -377,7 +377,7 @@ class SetPrint:
     
     # リストを整型する際の条件を整理 / １次元目の格納情報を整形 [→:#0]
     # [→:0] 中身は search_mapping / search_sequence とほぼ同じ
-    def set_list(self, guide,keep_start):
+    def set_list(self, route, keep_settings):
 
         datas = self.input_list
         
@@ -407,7 +407,7 @@ class SetPrint:
         #     #     self.show_all = False
         #     #     self.keep_finish = self.keep_start + keep_range
             
-        self.keep_start = keep_start
+        dict_keep_settings = keep_settings
 
         #初期化
         self.now_deep = 0 #now_deepはインデックスの次元測定
@@ -459,7 +459,7 @@ class SetPrint:
             print('{ '+' '*self.ber_len+' }')
         
 
-        keep_deeps = list(self.keep_start.keys())
+        keep_deeps = list(keep_settings.keys())
         self.min_keep_deep = min(keep_deeps)
         self.max_keep_deep = max(keep_deeps)
 
@@ -468,8 +468,8 @@ class SetPrint:
         range_keep_type = None
         for deep in range(self.max_keep_deep):
             deep+=1
-            if deep in self.keep_start.keys():
-                range_keep_type = self.keep_start[deep]
+            if deep in dict_keep_settings.keys():
+                range_keep_type = dict_keep_settings[deep]
                 if range_keep_type == 'yf':
                     keep_settings.append('yf')
                 else:
@@ -517,7 +517,7 @@ class SetPrint:
 
         print()
 
-        self.format_keep_data(x_keep_index,self.Y_keep_index)
+        self.format_keep_data(route,x_keep_index,self.Y_keep_index)
 
         # <t:return>
 
@@ -539,7 +539,6 @@ class SetPrint:
         
         # return set_data_dict,self.tracking_data
 
- 
     # [↺:1] マッピング型を調べる
     def search_mapping(self, datas, Kdeep_index):
         
@@ -1202,7 +1201,7 @@ class SetPrint:
         return value
 
     # [→:4] キープデータの整形
-    def format_keep_data(self,X_keep_index,Y_keep_index):
+    def format_keep_data(self,route,X_keep_index,Y_keep_index):
         
         x_keep_index,keep_len = self.flat_x_keep_index(X_keep_index)
         
@@ -1273,36 +1272,40 @@ class SetPrint:
 
         format_texts = self.format_texts[:]
 
-        self.format_route(self.input_list, total_x_keep_data, [0,5])
-        format_texts_with_route = self.format_texts[:]
-   
-        if False:
-            print()
-            print('out_put')
-            print('-'*map_width)
-            print()
+        if route != 'maintenance':
+            if route:
+                print()
+                print('out_put')
+                print('-'*map_width)
+                print()
 
-            for line in format_texts:
-                print(line)
+                for line in format_texts:
+                    print(line)
 
-            print()
-            print('-'*map_width)
-            print()
+                print()
+                print('-'*map_width)
+                print()
 
-   
-            print()
-            print('with_route')
-            print('-'*map_width)
-            print()
+            else:
+                self.format_route(self.input_list, total_x_keep_data, [0,5])
+                format_texts_with_route = self.format_texts[:]
 
-            for line in format_texts_with_route:
-                print(line)
-            
-            print()
-            print('-'*map_width)
-            print()
+                print()
+                print('with_route')
+                print('-'*map_width)
+                print()
+
+                for line in format_texts_with_route:
+                    print(line)
+                
+                print()
+                print('-'*map_width)
+                print()
 
         else:
+            self.format_route(self.input_list, total_x_keep_data, [0,5])
+            format_texts_with_route = self.format_texts[:]
+
             print()
             print('with_route'+(map_width-10)*' '+'  / '+'out_put')
             print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
@@ -1328,61 +1331,6 @@ class SetPrint:
             # print('┃ '+' '*map_width+' ┃ '+' '*map_width + '│')
             # print('┗━'+'━'*map_width+'━┹─'+'─'*map_width + '┘')
             # print()
-    #------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-    # def format_keep_data(self,X_keep_index):
-    #     if isinstance(self.input_list, self.sequence_type):
-    #         self.format_sequence( self.input_list, X_keep_index )
-
-    # def format_sequence(self,datas,range_keep_x,now_deep=0,now_index=[],write_line):
-
-    #     set_keep_type = self.keep_settings[now_deep]
-    #     if set_keep_type == 'f':
-    #         print('f')
-    #     elif set_keep_type == 'yf':
-    #         print('yf')
-
-    #         for direction_index,line in enumerate(datas):
-
-    #             if line_len < index:
-    #                 format_texts.append('')                
-                
-    #             if isinstance(line, (list, tuple, np.ndarray, dict)):
-
-    #                 if type(format_texts[direction_index]) != list:
-    #                     format_texts[direction_index] = [format_texts[direction_index],['']]
-                
-    #                 if isinstance(self.input_list, self.sequence_type):
-    #                     format_texts[direction_index] = self.format_sequence(datas,now_deep+1,range_keep_x[direction_index][1],now_index+[index],format_texts[direction_index])
-
-
-    #     else:
-
-    #         keep_y = self.keep_settings[now_deep] in ('y')
-
-    #         direction_index = 0
-    #         line_len = len(format_texts)-1
-
-    #         for index,line in enumerate(datas):
-
-    #             if keep_y:
-    #                 direction_index = index
-                
-    #             if line_len < index:
-    #                 format_texts.append('')
-
-    #             if isinstance(line, (list, tuple, np.ndarray, dict)):
-
-    #                 if type(format_texts[direction_index]) != list:
-    #                     format_texts[direction_index] = [format_texts[direction_index],['']]
-                
-    #                 if isinstance(self.input_list, self.sequence_type):
-    #                     format_texts[direction_index] = self.format_sequence(datas,now_deep+1,range_keep_x[direction_index][1],now_index+[index],format_texts[direction_index])
-            
-    #         return format_texts
-
-    #------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
     def total_x_keep_deata(self,x_keep_data,total_len=0):
 
@@ -1402,11 +1350,6 @@ class SetPrint:
                 #     print('!!!')
         
         return x_keep_total_len,total_len
-        
-
-    '''
-    total_x_keep_deata = self.total_x_keep_deata(self,x_keep_data)
-    '''
 
     def format_route(self,datas,total_x_keep_data,parent_x=[0,0],now_deep=0,now_y_keep_index=[]):
 
