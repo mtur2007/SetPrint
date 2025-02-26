@@ -69,8 +69,8 @@ def replace_hash_with_custom_indices(lst, path=[]):
 ---------------------------------------------------------------------------------------------------------------------------------------------
 '''
 
-input_file = "/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/setprint_update/test_setprint_0_3_0.py"  # 開発用ソースファイル
-output_file = "/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/setprint_maintenance/maintenance_setprint.py"  # 出力用
+input_file = "/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/update_0_3_d/test_setprint_0_3_0.py"  # 開発用ソースファイル
+output_file = "/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/maintenance/maintenance_setprint.py"  # 出力用
 
 # 開発用コードからメンテナンス用コードの挿入場所を検出し、挿入する。
 # tracking_image : 処理のASCIIアート的なトラッキング (キー操作で処理の流れを確認する)

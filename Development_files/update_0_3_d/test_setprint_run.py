@@ -8,21 +8,62 @@
 from test_setprint_0_3_0 import SetPrint
 # from demo_setprint_0_3_0 import SetPrint
 
+import numpy as np
+import pickle
 
-test_data = [
-    [[1,2,3], [4,5,6]],
-    [[7,8,9], [10,11,12]]
-]
+if True:
+      def load_pkl_file(filename: str) -> np.ndarray:
+            """
+            pklファイルから"Alltxtdatas"を抽出し、NumPy配列として返す。
+            
+            Parameters:
+                  filename (str): pklファイルのパス
+
+            Returns:
+                  np.ndarray: 2値化マトリックスデータ
+            """
+            with open(filename, 'rb') as f:
+                  data = pickle.load(f)
+            return data["Alltxtdatas"]
+
+      # pklファイルからデータを取得
+      pkl_filename = '/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/format_data/resized_ocr_txtdata.pkl'
+      #pkl_filename = '/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/format_data/ocr_txtdata.pkl'
+      test_data = load_pkl_file(pkl_filename)
+
+      keep_settings = ({1:'y',2:'x',3:'yf',10:'y'},{1:'x',2:'yf',10:'y'},{1:'yf',10:'y'})
+      indexs = []
+      for index in indexs:
+            test_data = test_data[index]
+      keep_settings = keep_settings[len(indexs)]
+      print(keep_settings)
+
+else:
+      test_data = [
+          [[1,2,3], [4,5,6]],
+          [[7,8,9], [10,11,12]]
+      ]
+
+      keep_settings = {1:'yf',10:'y'}
+
+      # test_data = [
+      #     [[1,2,3], [4,5,6]],
+      #     [[7,8,9], [10,11,12]]
+      # ]
+
+# keep_settings = {1:'x',2:'yf',10:'y'}
+# keep_settings = {1:'y',2:'x',3:'yf',10:'y'}
 
 
 # インスタンスを生成
-
-list_data   = SetPrint(test_data)
-
-keep_settings = {1:'yf',3:'f',100:'y'}
+list_data = SetPrint(test_data)
 
 # 整形して表示(表示は自動)
-list_data.set_list ( route=True, keep_settings=keep_settings )
+format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
+
+with open('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/format_data/output.txt','w') as f:
+      for line in format_texts:
+            f.write(line+'\n')
 
 '''
 

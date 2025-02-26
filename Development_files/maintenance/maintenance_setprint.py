@@ -517,27 +517,11 @@ class SetPrint:
 
         print()
 
-        self.format_keep_data(route,x_keep_index,self.Y_keep_index)
+        format_texts = self.format_keep_data(route,x_keep_index,self.Y_keep_index)
 
         # <t:return>
 
-        # print(self.tracking_data)
         
-        # set_border_list = self.blocks_border_print(All_blocks = All_blocks, line_title = line_title, guide = guide)
-
-        # set_data_dict = {
-
-        # "input_list" : datas,
-        # "grid_slice" : set_border_list,
-        # 'grid_block' : All_blocks,
-
-        # 'block_keep_data' : keep_Ylines_data
-
-        # }
-
-        # self.set_data_dict = set_data_dict
-        
-        # return set_data_dict,self.tracking_data
 
     # [↺:1] マッピング型を調べる
     def search_mapping(self, datas, Kdeep_index):
@@ -1250,11 +1234,11 @@ class SetPrint:
                     # print()
                     
                     value = self.map_sequence_indices(parent_list,y_x_index)
-                    if type(value) in (int,str):
-                        line_txt += (keep_len[now_line] - len(str(value)))*' ' + str(value) + ' '
-                      
-                    else:
+                    if isinstance(value, self.collection_type):
                         line_txt += keep_len[now_line]*':' + ' '
+                    else:
+                        line_txt += (keep_len[now_line] - len(str(value)))*' ' + str(value) + ' '
+
                     now_line += 1
 
             format_texts.append(line_txt)
@@ -1274,19 +1258,6 @@ class SetPrint:
 
         if route != 'maintenance':
             if route:
-                print()
-                print('out_put')
-                print('-'*map_width)
-                print()
-
-                for line in format_texts:
-                    print(line)
-
-                print()
-                print('-'*map_width)
-                print()
-
-            else:
                 self.format_route(self.input_list, total_x_keep_data, [0,5])
                 format_texts_with_route = self.format_texts[:]
 
@@ -1302,11 +1273,34 @@ class SetPrint:
                 print('-'*map_width)
                 print()
 
+                return format_texts_with_route
+            
+            else:
+                print()
+                print('out_put')
+                print('-'*map_width)
+                print()
+
+                for line in format_texts:
+                    print(line)
+
+                print()
+                print('-'*map_width)
+                print()
+
+                return format_texts
+
         else:
             self.format_route(self.input_list, total_x_keep_data, [0,5])
             format_texts_with_route = self.format_texts[:]
 
+            format_texts_maintenance = []
+            
             print()
+            
+            format_texts_with_route += 'with_route'+(map_width-10)*' '+'  / '+'out_put' + '\n'
+            format_texts_with_route += '='+'='*map_width+' ~ '+'-'+'-'*map_width + '\n\n'
+
             print('with_route'+(map_width-10)*' '+'  / '+'out_put')
             print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
             print()
@@ -1314,9 +1308,12 @@ class SetPrint:
             for line_with_route,line in zip(format_texts_with_route,format_texts):
                 diff_air = (map_width - len(line_with_route))*' '
                 print(' '+line_with_route+diff_air+' :  '+line)
+                format_texts_maintenance += ' '+line_with_route+diff_air+' :  '+line +'\n'
             
             print()
             print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
+            format_texts_maintenance += '\n\n' + '='+'='*map_width+' ~ '+'-'+'-'*map_width
+
             print()
             
             # print()
@@ -1331,6 +1328,10 @@ class SetPrint:
             # print('┃ '+' '*map_width+' ┃ '+' '*map_width + '│')
             # print('┗━'+'━'*map_width+'━┹─'+'─'*map_width + '┘')
             # print()
+
+            return format_texts_maintenance
+
+
 
     def total_x_keep_deata(self,x_keep_data,total_len=0):
 
