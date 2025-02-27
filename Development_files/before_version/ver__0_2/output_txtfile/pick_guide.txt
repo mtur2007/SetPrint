@@ -1,9 +1,9 @@
-{guide}              ▼{1}
+{guide}              ▼{0}
 
-         data_type: <class 'list'> 
         ┏                         ┓ 
          data_type: <class 'list'>  
         ┗                         ┛ 
+         data_type: <class 'list'> 
          data_type: <class 'list'> 
          data_type: <class 'list'> 
          data_type: <class 'list'> 
