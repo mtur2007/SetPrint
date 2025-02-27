@@ -188,7 +188,7 @@ maintenance_codes = [
 
         '# <t:print>' : ["print()","print('run_tracking')","print(self.keep_tracking[0])"],
 
-        '# <t:return>': ["return self.keep_tracking[0]"]
+        '# <t:return>': ["return [ format_texts, self.keep_tracking[0] ]"]
     
     },
 

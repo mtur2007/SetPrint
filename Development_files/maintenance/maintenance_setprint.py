@@ -1,7 +1,7 @@
 # / maintenance / maintenance / maintenance / maintenance / maintenance / maintenance / maintenance / maintenance / maintenance / maintenance /
 # print('\n'+'/ \033[38;2;255;165;0m\033[1mmaintenance\033[0m / \033[38;5;27mmaintenance\033[0m '*5+'/\n')
 
-# setpirnt (ver 0.3.0)
+# setpirnt (ver 0.3.0) [ demo ]
 
 import numpy as np
 from pynput import keyboard
@@ -361,6 +361,81 @@ class SetPrint:
 
     # <t:maintenance_run>
     
+    def maintenance_run(self,*run_datas):
+        
+        run_title = run_datas[0]
+
+        if run_title == '初期化':
+            self.parent_len = 0
+            self.run_tracking = []
+            self.tracking_data = []
+            self.keep_tracking = []
+        
+        elif run_title == 'キープ初期化':
+            parent__parent_len = self.parent_len
+            self.parent_len = self.now_deep-1
+            
+            parent__keep_tracking = self.keep_tracking[:]
+            self.keep_tracking = []
+            return parent__parent_len,parent__keep_tracking
+        
+
+        elif run_title in ('start','int/str_type','collection_type','配列の調査結果の受け取り','配列の調査完了'):
+
+            range_type = run_datas[1]
+
+            if run_title == 'start':
+                self.run_tracking.append(0 if range_type == 'In_range' else 5)
+                run_point = self.run_tracking
+
+            elif run_title == 'int/str_type':
+                self.run_tracking[-1] = 1 if range_type == 'In_range' else 7
+                run_point = self.run_tracking
+
+            elif run_title == 'collection_type':
+                self.run_tracking[-1] = 2 if range_type == 'In_range' else 6
+                run_point = self.run_tracking
+            
+            elif run_title == '配列の調査結果の受け取り':
+                self.run_tracking[-1] = 4 if range_type == 'In_range' else 9
+                run_point = self.run_tracking
+                
+            elif run_title == '配列の調査完了':
+                del self.run_tracking[-1]
+                run_point = self.run_tracking + [3] if range_type == 'In_range' else [8]
+
+            if range_type == 'In_range':    
+                self.keep_tracking.append(run_point[self.parent_len:])
+            
+            if range_type == 'Out_of_range':
+                if run_title == 'start':
+                    parent__keep_tracking = self.keep_tracking[:]
+                    self.keep_tracking = []
+
+                    self.keep_tracking.append([run_point[-1]])
+
+                    return parent__keep_tracking
+
+                self.keep_tracking.append([run_point[-1]])
+
+                if run_title == '配列の調査完了':
+                    parent__keep_tracking = run_datas[2]
+                    self.keep_tracking = parent__keep_tracking + [ self.keep_tracking ]
+        
+        elif run_title == 'キープ範囲調査完了':
+
+            if self.min_keep_deep != self.now_deep:
+                self.parent_len = run_datas[1]
+            
+            del self.run_tracking[-1]
+
+            parent__keep_tracking = run_datas[2]
+            
+            self.keep_tracking = parent__keep_tracking + [ self.keep_tracking ]
+
+    
+
+    
     def transform_keep_index(self,index):
 
         x_keep_index = index[:]
@@ -431,6 +506,8 @@ class SetPrint:
         now_keep_index = []
 
         # <t:初期化>
+        self.maintenance_run('初期化')
+
 
         #表示スタイルの更新
         self.collections = self.style_settings[0][1]['image']
@@ -514,14 +591,22 @@ class SetPrint:
 
         
         # <t:print>
+        print()
+        print('run_tracking')
+        print(self.keep_tracking[0])
+
 
         print()
 
         format_texts = self.format_keep_data(route,x_keep_index,self.Y_keep_index)
 
         # <t:return>
+        return [ format_texts, self.keep_tracking[0] ]
 
-        
+
+        return format_texts
+
+
 
     # [↺:1] マッピング型を調べる
     def search_mapping(self, datas, Kdeep_index):
@@ -551,6 +636,8 @@ class SetPrint:
             len_Kdeep_index = len(Kdeep_index)-1
 
             # <t:start,In_range>
+            self.maintenance_run('start','In_range')
+
 
             for linenum, (key, line) in enumerate(datas.items()):
 
@@ -567,6 +654,8 @@ class SetPrint:
                 if isinstance(line, self.collection_type):
 
                     # <t:collection_type,In_range>
+                    self.maintenance_run('collection_type','In_range')
+
 
                     if len(line) != 0:
                         if type(Kdeep_index[linenum]) != list:
@@ -585,6 +674,8 @@ class SetPrint:
                             Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
 
                         # <t:配列の調査結果の受け取り,In_range>
+                        self.maintenance_run('配列の調査結果の受け取り','In_range')
+
                     
                     else:
                         if type(Kdeep_index[linenum]) != list:
@@ -604,6 +695,8 @@ class SetPrint:
                             Kdeep_index[linenum][0] =  len(str(line))
                     
                     # <t:int/str_type,In_range>
+                    self.maintenance_run('int/str_type','In_range')
+
 
                 #存在するインデックスの情報の新規作成/更新
                 if (insert_index in self.range_idx) == False:
@@ -618,6 +711,8 @@ class SetPrint:
             del self.keep_index[-1]
 
             # <t:配列の調査完了,In_range>
+            self.maintenance_run('配列の調査完了','In_range')
+
 
         
         # (P:1)
@@ -633,6 +728,8 @@ class SetPrint:
         else:
 
             # <t:start,Out_of_range>
+            parent__keep_tracking = self.maintenance_run('start','Out_of_range')
+
 
             txt_index = ''
             for i in self.now_index:
@@ -680,6 +777,8 @@ class SetPrint:
                 if isinstance(line, self.collection_type):
 
                     # <t:collection_type,Out_of_range>
+                    self.maintenance_run('collection_type','Out_of_range')
+
 
                     if len(line) != 0:                        
                         if type(Kdeep_index[direction_index]) != list:
@@ -698,6 +797,8 @@ class SetPrint:
                             Kdeep_index[direction_index][1] = self.search_sequence(line,Kdeep_index[direction_index][1])
 
                         # <t:配列の調査結果の受け取り,Out_of_range>
+                        self.maintenance_run('配列の調査結果の受け取り','Out_of_range')
+
                     
                     else:
                         if type(Kdeep_index[direction_index]) != list:
@@ -716,8 +817,12 @@ class SetPrint:
                             Kdeep_index[direction_index][0] = len(str(line))
                     
                     # <t:int/str_type,Out_of_range>
+                    self.maintenance_run('int/str_type','Out_of_range')
+
             
             # <t:配列の調査完了,Out_of_range>
+            self.maintenance_run('配列の調査完了','Out_of_range',parent__keep_tracking)
+
 
 
         del self.now_index[-1] #インデックスの調査が終わったら戻す
@@ -753,6 +858,8 @@ class SetPrint:
             len_Kdeep_index = len(Kdeep_index)-1
 
             # <t:start,In_range>
+            self.maintenance_run('start','In_range')
+
 
             for linenum in range(len(datas)):
 
@@ -771,6 +878,8 @@ class SetPrint:
                 if isinstance(line, self.collection_type):
                     
                     # <t:collection_type,In_range>
+                    self.maintenance_run('collection_type','In_range')
+
 
                     if len(line) != 0:
                         if type(Kdeep_index[linenum]) != list:
@@ -789,6 +898,8 @@ class SetPrint:
                             Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
 
                         # <t:配列の調査結果の受け取り,In_range>
+                        self.maintenance_run('配列の調査結果の受け取り','In_range')
+
                     
                     else:
                         if type(Kdeep_index[linenum]) != list:
@@ -808,6 +919,8 @@ class SetPrint:
                             Kdeep_index[linenum][0] =  len(str(line))
                     
                     # <t:int/str_type,In_range>
+                    self.maintenance_run('int/str_type','In_range')
+
 
                 #存在するインデックスの情報の新規作成/更新
                 if (insert_index in self.range_idx) == False:
@@ -822,6 +935,8 @@ class SetPrint:
             del self.keep_index[-1]
 
             # <t:配列の調査完了,In_range>
+            self.maintenance_run('配列の調査完了','In_range')
+
 
         
         # (P:1)
@@ -837,6 +952,8 @@ class SetPrint:
         else:
 
             # <t:start,Out_of_range>
+            parent__keep_tracking = self.maintenance_run('start','Out_of_range')
+
 
             txt_index = ''
             for i in self.now_index:
@@ -885,6 +1002,8 @@ class SetPrint:
                 if isinstance(line, self.collection_type):
                     
                     # <t:collection_type,Out_of_range>
+                    self.maintenance_run('collection_type','Out_of_range')
+
 
                     if len(line) != 0:                        
                         if type(Kdeep_index[direction_index]) != list:
@@ -903,6 +1022,8 @@ class SetPrint:
                             Kdeep_index[direction_index][1] = self.search_sequence(line,Kdeep_index[direction_index][1])
 
                         # <t:配列の調査結果の受け取り,Out_of_range>
+                        self.maintenance_run('配列の調査結果の受け取り','Out_of_range')
+
                     
                     else:
                         if type(Kdeep_index[direction_index]) != list:
@@ -921,8 +1042,12 @@ class SetPrint:
                             Kdeep_index[direction_index][0] = len(str(line))
                     
                     # <t:int/str_type,Out_of_range>
+                    self.maintenance_run('int/str_type','Out_of_range')
+
             
             # <t:配列の調査完了,Out_of_range>
+            self.maintenance_run('配列の調査完了','Out_of_range',parent__keep_tracking)
+
 
 
         del self.now_index[-1] #インデックスの調査が終わったら戻す
@@ -953,6 +1078,8 @@ class SetPrint:
             self.Y_keep_index[parent_y_keep_index] = []
 
         # <t:キープ初期化>
+        parent__parent_len,parent__keep_tracking = self.maintenance_run('キープ初期化')
+
 
         self.keep_index = []
         self.range_idx = self.MAX_index[parent_x_keep_index]
@@ -988,6 +1115,8 @@ class SetPrint:
         self.now_index.append('')
 
         # <t:start,In_range>
+        self.maintenance_run('start','In_range')
+
 
         # print('start')
         # print(' < X.      ',self.range_idx)
@@ -1016,6 +1145,8 @@ class SetPrint:
                 if isinstance(line, self.collection_type):
                 
                     # <t:collection_type,In_range>
+                    self.maintenance_run('collection_type','In_range')
+
                     
                     if len(line) != 0:
                         if type(Kdeep_index[0]) != list:
@@ -1034,6 +1165,8 @@ class SetPrint:
                             Kdeep_index[0][1] = self.search_sequence(line,Kdeep_index[0][1])
 
                         # <t:配列の調査結果の受け取り,In_range>
+                        self.maintenance_run('配列の調査結果の受け取り','In_range')
+
                     
                     else:
                         if type(Kdeep_index[0]) != list:
@@ -1046,6 +1179,8 @@ class SetPrint:
                 else:
 
                     # <t:int/str_type,In_range>
+                    self.maintenance_run('int/str_type','In_range')
+
 
                     if type(Kdeep_index[0]) != list:
                         if Kdeep_index[0] < len(str(line)):
@@ -1081,6 +1216,8 @@ class SetPrint:
                 if isinstance(line, self.collection_type):
                     
                     # <t:collection_type,In_range>
+                    self.maintenance_run('collection_type','In_range')
+
 
                     if len(line) != 0:
                         if type(Kdeep_index[0]) != list:
@@ -1099,6 +1236,8 @@ class SetPrint:
                             Kdeep_index[0][1] = self.search_sequence(line,Kdeep_index[0][1])
 
                         # <t:配列の調査結果の受け取り,In_range>
+                        self.maintenance_run('配列の調査結果の受け取り','In_range')
+
                     
                     else:
                         if type(Kdeep_index[0]) != list:
@@ -1111,6 +1250,8 @@ class SetPrint:
                 else:
                     
                     # <t:int/str_type,In_range>
+                    self.maintenance_run('int/str_type','In_range')
+
 
                     if type(Kdeep_index[0]) != list:
                         if Kdeep_index[0] < len(str(line)):
@@ -1134,6 +1275,8 @@ class SetPrint:
         # print()
 
         # <t:キープ範囲調査完了>
+        self.maintenance_run('キープ範囲調査完了', parent__parent_len,parent__keep_tracking)
+
 
         # ber_print(2)
         if self.ber_print:
@@ -1261,32 +1404,36 @@ class SetPrint:
                 self.format_route(self.input_list, total_x_keep_data, [0,5])
                 format_texts_with_route = self.format_texts[:]
 
-                print()
-                print('with_route')
-                print('-'*map_width)
-                print()
+                # print()
+                # print('with_route')
+                # print('-'*map_width)
+                # print()
 
-                for line in format_texts_with_route:
-                    print(line)
+                # for line in format_texts_with_route:
+                #     print(line)
                 
-                print()
-                print('-'*map_width)
-                print()
+                # print()
+                # print('-'*map_width)
+                # print()
+
+                format_texts_with_route = ['keep_settings',str(self.keep_settings),'-'*map_width+'\n'] + format_texts_with_route + ['\n'+'-'*map_width]
 
                 return format_texts_with_route
             
             else:
-                print()
-                print('out_put')
-                print('-'*map_width)
-                print()
+                # print()
+                # print('out_put')
+                # print('-'*map_width)
+                # print()
 
-                for line in format_texts:
-                    print(line)
+                # for line in format_texts:
+                #     print(line)
 
-                print()
-                print('-'*map_width)
-                print()
+                # print()
+                # print('-'*map_width)
+                # print()
+
+                format_texts = ['keep_settings',str(self.keep_settings),'-'*map_width+'\n'] + format_texts + ['-'*map_width]
 
                 return format_texts
 
@@ -1296,25 +1443,25 @@ class SetPrint:
 
             format_texts_maintenance = []
             
-            print()
+            # print()
             
-            format_texts_with_route += 'with_route'+(map_width-10)*' '+'  / '+'out_put' + '\n'
-            format_texts_with_route += '='+'='*map_width+' ~ '+'-'+'-'*map_width + '\n\n'
+            format_texts_maintenance += ['with_route'+(map_width-10)*' '+'  / '+'out_put']
+            format_texts_maintenance += ['='+'='*map_width+' ~ '+'-'+'-'*map_width + '\n']
 
-            print('with_route'+(map_width-10)*' '+'  / '+'out_put')
-            print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
-            print()
+            # print('with_route'+(map_width-10)*' '+'  / '+'out_put')
+            # print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
+            # print()
 
             for line_with_route,line in zip(format_texts_with_route,format_texts):
                 diff_air = (map_width - len(line_with_route))*' '
-                print(' '+line_with_route+diff_air+' :  '+line)
-                format_texts_maintenance += ' '+line_with_route+diff_air+' :  '+line +'\n'
+                # print(' '+line_with_route+diff_air+' :  '+line)
+                format_texts_maintenance += [' '+line_with_route+diff_air+' :  '+line]
             
-            print()
-            print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
-            format_texts_maintenance += '\n\n' + '='+'='*map_width+' ~ '+'-'+'-'*map_width
+            # print()
+            # print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
+            format_texts_maintenance += ['\n\n' + '='+'='*map_width+' ~ '+'-'+'-'*map_width]
 
-            print()
+            # print()
             
             # print()
             # print('with_route'+(map_width-10)*' '+' / '+'out_put')

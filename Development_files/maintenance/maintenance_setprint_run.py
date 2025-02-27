@@ -75,8 +75,11 @@ output_file = "/Users/matsuurakenshin/WorkSpace/development/setprint_package/Dev
 # 開発用コードからメンテナンス用コードの挿入場所を検出し、挿入する。
 # tracking_image : 処理のASCIIアート的なトラッキング (キー操作で処理の流れを確認する)
 # tracking_rog   : 処理の時系列順のログ
+keep_index=True
+tracking_image=True
+tracking_rog=False
 
-insert_text_after_match_with_indent(input_file, output_file, keep_index=True, tracking_image=False, tracking_rog=False)
+insert_text_after_match_with_indent(input_file, output_file, keep_index, tracking_image, tracking_rog)
 
 # メンテナンス用 データの整形
 from maintenance_setprint import SetPrint
@@ -198,7 +201,15 @@ replace_hash_with_custom_indices(test_data)
 list_data = SetPrint(test_data)
 
 list_data.set_text_style(style_settings) # set_listの前
-keep_tracking = list_data.set_list(route='maintenance',keep_settings=keep_settings)
+return_data = list_data.set_list(route='maintenance',keep_settings=keep_settings)
 
-if keep_tracking != None:
-    image_print(keep_tracking)
+if tracking_image:
+    with open('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/format_data/output_maintenance.txt','w') as f:
+        for line in return_data[0]:
+                f.write(line+'\n')
+    image_print(return_data[1])
+
+else:
+    with open('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/format_data/output_maintenance.txt','w') as f:
+        for line in return_data:
+                f.write(line+'\n')
