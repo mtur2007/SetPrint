@@ -66,7 +66,7 @@ def process_and_save_binary_pkl(pkl_filename: str, scale_factor: float, output_f
 
 # 使用例
 pkl_filename = "/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/format_data/ocr_txtdata.pkl"
-scale_factor = 0.2
+scale_factor = 0.4
 output_filename = "/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/format_data/resized_ocr_txtdata.pkl"
 
 process_and_save_binary_pkl(pkl_filename, scale_factor, output_filename)

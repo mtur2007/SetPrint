@@ -11,7 +11,7 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
   - **可変的なデータ構造に対応**: 多次元リストや混在するデータ構造に対して、自由度の高い整形が可能。
   - **デバッグに便利**: 実行中のデータの構造や内容をわかりやすく整理して表示。
 
-    > ### 識字プログラムの実例<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/format_data/ocr_data.txt
+    > ### 識字プログラムの実例<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/format_data/output.txt
 
 
 ## メソッド

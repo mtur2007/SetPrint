@@ -5,8 +5,8 @@
 #print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
 # 実行コード
-from test_setprint_0_3_0 import SetPrint
-# from demo_setprint_0_3_0 import SetPrint
+# from test_setprint_0_3_0 import SetPrint
+from demo_setprint_0_3_0 import SetPrint
 
 import numpy as np
 import pickle
@@ -36,6 +36,7 @@ if True:
       for index in indexs:
             test_data = test_data[index]
       keep_settings = keep_settings[len(indexs)]
+      # keep_settings = {1:'y',10:None}
       print(keep_settings)
 
 else:
@@ -58,8 +59,8 @@ else:
 # インスタンスを生成
 list_data = SetPrint(test_data)
 
-# 整形して表示(表示は自動)
-format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
+# 整形
+format_texts = list_data.set_list ( route='maintenance', keep_settings=keep_settings )
 
 with open('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/format_data/output.txt','w') as f:
       for line in format_texts:

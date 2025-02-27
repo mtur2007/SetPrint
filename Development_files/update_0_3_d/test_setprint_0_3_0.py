@@ -1,7 +1,7 @@
-# / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test / test /
-# print('\n'+'/ \033[38;2;255;165;0m\033[1mtest\033[0m / \033[38;5;27mtest\033[0m '*10+'/\n')
+# / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict /
+#print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
-# setpirnt (ver 0.3.0)
+# setpirnt (ver 0.3.0) [ demo ]
 
 import numpy as np
 from pynput import keyboard
@@ -1247,32 +1247,36 @@ class SetPrint:
                 self.format_route(self.input_list, total_x_keep_data, [0,5])
                 format_texts_with_route = self.format_texts[:]
 
-                print()
-                print('with_route')
-                print('-'*map_width)
-                print()
+                # print()
+                # print('with_route')
+                # print('-'*map_width)
+                # print()
 
-                for line in format_texts_with_route:
-                    print(line)
+                # for line in format_texts_with_route:
+                #     print(line)
                 
-                print()
-                print('-'*map_width)
-                print()
+                # print()
+                # print('-'*map_width)
+                # print()
+
+                format_texts_with_route = ['keep_settings',str(self.keep_settings),'-'*map_width+'\n'] + format_texts_with_route + ['\n'+'-'*map_width]
 
                 return format_texts_with_route
             
             else:
-                print()
-                print('out_put')
-                print('-'*map_width)
-                print()
+                # print()
+                # print('out_put')
+                # print('-'*map_width)
+                # print()
 
-                for line in format_texts:
-                    print(line)
+                # for line in format_texts:
+                #     print(line)
 
-                print()
-                print('-'*map_width)
-                print()
+                # print()
+                # print('-'*map_width)
+                # print()
+
+                format_texts = ['keep_settings',str(self.keep_settings),'-'*map_width+'\n'] + format_texts + ['-'*map_width]
 
                 return format_texts
 
@@ -1282,25 +1286,25 @@ class SetPrint:
 
             format_texts_maintenance = []
             
-            print()
+            # print()
             
-            format_texts_with_route += 'with_route'+(map_width-10)*' '+'  / '+'out_put'
-            format_texts_with_route += '='+'='*map_width+' ~ '+'-'+'-'*map_width + '\n'
+            format_texts_maintenance += ['with_route'+(map_width-10)*' '+'  / '+'out_put']
+            format_texts_maintenance += ['='+'='*map_width+' ~ '+'-'+'-'*map_width + '\n']
 
-            print('with_route'+(map_width-10)*' '+'  / '+'out_put')
-            print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
-            print()
+            # print('with_route'+(map_width-10)*' '+'  / '+'out_put')
+            # print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
+            # print()
 
             for line_with_route,line in zip(format_texts_with_route,format_texts):
                 diff_air = (map_width - len(line_with_route))*' '
-                print(' '+line_with_route+diff_air+' :  '+line)
-                format_texts_maintenance += ' '+line_with_route+diff_air+' :  '+line
+                # print(' '+line_with_route+diff_air+' :  '+line)
+                format_texts_maintenance += [' '+line_with_route+diff_air+' :  '+line]
             
-            print()
-            print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
-            format_texts_maintenance += '\n\n' + '='+'='*map_width+' ~ '+'-'+'-'*map_width
+            # print()
+            # print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
+            format_texts_maintenance += ['\n\n' + '='+'='*map_width+' ~ '+'-'+'-'*map_width]
 
-            print()
+            # print()
             
             # print()
             # print('with_route'+(map_width-10)*' '+' / '+'out_put')

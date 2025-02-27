@@ -1,3 +1,5 @@
+# ネタ系お遊び/没プログラム : 線を辿るコード
+
 import os
 import time
 
@@ -152,16 +154,7 @@ ascii_art = """
         └───┘    ˆ
                  └──
 """
-ascii_art = """
-    start
-        ˇ
-    ┌┄┄┄›───┐
-    ┆       ˇ
-    ┆   ┌‹┄(if:1)
-    ˆ   ┆   │ 
-    ┆   ┆   end
-    └┄┄┄┘
-"""
+
 ascii_art = """
                                     
                            start end
