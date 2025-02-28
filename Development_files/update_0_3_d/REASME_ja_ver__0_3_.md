@@ -1,18 +1,120 @@
 # SetPrint(ver, 0.3.0)[demo] - 高次元データを簡単に整形・表示！
 >> デモ版 : ver 0.3.0 [ PlaneView 搭載版 ]<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/demo_setprint_0_3_0.py
 
-setprintは、リストの多次元データを簡単に整形し、わかりやすく表示するためのPythonライブラリです。<br>
-次元が混在するデータ構造でも、美しい整形を実現します！
+setprint: 2D/NumPy配列や画像データも適切に整形可能なデータ可視化ツール<br>
+setprint は、Python標準の pprint を拡張し、リストや辞書だけでなく、NumPy配列や2Dデータ（画像データ含む）も適切に整形できる 強力なデータ整形ツールです。<br>
+特に、配列の次元違いや欠落が発生しているデータの視認性を向上 させ、デバッグを容易にする機能を備えています。<br>
 
-> ### アップデート情報<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/SetPrint_update_image.md
+> #### アップデート情報<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/SetPrint_update_image.md
 
-## 特徴
+<br>
 
-  - **可変的なデータ構造に対応**: 多次元リストや混在するデータ構造に対して、自由度の高い整形が可能。
-  - **デバッグに便利**: 実行中のデータの構造や内容をわかりやすく整理して表示。
+---
 
-    > ### 識字プログラムの実例<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/format_data/output.txt
+## ✅ `setprint` の特長<br>
 
+ - 配列の欠落や次元の違いを自動調整
+
+ - 想定された配列の構造を維持して整形表示が可能。
+
+ - pprint では見逃しやすい「カラー画像の格納バグ」や「異なる次元のデータの混在」を、一目で判別できるように整形。<br>
+    データが欠けている部分を自動で空白で埋める ため、データの不整合がすぐに分かる。<br>
+    多次元配列や画像データを視覚的に整形<br>
+
+ - pprint では分かりづらい NumPy配列（画像データ・バイナリデータなど） も明確な形で表示。<br>
+    次元の違いによるズレを自動修正し、見やすい形で統一表示 できる。<br>
+    インデックスや変換機能を搭載（開発中）
+     > #### 識字プログラムの実例<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/format_data/output.txt
+
+ - インデックスの表示機能を追加予定 で、データ構造の関係性をより明確に把握可能に。 <br>
+    格納情報の変換機能（特定の値のマッピング） により、データ変換処理を容易に。
+
+<br>
+
+---
+
+## 🛠 `setprint` の活用例
+
+
+<div style="margin-left: 20px;">
+
+🔹 カラー画像データの格納バグの検出
+
+<div style="margin-left: 20px;">
+
+📌 異なる次元のデータが混在している場合（RGB画像とグレースケール画像の混在）
+
+```python
+import numpy as np
+from setprint import setprint
+
+data = [
+    np.random.randint(0, 256, (3, 3, 3)),  # RGB画像 (3x3x3)
+    np.random.randint(0, 256, (3, 3)),  # グレースケール画像 (3x3) → ここだけ次元が異なる
+    np.random.randint(0, 256, (3, 3, 3)),  # RGB画像 (3x3x3)
+    None  # データの欠落
+]
+
+setprint(data)
+```
+</div>
+
+<br>
+
+🔹 setprint の出力（イメージ）
+
+<div style="margin-left: 20px;">
+
+```txt
+写真の数値版のイメージ
+```
+
+✅ 次元の違い（3D vs 2D）や欠落が視覚的に明確に<br>
+✅ どこが異常なのか、即座に把握できるのでデバッグが容易
+
+</div>
+
+<br>
+
+🔹 pprint の出力
+
+<div style="margin-left: 20px;">
+
+```python
+[array([[[ 57, 233, 198],
+         [122, 193,  78],
+         [ 87,  68,  15]],
+
+        [[ 21,  45,  99],
+         [154, 214, 132],
+         [243, 128,  56]],
+
+        [[ 72,  94,  45],
+         [187,  29,  67],
+         [124, 232, 190]]]),
+
+ array([[ 58, 167, 205],
+        [134,  77,  49],
+        [ 72,  98,  36]]),
+
+ array([[[201,  86,  52],
+         [ 27, 123, 111],
+         [ 78, 239, 194]],
+
+        [[ 94, 208, 193],
+         [234,  98,  72],
+         [ 43,  57,  65]],
+
+        [[  9,  14, 186],
+         [  8, 129, 244],
+         [168,  55, 210]]]),
+
+ None]
+```
+
+</div>
+</div>
+<br>
 
 ## メソッド
 
@@ -182,7 +284,7 @@ setprintは、リストの多次元データを簡単に整形し、わかりや
             keep_settings = {1:'yf',2:'f',3:'f'}
             ```
 
-        <br><br>
+        <br>
 
         ---
 
