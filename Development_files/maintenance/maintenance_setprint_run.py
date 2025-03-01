@@ -46,7 +46,7 @@ def replace_hash_with_custom_indices(lst, path=[]):
     for i, item in enumerate(lst):
         current_path = path + [i]  # 現在のインデックス経路を保存
         
-        if isinstance(item, list):  # ネストされたリストなら再帰呼び出し
+        if isinstance(item, (list,np.ndarray,tuple,dict)):  # ネストされたリストなら再帰呼び出し
             replace_hash_with_custom_indices(item, current_path)
 
         elif item == '#':  # `'#'` を検出したらその位置をフォーマットに置き換え
@@ -131,7 +131,8 @@ test_sequence = [
             ['++before',['++@_fter']],
             ('-@_fter',('-before',))
         ],
-    ]
+    ],
+
 ]
 
 test_mapping = [
@@ -187,7 +188,7 @@ test_mapping = [
 
 # keep_setting={1:'x',3:'x',100:'y'}
 # keep_setting={1:'x',3:'y',100:'y'}
-keep_settings={1:'x',3:'yf',100:'y'}
+keep_settings={1:'y',3:'yf',100:'y'}
 
 
 # '#'部分のインデックスを自動追加 - 親インデックスを自動強調

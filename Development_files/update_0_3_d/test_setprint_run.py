@@ -38,12 +38,27 @@ if True:
       keep_settings = keep_settings[len(indexs)]
       
 else:
+      # test_data = [
+      #     [[1,2,3], [4,5,6]],
+      #     [[7,8,9], [10,11,12]]
+      # ]
       test_data = [
-          [[1,2,3], [4,5,6]],
-          [[7,8,9], [10,11,12]]
+      np.random.randint(0, 256, (3, 3, 3)),  # RGB画像 (3x3x3)
+      np.random.randint(0, 256, (3, 3)),  # グレースケール画像 (3x3) → ここだけ次元が異なる
+      np.random.randint(0, 256, (3, 3, 3)),  # RGB画像 (3x3x3)
+
+
+      np.array([4]),
+      np.array((4,4)),
+      
+
+      None  # データの欠落
       ]
 
+
       keep_settings = {1:'yf',10:'y'}
+
+      keep_settings = {1:'y',2:'x',10:'y'}
 
       # test_data = [
       #     [[1,2,3], [4,5,6]],
@@ -58,7 +73,8 @@ else:
 list_data = SetPrint(test_data)
 
 # 整形
-format_texts = list_data.set_list ( route='maintenance', keep_settings=keep_settings )
+# format_texts = list_data.set_list ( route='maintenance', keep_settings=keep_settings )
+format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
 
 with open('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/format_data/output.txt','w') as f:
       for line in format_texts:
