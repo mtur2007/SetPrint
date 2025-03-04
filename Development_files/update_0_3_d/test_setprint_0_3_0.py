@@ -4,8 +4,6 @@
 # setpirnt (ver 0.3.0) [ demo ]
 
 import numpy as np
-from pynput import keyboard
-
 
 # 数値の int部分を見た目的に表示させる様にする自作関数
 def Myint(num):
@@ -412,14 +410,7 @@ class SetPrint:
         #初期化
         self.now_deep = 0 #now_deepはインデックスの次元測定
         self.now_index = [] # 調べている場所のインデックスを格納する。
-        # self.now_key = [] # now_indexに辞書型のキーが必要な箇所とキーを格納
-        # self.Xline_blocks = []
-        # self.keep_txts_data = []
         self.keep_index = []
-
-        # keep_liens_data = ['{n}']
-        # All_blocks = []
-        # keep_Ylines_data = []
 
         self.MAX_index = {} # X_keep_index(変更予定の変数名)
         self.Y_keep_index = {}
@@ -427,8 +418,6 @@ class SetPrint:
         self.range_idx = []
         self.y_flat_index = []
         self.X_keep_index = []
-
-        now_keep_index = []
 
         # <t:初期化>
 
@@ -514,12 +503,6 @@ class SetPrint:
         
         self.now_deep += 1 #deepはインデックスの次元測定
         
-        # if self.now_deep == self.min_keep_deep:
-        #     self.MAX_index = {} # X_keep_index(変更予定の変数名)
-        #     self.Y_keep_index = {}
-        #     self.keep_index = []
-        #     self.range_idx = []
-    
         # (P:2)
         # キープ範囲内にある次元の配列から情報を取得する。
         
@@ -637,8 +620,7 @@ class SetPrint:
                 if len(Kdeep_index) == 0:
                     Kdeep_index = [0]
                     #Kdeep_index = ['y']
-                    y_Kdeep_index = []
-
+                    
             len_Kdeep_index = len(Kdeep_index)-1
 
             for linenum, (key, line) in enumerate(datas.items()):
@@ -715,12 +697,6 @@ class SetPrint:
     def search_sequence(self, datas, Kdeep_index):
 
         self.now_deep += 1 #deepはインデックスの次元測定
-        
-        # if self.now_deep == self.min_keep_deep:
-        #     self.MAX_index = {} # X_keep_index(変更予定の変数名)
-        #     self.Y_keep_index = {}
-        #     self.keep_index = []
-        #     self.range_idx = []
     
         # (P:2)
         # キープ範囲内にある次元の配列から情報を取得する。
@@ -841,7 +817,6 @@ class SetPrint:
                 if len(Kdeep_index) == 0:
                     Kdeep_index = [0]
                     #Kdeep_index = ['y']
-                    y_Kdeep_index = []
 
             len_Kdeep_index = len(Kdeep_index)-1
 
@@ -942,19 +917,6 @@ class SetPrint:
 
         self.keep_index = []
         self.range_idx = self.MAX_index[parent_x_keep_index]
-        
-        # in_range_indices
-        # self.MAX_indexlen  = [] # インデックスに格納されている配列の文字数を格納する。
-
-        # parent_key         = self.now_key[:] # 親インデックスのキー
-        # self.pivot_value   = len(parent_key) # 親インデックスのキー以降をmapping_keyに格納するための基準値設定。
-
-        # self.mapping_point = [] # 辞書型が存在している場所を格納する。
-        # self.mapping_key   = [] # keep_keyに対応するマッピング型のキー
-
-        # keep_liens_data    = [] # 1列毎の配列情報を格納するリスト
-
-        # self.finish_index = {} #リスト配列の最後尾のインデックスを格納
 
         """
         self.MAX_index
@@ -1137,14 +1099,6 @@ class SetPrint:
 
         return Kdeep_index
         
-        #self.MAX_indexlen = parent__MAX_indexlen + self.MAX_indexlen # インデックスに格納されている配列の文字数を格納する。
-        # self.pivot_value = parent__pivot_value # 親インデックスのキー以降をmapping_keyに格納するための基準値設定。
-        
-        # self.mapping_point = parent__mapping_point + self.mapping_point # 辞書型が存在している場所を格納する。
-        # self.mapping_key = parent__mapping_key + self.mapping_key# keep_keyに対応するマッピング型のキー
-        
-        # self.finish_index = parent__finish_index + self.finish_index #リスト配列の最後尾のインデックスを格納
-
 
     def flat_x_keep_index(self,x_keep_index,index=[],keep_index=[],keep_len=[]):
 
@@ -1221,7 +1175,8 @@ class SetPrint:
                     
                     value = self.map_sequence_indices(parent_list,y_x_index)
                     if isinstance(value, self.collection_type):
-                        line_txt += keep_len[now_line]*':' + ' '
+                        collection_image,image_len = self.collections[type(value).__name__]
+                        line_txt += (keep_len[now_line] - image_len) * ' ' + collection_image + ' '
                     else:
                         line_txt += (keep_len[now_line] - len(str(value)))*' ' + str(value) + ' '
 
@@ -1230,13 +1185,15 @@ class SetPrint:
             format_texts.append(line_txt)
         
 
+        collection_image,image_len = self.collections[type(self.input_list).__name__]
+
         self.format_texts=format_texts[:]
 
-        total_x_keep_data,nouse = self.total_x_keep_deata(X_keep_index,6)
+        total_x_keep_data,nouse = self.total_x_keep_deata(X_keep_index,image_len+1)
         for line_num,line in enumerate(self.format_texts):
             self.format_texts[line_num] = '      ' + line
        
-        self.format_texts.insert(0,'***** ')
+        self.format_texts.insert(0,collection_image+' ')
         self.y_keep_line = [list(t) for t in Y_keep_index.keys()]
         self.y_keep_line.insert(0,'')
 
@@ -1244,7 +1201,7 @@ class SetPrint:
 
         if route != 'maintenance':
             if route:
-                self.format_route(self.input_list, total_x_keep_data, [0,5])
+                self.format_route(self.input_list, total_x_keep_data, [0,image_len])
                 format_texts_with_route = self.format_texts[:]
 
                 # print()

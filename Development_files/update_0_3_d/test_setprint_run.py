@@ -5,8 +5,8 @@
 #print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
 # 実行コード
-# from test_setprint_0_3_0 import SetPrint
-from demo_setprint_0_3_0 import SetPrint
+from test_setprint_0_3_0 import SetPrint
+#from demo_setprint_0_3_0 import SetPrint
 
 import numpy as np
 import pickle
