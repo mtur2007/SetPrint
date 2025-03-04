@@ -188,7 +188,7 @@ test_mapping = [
 
 # keep_setting={1:'x',3:'x',100:'y'}
 # keep_setting={1:'x',3:'y',100:'y'}
-keep_settings={1:'y',3:'yf',100:'y'}
+keep_settings={1:'x',3:'yf',100:'y'}
 
 
 # '#'部分のインデックスを自動追加 - 親インデックスを自動強調

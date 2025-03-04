@@ -69,12 +69,7 @@ maintenance_codes = [
 
         '''
         print()
-        print('X_keep_index')
-        for key,value in self.MAX_index.items():
-            print(key,value)
-
-        print()
-        print('flat_X_keep_index')
+        print('X_keep_index(flat)')
         print(x_keep_index)
 
         print()

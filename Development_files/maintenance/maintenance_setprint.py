@@ -4,8 +4,6 @@
 # setpirnt (ver 0.3.0) [ demo ]
 
 import numpy as np
-from pynput import keyboard
-
 
 # 数値の int部分を見た目的に表示させる様にする自作関数
 def Myint(num):
@@ -438,17 +436,14 @@ class SetPrint:
     
     def transform_keep_index(self,index):
 
-        x_keep_index = index[:]
         y_keep_index = index[:]
         
         for deepnum in range(len(index)):
             set_type = self.keep_settings[deepnum]
-            if set_type in ('y','yf'):
-                x_keep_index[deepnum] = set_type
-            else:
+            if set_type in ('x','f'):
                 y_keep_index[deepnum] = 0
            
-        return tuple(x_keep_index),tuple(y_keep_index)
+        return tuple(y_keep_index)
     
     # リストを整型する際の条件を整理 / １次元目の格納情報を整形 [→:#0]
     # [→:0] 中身は search_mapping / search_sequence とほぼ同じ
@@ -487,24 +482,14 @@ class SetPrint:
         #初期化
         self.now_deep = 0 #now_deepはインデックスの次元測定
         self.now_index = [] # 調べている場所のインデックスを格納する。
-        # self.now_key = [] # now_indexに辞書型のキーが必要な箇所とキーを格納
-        # self.Xline_blocks = []
-        # self.keep_txts_data = []
         self.keep_index = []
 
-        # keep_liens_data = ['{n}']
-        # All_blocks = []
-        # keep_Ylines_data = []
-
-        self.MAX_index = {} # X_keep_index(変更予定の変数名)
         self.Y_keep_index = {}
-        self.keep_index = []
-        self.range_idx = []
-        self.y_flat_index = []
         self.X_keep_index = []
 
-        now_keep_index = []
-
+        self.keep_index = []
+        self.y_flat_index = []
+        
         # <t:初期化>
         self.maintenance_run('初期化')
 
@@ -575,12 +560,7 @@ class SetPrint:
         # <a:keep_index>
         
         print()
-        print('X_keep_index')
-        for key,value in self.MAX_index.items():
-            print(key,value)
-
-        print()
-        print('flat_X_keep_index')
+        print('X_keep_index(flat)')
         print(x_keep_index)
 
         print()
@@ -613,12 +593,6 @@ class SetPrint:
         
         self.now_deep += 1 #deepはインデックスの次元測定
         
-        # if self.now_deep == self.min_keep_deep:
-        #     self.MAX_index = {} # X_keep_index(変更予定の変数名)
-        #     self.Y_keep_index = {}
-        #     self.keep_index = []
-        #     self.range_idx = []
-    
         # (P:2)
         # キープ範囲内にある次元の配列から情報を取得する。
         
@@ -629,9 +603,6 @@ class SetPrint:
             self.now_index.append('')
        
             insert_index = self.keep_index[:]
-           
-            if (insert_index in self.range_idx) == False:
-                self.range_idx.append(insert_index)
             
             len_Kdeep_index = len(Kdeep_index)-1
 
@@ -698,15 +669,8 @@ class SetPrint:
                     self.maintenance_run('int/str_type','In_range')
 
 
-                #存在するインデックスの情報の新規作成/更新
-                if (insert_index in self.range_idx) == False:
-                    self.range_idx.append(insert_index)
-                
             insert_index = self.keep_index.copy()
             insert_index[-1] += 1
-
-            if (insert_index in self.range_idx) == False:
-                self.range_idx.append(insert_index)
    
             del self.keep_index[-1]
 
@@ -748,8 +712,7 @@ class SetPrint:
                 if len(Kdeep_index) == 0:
                     Kdeep_index = [0]
                     #Kdeep_index = ['y']
-                    y_Kdeep_index = []
-
+                    
             len_Kdeep_index = len(Kdeep_index)-1
 
             for linenum, (key, line) in enumerate(datas.items()):
@@ -763,11 +726,8 @@ class SetPrint:
                 if self.min_keep_deep <= self.now_deep <= self.max_keep_deep:
 
                     # インデックスのキープ化
-                    x_keep_index,y_keep_index = self.transform_keep_index(self.now_index.copy())
+                    y_keep_index = self.transform_keep_index(self.now_index.copy())
 
-                    if x_keep_index not in self.MAX_index:
-                        self.MAX_index[x_keep_index] = []
-                    
                     if y_keep_index not in self.Y_keep_index:
                         self.Y_keep_index[y_keep_index] = []
 
@@ -834,12 +794,6 @@ class SetPrint:
     def search_sequence(self, datas, Kdeep_index):
 
         self.now_deep += 1 #deepはインデックスの次元測定
-        
-        # if self.now_deep == self.min_keep_deep:
-        #     self.MAX_index = {} # X_keep_index(変更予定の変数名)
-        #     self.Y_keep_index = {}
-        #     self.keep_index = []
-        #     self.range_idx = []
     
         # (P:2)
         # キープ範囲内にある次元の配列から情報を取得する。
@@ -851,9 +805,6 @@ class SetPrint:
             self.now_index.append('')
        
             insert_index = self.keep_index[:]
-           
-            if (insert_index in self.range_idx) == False:
-                self.range_idx.append(insert_index)
             
             len_Kdeep_index = len(Kdeep_index)-1
 
@@ -922,15 +873,8 @@ class SetPrint:
                     self.maintenance_run('int/str_type','In_range')
 
 
-                #存在するインデックスの情報の新規作成/更新
-                if (insert_index in self.range_idx) == False:
-                    self.range_idx.append(insert_index)
-                
             insert_index = self.keep_index.copy()
             insert_index[-1] += 1
-
-            if (insert_index in self.range_idx) == False:
-                self.range_idx.append(insert_index)
             
             del self.keep_index[-1]
 
@@ -972,7 +916,6 @@ class SetPrint:
                 if len(Kdeep_index) == 0:
                     Kdeep_index = [0]
                     #Kdeep_index = ['y']
-                    y_Kdeep_index = []
 
             len_Kdeep_index = len(Kdeep_index)-1
 
@@ -989,11 +932,8 @@ class SetPrint:
                 if self.min_keep_deep <= self.now_deep <= self.max_keep_deep:
 
                     # インデックスのキープ化
-                    x_keep_index,y_keep_index = self.transform_keep_index(self.now_index.copy())
+                    y_keep_index = self.transform_keep_index(self.now_index.copy())
 
-                    if x_keep_index not in self.MAX_index:
-                        self.MAX_index[x_keep_index] = []
-                    
                     if y_keep_index not in self.Y_keep_index:
                         self.Y_keep_index[y_keep_index] = []
 
@@ -1063,17 +1003,12 @@ class SetPrint:
 
         # 格納情報の保存
         parent__keep_index = self.keep_index
-        parent__range_idx = self.range_idx
         parent__y_flat_index = self.y_flat_index
         parent__X_keep_index = self.X_keep_index
 
         # 親キープインデックス
-        parent_x_keep_index,parent_y_keep_index = self.transform_keep_index(parent_index)
+        parent_y_keep_index = self.transform_keep_index(parent_index)
 
-        # インデックスのキープ化        
-        if parent_x_keep_index not in self.MAX_index:
-            self.MAX_index[parent_x_keep_index] = []
-        
         if parent_y_keep_index not in self.Y_keep_index:
             self.Y_keep_index[parent_y_keep_index] = []
 
@@ -1082,20 +1017,6 @@ class SetPrint:
 
 
         self.keep_index = []
-        self.range_idx = self.MAX_index[parent_x_keep_index]
-        
-        # in_range_indices
-        # self.MAX_indexlen  = [] # インデックスに格納されている配列の文字数を格納する。
-
-        # parent_key         = self.now_key[:] # 親インデックスのキー
-        # self.pivot_value   = len(parent_key) # 親インデックスのキー以降をmapping_keyに格納するための基準値設定。
-
-        # self.mapping_point = [] # 辞書型が存在している場所を格納する。
-        # self.mapping_key   = [] # keep_keyに対応するマッピング型のキー
-
-        # keep_liens_data    = [] # 1列毎の配列情報を格納するリスト
-
-        # self.finish_index = {} #リスト配列の最後尾のインデックスを格納
 
         """
         self.MAX_index
@@ -1135,7 +1056,7 @@ class SetPrint:
                 self.now_index[-1] = linenum
 
                 # インデックスのキープ化
-                x_keep_index,y_keep_index = self.transform_keep_index(self.now_index)
+                y_keep_index = self.transform_keep_index(self.now_index)
                 
                 if y_keep_index not in self.Y_keep_index:
                     self.Y_keep_index[y_keep_index] = []
@@ -1206,7 +1127,7 @@ class SetPrint:
                 self.now_index[-1] = linenum
 
                 # インデックスのキープ化
-                x_keep_index,y_keep_index = self.transform_keep_index(self.now_index)
+                y_keep_index = self.transform_keep_index(self.now_index)
                 
                 if y_keep_index not in self.Y_keep_index:
                     self.Y_keep_index[y_keep_index] = []
@@ -1282,26 +1203,14 @@ class SetPrint:
         if self.ber_print:
             if self.keep_start == 1:
                 print('\033[F\033[F\033[Kformat_keep_data...\n' + '{ '+'-'*self.ber_len+' }')
-
-        # 情報更新
-        self.MAX_index[parent_x_keep_index] = self.range_idx # 存在する インデックス now_index[1:] の値を使用し、1列毎での整列を可能にする。
         
         # 情報復元
         self.keep_index = parent__keep_index
-        self.range_idx = parent__range_idx
         self.y_flat_index = parent__y_flat_index
         self.X_keep_index = parent__X_keep_index
 
         return Kdeep_index
         
-        #self.MAX_indexlen = parent__MAX_indexlen + self.MAX_indexlen # インデックスに格納されている配列の文字数を格納する。
-        # self.pivot_value = parent__pivot_value # 親インデックスのキー以降をmapping_keyに格納するための基準値設定。
-        
-        # self.mapping_point = parent__mapping_point + self.mapping_point # 辞書型が存在している場所を格納する。
-        # self.mapping_key = parent__mapping_key + self.mapping_key# keep_keyに対応するマッピング型のキー
-        
-        # self.finish_index = parent__finish_index + self.finish_index #リスト配列の最後尾のインデックスを格納
-
 
     def flat_x_keep_index(self,x_keep_index,index=[],keep_index=[],keep_len=[]):
 
@@ -1332,9 +1241,6 @@ class SetPrint:
         
         x_keep_index,keep_len = self.flat_x_keep_index(X_keep_index)
         
-        map_width = max(10,sum(keep_len) + len(keep_len) +6)
-
-
         # キーを辞書順（インデックス順）でソート
         Y_keep_index = {k: Y_keep_index[k] for k in sorted(Y_keep_index)}
         format_texts = []
@@ -1378,7 +1284,8 @@ class SetPrint:
                     
                     value = self.map_sequence_indices(parent_list,y_x_index)
                     if isinstance(value, self.collection_type):
-                        line_txt += keep_len[now_line]*':' + ' '
+                        collection_image,image_len = self.collections[type(value).__name__]
+                        line_txt += (keep_len[now_line] - image_len) * ' ' + collection_image + ' '
                     else:
                         line_txt += (keep_len[now_line] - len(str(value)))*' ' + str(value) + ' '
 
@@ -1387,13 +1294,16 @@ class SetPrint:
             format_texts.append(line_txt)
         
 
-        self.format_texts=format_texts[:]
+        collection_image,image_len = self.collections[type(self.input_list).__name__]
+        map_width = max(10,image_len+1 + sum(keep_len) + len(keep_len))
 
-        total_x_keep_data,nouse = self.total_x_keep_deata(X_keep_index,6)
+        self.format_texts=format_texts[:]
+        total_x_keep_data,nouse = self.total_x_keep_deata(X_keep_index,image_len+1)
+        
         for line_num,line in enumerate(self.format_texts):
-            self.format_texts[line_num] = '      ' + line
+            self.format_texts[line_num] = image_len*' '+' ' + line
        
-        self.format_texts.insert(0,'***** ')
+        self.format_texts.insert(0,collection_image+' ')
         self.y_keep_line = [list(t) for t in Y_keep_index.keys()]
         self.y_keep_line.insert(0,'')
 
@@ -1401,7 +1311,7 @@ class SetPrint:
 
         if route != 'maintenance':
             if route:
-                self.format_route(self.input_list, total_x_keep_data, [0,5])
+                self.format_route(self.input_list, total_x_keep_data, [0,image_len])
                 format_texts_with_route = self.format_texts[:]
 
                 # print()
@@ -1438,7 +1348,7 @@ class SetPrint:
                 return format_texts
 
         else:
-            self.format_route(self.input_list, total_x_keep_data, [0,5])
+            self.format_route(self.input_list, total_x_keep_data, [0,image_len])
             format_texts_with_route = self.format_texts[:]
 
             format_texts_maintenance = []
