@@ -689,10 +689,16 @@ class SetPrint:
             
             self.keep_index.append(-1)
             self.now_index.append('')
-       
-            insert_index = self.keep_index[:]
             
-            len_Kdeep_index = len(Kdeep_index)-1
+            len_Kdeep_index = len(Kdeep_index)
+
+            if len_Kdeep_index == 0:
+                # self.bracket[type(datas).__name__]
+                Kdeep_index.append(1)
+                Kdeep_index.append(1)
+                len_Kdeep_index = 0
+            else:
+                len_Kdeep_index -= 2
 
             # <t:start,In_range>
 
@@ -703,12 +709,12 @@ class SetPrint:
                 self.keep_index[-1] = linenum
                 self.now_index[-1] = linenum
 
-                insert_index = self.keep_index[:]
-
                 self.y_flat_index.append(self.keep_index[:])
 
+                linenum += 1
+
                 if len_Kdeep_index < linenum:
-                    Kdeep_index.append(0)
+                    Kdeep_index.insert(-1,0)
                
                 if isinstance(line, self.collection_type):
                     
@@ -750,9 +756,6 @@ class SetPrint:
                             Kdeep_index[linenum][0] =  len(str(line))
                     
                     # <t:int/str_type,In_range>
-
-            insert_index = self.keep_index.copy()
-            insert_index[-1] += 1
             
             del self.keep_index[-1]
 
@@ -1058,12 +1061,12 @@ class SetPrint:
         self.X_keep_index = parent__X_keep_index
 
         return Kdeep_index
-        
+
 
     def flat_x_keep_index(self,x_keep_index,index=[],keep_index=[],keep_len=[]):
 
         for line,deep_data in enumerate(x_keep_index):
-                
+            
             if type(deep_data) == list:
                 keep_index.append(index+[line])
                 keep_len.append(deep_data[0])
@@ -1073,6 +1076,7 @@ class SetPrint:
                 keep_len.append(deep_data)
             
         return keep_index,keep_len
+    
     
     def map_sequence_indices(self,nested_list,indices):
         for index in indices:
@@ -1097,6 +1101,7 @@ class SetPrint:
             # print(y_keep_index)
             now_line = 0
             line_txt = ''
+
             for parent,y_x_indexs in y_line_data:
 
                 keep_parent = parent[:]
@@ -1105,7 +1110,7 @@ class SetPrint:
                 for deep in range(now_deep):
                     if self.keep_settings[deep] in ('y','yf'):
                         keep_parent[deep] = 0
-               
+
                 # print(keep_parent)
                 
                 # print(parent,y_x_indexs,now_line)
@@ -1141,6 +1146,7 @@ class SetPrint:
 
             format_texts.append(line_txt)
         
+
 
         collection_image,image_len = self.collections[type(self.input_list).__name__]
         map_width = max(10,image_len+1 + sum(keep_len) + len(keep_len))
