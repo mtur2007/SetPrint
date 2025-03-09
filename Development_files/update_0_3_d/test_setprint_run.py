@@ -51,11 +51,12 @@ else:
 
       # None  # データの欠落
       # ]
+      
+      test_data = [[[[0,[0,0,0]],0,0],[[0,[0,0]],0,0]],[[[0,[0,0]],0,0,0],[0,0,0]],[[0,0,0],[0,0,0,0]]]
 
+      keep_settings = {1:'yf',4:'y',5:'x',10:'y'}
 
-      keep_settings = {1:'yf',10:'y'}
-
-      # keep_settings = {1:'y',2:'yf',4:'f'}
+      # keep_settings = {1:'y',2:'x',4:'f'}
 
       # test_data = [
       #     [[1,2,3], [4,5,6]],
@@ -63,21 +64,21 @@ else:
       # ]
 
       # 画像ファイルのパスを指定
-      image_path ='/Users/matsuurakenshin/WorkSpace/kekyu.jpeg'
-      # 画像を読み込む
-      image = Image.open(image_path)
+      # image_path ='/Users/matsuurakenshin/WorkSpace/kekyu.jpeg'
+      # # 画像を読み込む
+      # image = Image.open(image_path)
 
-      # NumPy 配列に変換
-      np_array = np.array(image)
+      # # NumPy 配列に変換
+      # np_array = np.array(image)
 
-      print(np_array)
+      # print(np_array)
 
 # keep_settings = {1:'x',2:'yf',10:'y'}
 # keep_settings = {1:'y',2:'x',3:'yf',10:'y'}
 
 
 # インスタンスを生成
-list_data = SetPrint(np_array)
+list_data = SetPrint(test_data)
 
 # 整形
 format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )

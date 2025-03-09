@@ -816,8 +816,8 @@ class SetPrint:
                 if Kdeep_index[0] < self.brackets[type(datas).__name__][1][0]:
                     Kdeep_index[0] = self.brackets[type(datas).__name__][1][0]
                 
-                if Kdeep_index[1] < self.brackets[type(datas).__name__][1][1]:
-                    Kdeep_index[1] = self.brackets[type(datas).__name__][1][1]
+                if Kdeep_index[-1] < self.brackets[type(datas).__name__][1][1]:
+                    Kdeep_index[-1] = self.brackets[type(datas).__name__][1][1]
                 
                 len_Kdeep_index -= 2
 
@@ -845,34 +845,25 @@ class SetPrint:
                     self.maintenance_run('collection_type','In_range')
 
 
-                    if len(line) != 0:
-                        if type(Kdeep_index[linenum]) != list:
-                            if Kdeep_index[linenum] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[linenum] = [self.collections[type(line).__name__][1],[]]
-                            else:
-                                Kdeep_index[linenum] = [Kdeep_index[linenum],[]]
-                        
+                    if type(Kdeep_index[linenum]) != list:
+                        if Kdeep_index[linenum] < self.collections[type(line).__name__][1]:
+                            Kdeep_index[linenum] = [self.collections[type(line).__name__][1],[]]
                         else:
-                            if Kdeep_index[linenum][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[linenum][0] = self.collections[type(line).__name__][1]
-                                        
-                        if type(line) == dict:
-                            Kdeep_index[linenum][1] = self.search_mapping(line,Kdeep_index[linenum][1])
-                        else:
-                            Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
+                            Kdeep_index[linenum] = [Kdeep_index[linenum],[]]
+                    
+                    else:
+                        if Kdeep_index[linenum][0] < self.collections[type(line).__name__][1]:
+                            Kdeep_index[linenum][0] = self.collections[type(line).__name__][1]
+                                    
+                    if type(line) == dict:
+                        Kdeep_index[linenum][1] = self.search_mapping(line,Kdeep_index[linenum][1])
+                    else:
+                        Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
 
                         # <t:配列の調査結果の受け取り,In_range>
                         self.maintenance_run('配列の調査結果の受け取り','In_range')
 
-                    
-                    else:
-                        if type(Kdeep_index[linenum]) != list:
-                            if Kdeep_index[linenum] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[linenum] = self.collections[type(line).__name__][1]
-                        else:
-                            if Kdeep_index[linenum][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[linenum][0] = self.collections[type(line).__name__][1]
-                    
+                                        
                 else:
                     
                     if type(Kdeep_index[linenum]) != list:
@@ -1276,30 +1267,33 @@ class SetPrint:
             # print(y_keep_index)
             now_line = 0
             line_txt = ''
-            no_blanket_inmage = not self.keep_settings[len(y_keep_index)-1] in ('yf','f')
 
-            for parent,y_x_indexs in y_line_data:
+            no_blanket_inmage = self.keep_settings[len(y_keep_index)-1] in ('y','x')
 
-                keep_parent = parent[:]
-                now_deep = len(parent)
+            
+            if no_blanket_inmage:
+        
+                for parent,y_x_indexs in y_line_data:
 
-                for deep in range(now_deep):
-                    if self.keep_settings[deep] in ('y','yf'):
-                        keep_parent[deep] = 0
+                    keep_parent = parent[:]
+                    parent_deep = len(parent)
 
-                # print(keep_parent)
-                
-                # print(parent,y_x_indexs,now_line)
-                
-                #print(search_index)
-                parent_list = self.map_sequence_indices(self.input_list,parent)
+                    for deep in range(parent_deep):
+                        if self.keep_settings[deep] in ('y','yf'):
+                            keep_parent[deep] = 0
 
-                if no_blanket_inmage:
+                    # print(keep_parent)
+                    
+                    # print(parent,y_x_indexs,now_line)
+                    
+                    #print(search_index)
+                    parent_list = self.map_sequence_indices(self.input_list,parent)
+
                     for y_x_index in y_x_indexs:
 
                         keep_y_x_index = y_x_index[:]
                         for deep in range(len(y_x_index)):
-                            if self.keep_settings[now_deep+deep] in ('y','yf'):
+                            if self.keep_settings[parent_deep+deep] in ('y','yf'):
                                 keep_y_x_index[deep] = 0
                         
                         # print('search',keep_parent + keep_y_x_index)
@@ -1321,62 +1315,110 @@ class SetPrint:
 
                         now_line += 1
 
-                else:
+            else:
+                
+                last_deep = None
+                for now_deep,keep_setting in enumerate(self.keep_settings[len(y_keep_index):]):
+                    if keep_setting != 'f':
+                        last_deep = now_deep
+                        break
 
-                    before_nest = 0
-                    deep_types = []
-                    for y_x_index in y_x_indexs:
+                for parent,y_x_indexs in y_line_data:
 
-                        keep_y_x_index = y_x_index[:]
-                        for deep in range(len(y_x_index)):
-                            if self.keep_settings[now_deep+deep] in ('y','yf'):
-                                keep_y_x_index[deep] = 0
+                    keep_parent = parent[:]
+                    parent_deep = len(parent)
+
+                    for deep in range(parent_deep):
+                        if self.keep_settings[deep] in ('y','yf'):
+                            keep_parent[deep] = 0
+
+                    # print(keep_parent)
                     
-                        if 0 > (before_nest - len(y_x_index)):
-                            value = self.map_sequence_indices(parent_list,y_x_index)
-                            deep_types.append(type(value))
-                            line_txt += (keep_len[now_line] - len('['))*' ' + '[' + ' '
+                    # print(parent,y_x_indexs,now_line)
+                    
+                    #print(search_index)
+                    parent_list = self.map_sequence_indices(self.input_list,parent)
 
-                            before_nest = len(y_x_index)
-                            now_line += 1
+                    before_nest = parent_deep
+                    deep_types = []
 
-                        while x_keep_index[now_line] != keep_parent + keep_y_x_index:
-                            # print('False ',x_keep_index[now_line],keep_parent + y_x_index)
-                            line_txt += keep_len[now_line]*' ' + ' '
-                            now_line += 1
-
-                        # print('True  ',x_keep_index[now_line],keep_parent + keep_y_x_index)
-                        # print()
-
-                        # print('search',keep_parent + keep_y_x_index)
-                        # print('run_yf',' / b',before_nest,'/ a',len(y_x_index))
+                    for y_x_index in y_x_indexs:
 
                         value = self.map_sequence_indices(parent_list,y_x_index)
 
-                        if 0 < (before_nest - len(y_x_index)):
-                            for i in range(before_nest - len(y_x_index)):
+                        keep_y_x_index = y_x_index[:]
+                        for deep in range(len(y_x_index)):
+                            if self.keep_settings[parent_deep+deep] in ('y','yf'):
+                                keep_y_x_index[deep] = 0
+                        
+                        now_deep = parent_deep + len(y_x_index)
+                    
+                        if 0 < before_nest - now_deep:
+
+                            # line_txt += (keep_len[now_line] - len(']'))*' ' + ']' + ' '
+                            
+                            # del deep_types[-1]
+                            # before_nest = len(y_x_index)
+                            # now_line += 1
+                            for i in range(before_nest - now_deep):
+                                
+                                while len(x_keep_index[now_line+1]) != before_nest -1:
+                                    line_txt += keep_len[now_line]*' ' + ' '
+                                    now_line += 1
+
                                 line_txt += (keep_len[now_line] - len(']'))*' ' + ']' + ' '
                                 
                                 del deep_types[-1]
-                                before_nest = len(y_x_index)
+                                before_nest -= 1
                                 now_line += 1
+                           
+                        while x_keep_index[now_line] != keep_parent + keep_y_x_index:
+                            line_txt += keep_len[now_line]*' ' + ' '
+                            now_line += 1
 
                         if isinstance(value, self.collection_type):
                             collection_image,image_len = self.collections[type(value).__name__]
                             line_txt += (keep_len[now_line] - image_len) * ' ' + collection_image + ' '
+                            now_line += 1
+
+                            if last_deep != len(y_x_index):
+                                deep_types.append(type(value))
+                                line_txt += (keep_len[now_line] - len('['))*' ' + '[' + ' '
+
+                                before_nest += 1
+                                now_line += 1
+                                
                         else:
                             line_txt += (keep_len[now_line] - len(str(value)))*' ' + str(value) + ' '
+                            now_line += 1
 
-                        now_line += 1
 
-                    for deep_type in deep_types:
-                        line_txt += (keep_len[now_line] - len(']'))*' ' + ']' + ' '
+                    if 0 < len(deep_types):
+
+                        for i in range(len(deep_types)-1):
+
+                            while len(x_keep_index[now_line+1]) != before_nest -1:
+
+                                line_txt += keep_len[now_line]*' ' + ' '
+                                now_line += 1
                         
-                        before_nest = len(y_x_index)
+                            line_txt += (keep_len[now_line] - len(']'))*' ' + ']' + ' '
+                            
+                            del deep_types[-1]
+                            before_nest -= 1
+                            now_line += 1
+                        
+                        while len(x_keep_index[now_line]) < 0:
+                            line_txt += keep_len[now_line]*' ' + ' '
+                            now_line += 1
+
+                        # line_txt[:-(keep_len[now_line]+1)]
+                        # line_txt += (keep_len[now_line] - len(']'))*' ' + ']' + ' '
+                        line_txt += '] '
+
                         now_line += 1
 
-
-
+                               
             format_texts.append(line_txt)
         
 
@@ -1505,6 +1547,8 @@ class SetPrint:
         
         if set_keep_type == 'f':
             for index,line in enumerate(datas):
+
+                index += 1
                     
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
                     self.format_route(line,total_x_keep_data[index][1],total_x_keep_data[index][0],now_deep+1,now_y_keep_index+[0])
