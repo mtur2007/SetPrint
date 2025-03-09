@@ -31,7 +31,7 @@ NumPy配列や2Dデータ（画像データ含む）も適切に整形できる 
     pprint では整形に難がある 多次元を経由した`2D配列` を適切に整形可能で、<br>
     縦と横方向の２方向を有効活用した、直感的でスマートな整形を実現。
 
-     > #### 識字プログラムの実例<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/format_data/output.txt
+     > #### 識字プログラムの実例<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/format_data/y_x_yf_f.txt
 
 <br>
 

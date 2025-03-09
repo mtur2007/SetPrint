@@ -189,7 +189,7 @@ class SetPrint:
           (("Collections" ,
             {  'image'   : { 'list'    : '►list' ,
                              'tuple'   : '▷tuple' ,
-                             'ndarray' : '>nadarray' ,
+                             'ndarray' : ' ' ,
                              'dict'    : '◆dect' }}),
 
            ("bracket"     ,

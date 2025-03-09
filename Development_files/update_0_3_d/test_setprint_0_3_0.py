@@ -702,8 +702,8 @@ class SetPrint:
                 if Kdeep_index[0] < self.brackets[type(datas).__name__][1][0]:
                     Kdeep_index[0] = self.brackets[type(datas).__name__][1][0]
                 
-                if Kdeep_index[1] < self.brackets[type(datas).__name__][1][1]:
-                    Kdeep_index[1] = self.brackets[type(datas).__name__][1][1]
+                if Kdeep_index[-1] < self.brackets[type(datas).__name__][1][1]:
+                    Kdeep_index[-1] = self.brackets[type(datas).__name__][1][1]
                 
                 len_Kdeep_index -= 2
 
@@ -1175,18 +1175,20 @@ class SetPrint:
                     deep_types = []
                     for y_x_index in y_x_indexs:
 
+                        value = self.map_sequence_indices(parent_list,y_x_index)
+
                         keep_y_x_index = y_x_index[:]
                         for deep in range(len(y_x_index)):
                             if self.keep_settings[now_deep+deep] in ('y','yf'):
                                 keep_y_x_index[deep] = 0
                     
-                        if 0 > (before_nest - len(y_x_index)):
-                            value = self.map_sequence_indices(parent_list,y_x_index)
-                            deep_types.append(type(value))
-                            line_txt += (keep_len[now_line] - len('['))*' ' + '[' + ' '
-
-                            before_nest = len(y_x_index)
-                            now_line += 1
+                        if 0 < (before_nest - len(y_x_index)):
+                            for i in range(before_nest - len(y_x_index)):
+                                line_txt += (keep_len[now_line] - len(']'))*' ' + ']' + ' '
+                                
+                                del deep_types[-1]
+                                before_nest = len(y_x_index)
+                                now_line += 1
 
                         while x_keep_index[now_line] != keep_parent + keep_y_x_index:
                             # print('False ',x_keep_index[now_line],keep_parent + y_x_index)
@@ -1199,19 +1201,16 @@ class SetPrint:
                         # print('search',keep_parent + keep_y_x_index)
                         # print('run_yf',' / b',before_nest,'/ a',len(y_x_index))
 
-                        value = self.map_sequence_indices(parent_list,y_x_index)
-
-                        if 0 < (before_nest - len(y_x_index)):
-                            for i in range(before_nest - len(y_x_index)):
-                                line_txt += (keep_len[now_line] - len(']'))*' ' + ']' + ' '
-                                
-                                del deep_types[-1]
-                                before_nest = len(y_x_index)
-                                now_line += 1
-
                         if isinstance(value, self.collection_type):
                             collection_image,image_len = self.collections[type(value).__name__]
                             line_txt += (keep_len[now_line] - image_len) * ' ' + collection_image + ' '
+                            now_line += 1
+                            
+                            deep_types.append(type(value))
+                            line_txt += (keep_len[now_line] - len('['))*' ' + '[' + ' '
+
+                            before_nest = len(y_x_index) +1
+                            
                         else:
                             line_txt += (keep_len[now_line] - len(str(value)))*' ' + str(value) + ' '
 
