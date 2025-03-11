@@ -1097,6 +1097,7 @@ class SetPrint:
     def format_keep_data(self,route,X_keep_index,Y_keep_index):
         
         x_keep_index,keep_len = self.flat_x_keep_index(X_keep_index)
+        x_keep_index.append(['end'])
         
         # キーを辞書順（インデックス順）でソート
         Y_keep_index = {k: Y_keep_index[k] for k in sorted(Y_keep_index)}
@@ -1255,8 +1256,6 @@ class SetPrint:
                             now_line += 1
 
                         # print(x_keep_index)
-                       
-                        x_keep_index.append(['end'])
 
                         while len(x_keep_index[now_line]) > len(y_keep_index):
                             line_txt += keep_len[now_line]*' ' + ' '
