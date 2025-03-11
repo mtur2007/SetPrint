@@ -426,6 +426,8 @@ class SetPrint:
         self.brackets = self.style_settings[1][1]['partially']
 
         self.brackets = {key: (value, [len(value[0]),len(value[1])]) for key, value in self.brackets.items()}
+        self.brackets = {'list': (('[', ']'), [1, 1]), 'tuple': (('(', ')'), [1, 1]), 'ndarray': (('[', ']'), [1, 1]), 'dict': (('{', '}'), [1, 1])}
+
 
         self.padding_key = self.style_settings[2][1]['key'][0]
         self.padding_colon = ' '+self.style_settings[2][1]['key'][1]+' '
@@ -521,43 +523,34 @@ class SetPrint:
                 self.keep_index[-1] = linenum
                 self.now_index[-1] = linenum
 
-                insert_index = self.keep_index[:]
-
                 self.y_flat_index.append(self.keep_index[:])
 
+                linenum += 1
+
                 if len_Kdeep_index < linenum:
-                    Kdeep_index.append(0)
+                    Kdeep_index.insert(-1,0)
                
                 if isinstance(line, self.collection_type):
-
+                    
                     # <t:collection_type,In_range>
 
-                    if len(line) != 0:
-                        if type(Kdeep_index[linenum]) != list:
-                            if Kdeep_index[linenum] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[linenum] = [self.collections[type(line).__name__][1],[]]
-                            else:
-                                Kdeep_index[linenum] = [Kdeep_index[linenum],[]]
-                        
+                    if type(Kdeep_index[linenum]) != list:
+                        if Kdeep_index[linenum] < self.collections[type(line).__name__][1]:
+                            Kdeep_index[linenum] = [self.collections[type(line).__name__][1],[]]
                         else:
-                            if Kdeep_index[linenum][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[linenum][0] = self.collections[type(line).__name__][1]
-                                        
-                        if type(line) == dict:
-                            Kdeep_index[linenum][1] = self.search_mapping(line,Kdeep_index[linenum][1])
-                        else:
-                            Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
-
-                        # <t:配列の調査結果の受け取り,In_range>
+                            Kdeep_index[linenum] = [Kdeep_index[linenum],[]]
                     
                     else:
-                        if type(Kdeep_index[linenum]) != list:
-                            if Kdeep_index[linenum] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[linenum] = self.collections[type(line).__name__][1]
-                        else:
-                            if Kdeep_index[linenum][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[linenum][0] = self.collections[type(line).__name__][1]
-        
+                        if Kdeep_index[linenum][0] < self.collections[type(line).__name__][1]:
+                            Kdeep_index[linenum][0] = self.collections[type(line).__name__][1]
+                                    
+                    if type(line) == dict:
+                        Kdeep_index[linenum][1] = self.search_mapping(line,Kdeep_index[linenum][1])
+                    else:
+                        Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
+
+                        # <t:配列の調査結果の受け取り,In_range>
+                                        
                 else:
                     
                     if type(Kdeep_index[linenum]) != list:
@@ -568,10 +561,7 @@ class SetPrint:
                             Kdeep_index[linenum][0] =  len(str(line))
                     
                     # <t:int/str_type,In_range>
-
-            insert_index = self.keep_index.copy()
-            insert_index[-1] += 1
-   
+            
             del self.keep_index[-1]
 
             # <t:配列の調査完了,In_range>
@@ -579,6 +569,7 @@ class SetPrint:
         
         # (P:1)
         # キープする次元と現在の次元が同じなら、キープ用の処理に移る。
+
             
         elif set_keep_type == 'yf':
             
@@ -1159,7 +1150,9 @@ class SetPrint:
                             collection_image,image_len = self.collections[type(value).__name__]
                             line_txt += (keep_len[now_line] - image_len) * ' ' + collection_image + ' '
                         else:
-                            line_txt += (keep_len[now_line] - len(str(value)))*' ' + str(value) + ' '
+                            dif = (keep_len[now_line] - len(str(value)))
+                            dif_2 = (dif // 2)
+                            line_txt += dif_2*' ' + str(value) + ' ' + (dif_2 + dif%2)*' '
 
                         now_line += 1
 
@@ -1214,7 +1207,8 @@ class SetPrint:
                                     line_txt += keep_len[now_line]*' ' + ' '
                                     now_line += 1
 
-                                line_txt += (keep_len[now_line] - len(']'))*' ' + ']' + ' '
+                                bracket = self.brackets[deep_types[-1].__name__]
+                                line_txt += (keep_len[now_line] - bracket[1][1])*' ' + bracket[0][1] + ' '
                                 
                                 del deep_types[-1]
                                 before_nest -= 1
@@ -1231,13 +1225,16 @@ class SetPrint:
 
                             if last_deep != len(y_x_index):
                                 deep_types.append(type(value))
-                                line_txt += (keep_len[now_line] - len('['))*' ' + '[' + ' '
+                                bracket = self.brackets[type(value).__name__]
+                                line_txt += (keep_len[now_line] - bracket[1][0])*' ' + bracket[0][0] + ' '
 
                                 before_nest += 1
                                 now_line += 1
                                 
                         else:
-                            line_txt += (keep_len[now_line] - len(str(value)))*' ' + str(value) + ' '
+                            dif = (keep_len[now_line] - len(str(value)))
+                            dif_2 = (dif // 2)
+                            line_txt += dif_2*' ' + str(value) + ' ' + (dif_2 + dif%2)*' '
                             now_line += 1
 
 
@@ -1250,7 +1247,8 @@ class SetPrint:
                                 line_txt += keep_len[now_line]*' ' + ' '
                                 now_line += 1
                         
-                            line_txt += (keep_len[now_line] - len(']'))*' ' + ']' + ' '
+                            bracket = self.brackets[deep_types[-1].__name__]
+                            line_txt += (keep_len[now_line] - bracket[1][1])*' ' + bracket[0][1] + ' '
                             
                             del deep_types[-1]
                             before_nest -= 1
@@ -1264,7 +1262,8 @@ class SetPrint:
                             line_txt += keep_len[now_line]*' ' + ' '
                             now_line += 1
 
-                        line_txt = line_txt[:-(keep_len[now_line-1]+1)] + (keep_len[now_line-1] - len(']'))*' ' + ']' + ' '
+                        bracket = self.brackets[deep_types[-1].__name__]
+                        line_txt = line_txt[:-(keep_len[now_line-1]+1)] + (keep_len[now_line-1] - bracket[1][1])*' ' + bracket[0][1] + ' '
 
                                
             format_texts.append(line_txt)
