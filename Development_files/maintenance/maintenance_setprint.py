@@ -503,6 +503,8 @@ class SetPrint:
         self.brackets = self.style_settings[1][1]['partially']
 
         self.brackets = {key: (value, [len(value[0]),len(value[1])]) for key, value in self.brackets.items()}
+        self.brackets = {'list': (('[', ']'), [1, 1]), 'tuple': (('(', ')'), [1, 1]), 'ndarray': (('[', ']'), [1, 1]), 'dict': (('{', '}'), [1, 1])}
+
 
         self.padding_key = self.style_settings[2][1]['key'][0]
         self.padding_colon = ' '+self.style_settings[2][1]['key'][1]+' '
@@ -604,12 +606,24 @@ class SetPrint:
             self.keep_index.append(-1)
             self.now_index.append('')
        
-            insert_index = self.keep_index[:]
-            
-            len_Kdeep_index = len(Kdeep_index)-1
-
             # <t:start,In_range>
             self.maintenance_run('start','In_range')
+
+            
+            len_Kdeep_index = len(Kdeep_index)
+
+            if len_Kdeep_index == 0:
+                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][0]])
+                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][1]])
+                len_Kdeep_index = 0
+            else:
+                if Kdeep_index[0][1] < self.brackets[type(datas).__name__][1][0]:
+                    Kdeep_index[0][1] = self.brackets[type(datas).__name__][1][0]
+                
+                if Kdeep_index[-1][1] < self.brackets[type(datas).__name__][1][1]:
+                    Kdeep_index[-1][1] = self.brackets[type(datas).__name__][1][1]
+                
+                len_Kdeep_index -= 2
 
 
             for linenum, (key, line) in enumerate(datas.items()):
@@ -617,63 +631,59 @@ class SetPrint:
                 self.keep_index[-1] = linenum
                 self.now_index[-1] = linenum
 
-                insert_index = self.keep_index[:]
-
                 self.y_flat_index.append(self.keep_index[:])
 
+                linenum += 1
+
                 if len_Kdeep_index < linenum:
-                    Kdeep_index.append(0)
+                    Kdeep_index.insert(-1,[0,0])
                
                 if isinstance(line, self.collection_type):
-
+                    
                     # <t:collection_type,In_range>
                     self.maintenance_run('collection_type','In_range')
 
 
-                    if len(line) != 0:
-                        if type(Kdeep_index[linenum]) != list:
-                            if Kdeep_index[linenum] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[linenum] = [self.collections[type(line).__name__][1],[]]
-                            else:
-                                Kdeep_index[linenum] = [Kdeep_index[linenum],[]]
-                        
-                        else:
-                            if Kdeep_index[linenum][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[linenum][0] = self.collections[type(line).__name__][1]
-                                        
-                        if type(line) == dict:
-                            Kdeep_index[linenum][1] = self.search_mapping(line,Kdeep_index[linenum][1])
-                        else:
-                            Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
+                    if type(Kdeep_index[linenum][0]) != list:
+                        key_len = max(Kdeep_index[linenum][0], len(str(key)))
+                        value_len = max(Kdeep_index[linenum][1], self.collections[type(line).__name__][1])
+                        Kdeep_index[linenum] = [[key_len,value_len],[]]
+                    
+                    else:
+                        if Kdeep_index[linenum][0][0] < len(str(key)):
+                            Kdeep_index[linenum][0][0] = len(str(key))
+
+                        if Kdeep_index[linenum][0][1] < self.collections[type(line).__name__][1]:
+                            Kdeep_index[linenum][0][1] = self.collections[type(line).__name__][1]
+                                    
+                    if type(line) == dict:
+                        Kdeep_index[linenum][1] = self.search_mapping(line,Kdeep_index[linenum][1])
+                    else:
+                        Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
 
                         # <t:配列の調査結果の受け取り,In_range>
                         self.maintenance_run('配列の調査結果の受け取り','In_range')
 
-                    
-                    else:
-                        if type(Kdeep_index[linenum]) != list:
-                            if Kdeep_index[linenum] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[linenum] = self.collections[type(line).__name__][1]
-                        else:
-                            if Kdeep_index[linenum][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[linenum][0] = self.collections[type(line).__name__][1]
-        
+                                        
                 else:
                     
-                    if type(Kdeep_index[linenum]) != list:
-                        if Kdeep_index[linenum] < len(str(line)):
-                            Kdeep_index[linenum] = len(str(line))
+                    if type(Kdeep_index[linenum][0]) != list:
+                        if Kdeep_index[linenum][0] < len(str(key)):
+                            Kdeep_index[linenum][0] = len(str(key))
+
+                        if Kdeep_index[linenum][1] < len(str(line)):
+                            Kdeep_index[linenum][1] = len(str(line))
                     else:
-                        if Kdeep_index[linenum][0] < len(str(line)):
-                            Kdeep_index[linenum][0] =  len(str(line))
+                        if Kdeep_index[linenum][0][0] < len(str(key)):
+                            Kdeep_index[linenum][0][0] =  len(str(key))
+
+                        if Kdeep_index[linenum][0][1] < len(str(line)):
+                            Kdeep_index[linenum][0][1] =  len(str(line))
                     
                     # <t:int/str_type,In_range>
                     self.maintenance_run('int/str_type','In_range')
 
-
-            insert_index = self.keep_index.copy()
-            insert_index[-1] += 1
-   
+            
             del self.keep_index[-1]
 
             # <t:配列の調査完了,In_range>
@@ -683,6 +693,7 @@ class SetPrint:
         
         # (P:1)
         # キープする次元と現在の次元が同じなら、キープ用の処理に移る。
+
             
         elif set_keep_type == 'yf':
             
@@ -712,7 +723,7 @@ class SetPrint:
             
             if not keep_x:
                 if len(Kdeep_index) == 0:
-                    Kdeep_index = [0]
+                    Kdeep_index = [[0,0]]
                     #Kdeep_index = ['y']
                     
             len_Kdeep_index = len(Kdeep_index)-1
@@ -722,7 +733,7 @@ class SetPrint:
                 
                 if keep_x:    
                     if len_Kdeep_index < linenum:
-                        Kdeep_index.append(0)
+                        Kdeep_index.append([0,0])
                     direction_index = linenum
                 
                 if self.min_keep_deep <= self.now_deep <= self.max_keep_deep:
@@ -734,25 +745,26 @@ class SetPrint:
                         self.Y_keep_index[y_keep_index] = []
 
                     self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
-
                 
                 if isinstance(line, self.collection_type):
-
+                    
                     # <t:collection_type,Out_of_range>
                     self.maintenance_run('collection_type','Out_of_range')
 
 
                     if len(line) != 0:                        
-                        if type(Kdeep_index[direction_index]) != list:
-                            if Kdeep_index[direction_index] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[direction_index] = [self.collections[type(line).__name__][1],[]]
-                            else:
-                                Kdeep_index[direction_index] = [Kdeep_index[direction_index],[]]
+                        if type(Kdeep_index[direction_index][0]) != list:
+                            key_len = max(Kdeep_index[direction_index][0], len(str(key)))
+                            value_len = max(Kdeep_index[direction_index][1], self.collections[type(line).__name__][1])
+                            Kdeep_index[direction_index] = [[key_len,value_len],[]]
 
                         else:
-                            if Kdeep_index[direction_index][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[direction_index][0] = self.collections[type(line).__name__][1]
-
+                            if Kdeep_index[direction_index][0][0] < len(str(key)):
+                                Kdeep_index[direction_index][0][0] = len(str(key))
+                        
+                            if Kdeep_index[direction_index][0][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[direction_index][0][1] = self.collections[type(line).__name__][1]
+                        
                         if type(line) == dict:
                             Kdeep_index[direction_index][1] = self.search_mapping(line,Kdeep_index[direction_index][1])
                         else:
@@ -763,20 +775,33 @@ class SetPrint:
 
                     
                     else:
-                        if type(Kdeep_index[direction_index]) != list:
-                            if Kdeep_index[direction_index] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[direction_index] = self.collections[type(line).__name__][1]
+                        if type(Kdeep_index[direction_index][0]) != list:
+                            if Kdeep_index[direction_index][0] < len(str(key)):
+                                Kdeep_index[direction_index][0] = len(str(key))
+
+                            if Kdeep_index[direction_index][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[direction_index][1] = self.collections[type(line).__name__][1]
                         else:
-                            if Kdeep_index[direction_index][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[direction_index][0] = self.collections[type(line).__name__][1]
-                
+                            if Kdeep_index[direction_index][0][0] < len(str(key)):
+                                Kdeep_index[direction_index][0][0] = len(str(key))
+
+                            if Kdeep_index[direction_index][0][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[direction_index][0][1] = self.collections[type(line).__name__][1]
+
                 else:
-                    if type(Kdeep_index[direction_index]) != list:
-                        if Kdeep_index[direction_index] < len(str(line)):
-                            Kdeep_index[direction_index] = len(str(line))
+                    if type(Kdeep_index[direction_index][0]) != list:
+                        if Kdeep_index[direction_index][0] < len(str(key)):
+                            Kdeep_index[direction_index][0] = len(str(key))
+
+                        if Kdeep_index[direction_index][1] < len(str(line)):
+                            Kdeep_index[direction_index][1] = len(str(line))
                     else:
-                        if Kdeep_index[direction_index][0] < len(str(line)):
-                            Kdeep_index[direction_index][0] = len(str(line))
+                        if Kdeep_index[direction_index][0][0] < len(str(key)):
+                            Kdeep_index[direction_index][0][0] = len(str(key))
+
+                        if Kdeep_index[direction_index][0][1] < len(str(line)):
+                            Kdeep_index[direction_index][0][1] = len(str(line))
+                
                     
                     # <t:int/str_type,Out_of_range>
                     self.maintenance_run('int/str_type','Out_of_range')
@@ -805,25 +830,25 @@ class SetPrint:
             
             self.keep_index.append(-1)
             self.now_index.append('')
-            
-            len_Kdeep_index = len(Kdeep_index)
-
-            if len_Kdeep_index == 0:
-                Kdeep_index.append(self.brackets[type(datas).__name__][1][0])
-                Kdeep_index.append(self.brackets[type(datas).__name__][1][1])
-                len_Kdeep_index = 0
-            else:
-                if Kdeep_index[0] < self.brackets[type(datas).__name__][1][0]:
-                    Kdeep_index[0] = self.brackets[type(datas).__name__][1][0]
-                
-                if Kdeep_index[-1] < self.brackets[type(datas).__name__][1][1]:
-                    Kdeep_index[-1] = self.brackets[type(datas).__name__][1][1]
-                
-                len_Kdeep_index -= 2
 
             # <t:start,In_range>
             self.maintenance_run('start','In_range')
 
+            
+            len_Kdeep_index = len(Kdeep_index)
+
+            if len_Kdeep_index == 0:
+                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][0]])
+                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][1]])
+                len_Kdeep_index = 0
+            else:
+                if Kdeep_index[0][1] < self.brackets[type(datas).__name__][1][0]:
+                    Kdeep_index[0][1] = self.brackets[type(datas).__name__][1][0]
+                
+                if Kdeep_index[-1][1] < self.brackets[type(datas).__name__][1][1]:
+                    Kdeep_index[-1][1] = self.brackets[type(datas).__name__][1][1]
+                
+                len_Kdeep_index -= 2
 
             for linenum in range(len(datas)):
 
@@ -837,7 +862,7 @@ class SetPrint:
                 linenum += 1
 
                 if len_Kdeep_index < linenum:
-                    Kdeep_index.insert(-1,0)
+                    Kdeep_index.insert(-1,[0,0])
                
                 if isinstance(line, self.collection_type):
                     
@@ -845,15 +870,12 @@ class SetPrint:
                     self.maintenance_run('collection_type','In_range')
 
 
-                    if type(Kdeep_index[linenum]) != list:
-                        if Kdeep_index[linenum] < self.collections[type(line).__name__][1]:
-                            Kdeep_index[linenum] = [self.collections[type(line).__name__][1],[]]
-                        else:
-                            Kdeep_index[linenum] = [Kdeep_index[linenum],[]]
+                    if type(Kdeep_index[linenum][0]) != list:
+                        Kdeep_index[linenum] = [[Kdeep_index[linenum][0],max(Kdeep_index[linenum][1], self.collections[type(line).__name__][1])],[]]
                     
                     else:
-                        if Kdeep_index[linenum][0] < self.collections[type(line).__name__][1]:
-                            Kdeep_index[linenum][0] = self.collections[type(line).__name__][1]
+                        if Kdeep_index[linenum][0][1] < self.collections[type(line).__name__][1]:
+                            Kdeep_index[linenum][0][1] = self.collections[type(line).__name__][1]
                                     
                     if type(line) == dict:
                         Kdeep_index[linenum][1] = self.search_mapping(line,Kdeep_index[linenum][1])
@@ -866,12 +888,12 @@ class SetPrint:
                                         
                 else:
                     
-                    if type(Kdeep_index[linenum]) != list:
-                        if Kdeep_index[linenum] < len(str(line)):
-                            Kdeep_index[linenum] = len(str(line))
+                    if type(Kdeep_index[linenum][0]) != list:
+                        if Kdeep_index[linenum][1] < len(str(line)):
+                            Kdeep_index[linenum][1] = len(str(line))
                     else:
-                        if Kdeep_index[linenum][0] < len(str(line)):
-                            Kdeep_index[linenum][0] =  len(str(line))
+                        if Kdeep_index[linenum][0][1] < len(str(line)):
+                            Kdeep_index[linenum][0][1] =  len(str(line))
                     
                     # <t:int/str_type,In_range>
                     self.maintenance_run('int/str_type','In_range')
@@ -915,7 +937,7 @@ class SetPrint:
             
             if not keep_x:
                 if len(Kdeep_index) == 0:
-                    Kdeep_index = [0]
+                    Kdeep_index = [[0,0]]
                     #Kdeep_index = ['y']
 
             len_Kdeep_index = len(Kdeep_index)-1
@@ -927,7 +949,7 @@ class SetPrint:
                 
                 if keep_x:    
                     if len_Kdeep_index < linenum:
-                        Kdeep_index.append(0)
+                        Kdeep_index.append([0,0])
                     direction_index = linenum
                 
                 if self.min_keep_deep <= self.now_deep <= self.max_keep_deep:
@@ -947,16 +969,13 @@ class SetPrint:
 
 
                     if len(line) != 0:                        
-                        if type(Kdeep_index[direction_index]) != list:
-                            if Kdeep_index[direction_index] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[direction_index] = [self.collections[type(line).__name__][1],[]]
-                            else:
-                                Kdeep_index[direction_index] = [Kdeep_index[direction_index],[]]
+                        if type(Kdeep_index[direction_index][0]) != list:
+                            Kdeep_index[direction_index] = [[Kdeep_index[direction_index][0],max(Kdeep_index[direction_index][1], self.collections[type(line).__name__][1])],[]]
 
                         else:
-                            if Kdeep_index[direction_index][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[direction_index][0] = self.collections[type(line).__name__][1]
-
+                            if Kdeep_index[direction_index][0][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[direction_index][0][1] = self.collections[type(line).__name__][1]
+                        
                         if type(line) == dict:
                             Kdeep_index[direction_index][1] = self.search_mapping(line,Kdeep_index[direction_index][1])
                         else:
@@ -967,20 +986,20 @@ class SetPrint:
 
                     
                     else:
-                        if type(Kdeep_index[direction_index]) != list:
-                            if Kdeep_index[direction_index] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[direction_index] = self.collections[type(line).__name__][1]
+                        if type(Kdeep_index[direction_index][0]) != list:
+                            if Kdeep_index[direction_index][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[direction_index][1] = self.collections[type(line).__name__][1]
                         else:
-                            if Kdeep_index[direction_index][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[direction_index][0] = self.collections[type(line).__name__][1]
+                            if Kdeep_index[direction_index][0][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[direction_index][0][1] = self.collections[type(line).__name__][1]
 
                 else:
-                    if type(Kdeep_index[direction_index]) != list:
-                        if Kdeep_index[direction_index] < len(str(line)):
-                            Kdeep_index[direction_index] = len(str(line))
+                    if type(Kdeep_index[direction_index][0]) != list:
+                        if Kdeep_index[direction_index][1] < len(str(line)):
+                            Kdeep_index[direction_index][1] = len(str(line))
                     else:
-                        if Kdeep_index[direction_index][0] < len(str(line)):
-                            Kdeep_index[direction_index][0] = len(str(line))
+                        if Kdeep_index[direction_index][0][1] < len(str(line)):
+                            Kdeep_index[direction_index][0][1] = len(str(line))
                     
                     # <t:int/str_type,Out_of_range>
                     self.maintenance_run('int/str_type','Out_of_range')
@@ -1046,7 +1065,7 @@ class SetPrint:
         # print(' < tracking',self.keep_tracking)
 
         if len(Kdeep_index) == 0:
-            Kdeep_index = [0]
+            Kdeep_index = [[0,0]]
 
         if type(datas) == dict:
             
@@ -1065,20 +1084,23 @@ class SetPrint:
                 self.y_flat_index = [[]]
                 
                 if isinstance(line, self.collection_type):
-                
+                    
                     # <t:collection_type,In_range>
                     self.maintenance_run('collection_type','In_range')
 
-                    
+
                     if len(line) != 0:
-                        if type(Kdeep_index[0]) != list:
-                            if Kdeep_index[0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[0] = [self.collections[type(line).__name__][1],[]]
-                            else:
-                                Kdeep_index[0] = [Kdeep_index[0],[]]
+                        if type(Kdeep_index[0][0]) != list:
+                            key_len = max(Kdeep_index[0][0], len(str(key)))
+                            value_len = max(Kdeep_index[0][1], self.collections[type(line).__name__][1])
+                            Kdeep_index[0] = [[key_len,value_len],[]]
+
                         else:
-                            if Kdeep_index[0][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[0][0] = self.collections[type(line).__name__][1]
+                            if Kdeep_index[0][0][0] < len(str(key)):
+                                Kdeep_index[0][0][0] = len(str(key))
+
+                            if Kdeep_index[0][0][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[0][0][1] = self.collections[type(line).__name__][1]
 
                         # 以降の格納要素についてのキープデータ作成は search_ mapping,sequence 関数を使用する。
                         if type(line) == dict:
@@ -1091,25 +1113,37 @@ class SetPrint:
 
                     
                     else:
-                        if type(Kdeep_index[0]) != list:
-                            if Kdeep_index[0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[0] = self.collections[type(line).__name__][1]
-                        else:
-                            if Kdeep_index[0][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[0][0] = self.collections[type(line).__name__][1]
-                    
-                else:
+                        if type(Kdeep_index[0][0]) != list:
+                            if Kdeep_index[0][0] < len(str(key)):
+                                Kdeep_index[0][0] = len(str(key))
 
+                            if Kdeep_index[0][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[0][1] = self.collections[type(line).__name__][1]
+                        else:
+                            if Kdeep_index[0][0][0] < len(str(key)):
+                                Kdeep_index[0][0][0] = len(str(key))
+
+                            if Kdeep_index[0][0][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[0][0][1] = self.collections[type(line).__name__][1]
+
+                else:
+                    
                     # <t:int/str_type,In_range>
                     self.maintenance_run('int/str_type','In_range')
 
 
-                    if type(Kdeep_index[0]) != list:
-                        if Kdeep_index[0] < len(str(line)):
-                            Kdeep_index[0] = len(str(line))
+                    if type(Kdeep_index[0][0]) != list:
+                        if Kdeep_index[0][0] < len(str(key)):
+                            Kdeep_index[0][0] = len(str(key))
+                            
+                        if Kdeep_index[0][1] < len(str(line)):
+                            Kdeep_index[0][1] = len(str(line))
                     else:
-                        if Kdeep_index[0][0] < len(str(line)):
-                            Kdeep_index[0][0] = len(str(line))
+                        if Kdeep_index[0][0][0] < len(str(key)):
+                            Kdeep_index[0][0][0] = len(str(key))
+
+                        if Kdeep_index[0][0][1] < len(str(line)):
+                            Kdeep_index[0][0][1] = len(str(line))
 
                 self.Y_keep_index[y_keep_index].append([self.now_index[:],self.y_flat_index[:]])
 
@@ -1142,14 +1176,12 @@ class SetPrint:
 
 
                     if len(line) != 0:
-                        if type(Kdeep_index[0]) != list:
-                            if Kdeep_index[0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[0] = [self.collections[type(line).__name__][1],[]]
-                            else:
-                                Kdeep_index[0] = [Kdeep_index[0],[]]
+                        if type(Kdeep_index[0][0]) != list:
+                            Kdeep_index[0] = [[Kdeep_index[0][0],max(Kdeep_index[0][1], self.collections[type(line).__name__][1])],[]]
+
                         else:
-                            if Kdeep_index[0][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[0][0] = self.collections[type(line).__name__][1]
+                            if Kdeep_index[0][0][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[0][0][1] = self.collections[type(line).__name__][1]
 
                         # 以降の格納要素についてのキープデータ作成は search_ mapping,sequence 関数を使用する。
                         if type(line) == dict:
@@ -1162,12 +1194,12 @@ class SetPrint:
 
                     
                     else:
-                        if type(Kdeep_index[0]) != list:
-                            if Kdeep_index[0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[0] = self.collections[type(line).__name__][1]
+                        if type(Kdeep_index[0][0]) != list:
+                            if Kdeep_index[0][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[0][1] = self.collections[type(line).__name__][1]
                         else:
-                            if Kdeep_index[0][0] < self.collections[type(line).__name__][1]:
-                                Kdeep_index[0][0] = self.collections[type(line).__name__][1]
+                            if Kdeep_index[0][0][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[0][0][1] = self.collections[type(line).__name__][1]
 
                 else:
                     
@@ -1175,12 +1207,12 @@ class SetPrint:
                     self.maintenance_run('int/str_type','In_range')
 
 
-                    if type(Kdeep_index[0]) != list:
-                        if Kdeep_index[0] < len(str(line)):
-                            Kdeep_index[0] = len(str(line))
+                    if type(Kdeep_index[0][0]) != list:
+                        if Kdeep_index[0][1] < len(str(line)):
+                            Kdeep_index[0][1] = len(str(line))
                     else:
-                        if Kdeep_index[0][0] < len(str(line)):
-                            Kdeep_index[0][0] = len(str(line))
+                        if Kdeep_index[0][0][1] < len(str(line)):
+                            Kdeep_index[0][0][1] = len(str(line))
 
                 self.Y_keep_index[y_keep_index].append([self.now_index[:],self.y_flat_index[:]])
 
@@ -1218,7 +1250,7 @@ class SetPrint:
         if self.keep_settings[len(index)] in ('x','y','yf'):
             for line,deep_data in enumerate(x_keep_index):
                 
-                if type(deep_data) == list:
+                if type(deep_data[0]) == list:
                     keep_index.append(index+[line])
                     keep_len.append(deep_data[0])
                     keep_index,keep_len = self.flat_x_keep_index(deep_data[1],index+[line],keep_index,keep_len)
@@ -1233,7 +1265,7 @@ class SetPrint:
 
                 line -= 1
                 
-                if type(deep_data) == list:
+                if type(deep_data[0]) == list:
                     keep_index.append(index+[line])
                     keep_len.append(deep_data[0])
                     keep_index,keep_len = self.flat_x_keep_index(deep_data[1],index+[line],keep_index,keep_len)
@@ -1245,19 +1277,26 @@ class SetPrint:
     
     
     def map_sequence_indices(self,nested_list,indices):
-        for index in indices:
+        last_deep = len(nested_list)-1
+        last_dict = None
+        for now_deep,index in enumerate(indices):
             if isinstance(nested_list, self.mapping_type):
+                last_dict = now_deep
+                dict_key = list(nested_list.keys())[index]
                 nested_list = list(nested_list.values())
                 
             nested_list = nested_list[index]
-            
+        
         value = nested_list
-        return value
+        dict_key = dict_key if last_deep == last_dict else None
+
+        return value,dict_key
 
     # [→:4] キープデータの整形
     def format_keep_data(self,route,X_keep_index,Y_keep_index):
         
         x_keep_index,keep_len = self.flat_x_keep_index(X_keep_index)
+        x_keep_index.append(['end'])
         
         # キーを辞書順（インデックス順）でソート
         Y_keep_index = {k: Y_keep_index[k] for k in sorted(Y_keep_index)}
@@ -1287,7 +1326,7 @@ class SetPrint:
                     # print(parent,y_x_indexs,now_line)
                     
                     #print(search_index)
-                    parent_list = self.map_sequence_indices(self.input_list,parent)
+                    parent_list,in_dect = self.map_sequence_indices(self.input_list,parent)
 
                     for y_x_index in y_x_indexs:
 
@@ -1300,29 +1339,51 @@ class SetPrint:
 
                         while x_keep_index[now_line] != keep_parent + keep_y_x_index:
                             # print('False ',x_keep_index[now_line],keep_parent + y_x_index)
-                            line_txt += keep_len[now_line]*' ' + ' '
+                            axis_len = keep_len[now_line]
+                            if axis_len[0] == 0:
+                                line_txt += axis_len[1]*' ' + ' '
+                            else:
+                                line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
+                            
                             now_line += 1
 
                         # print('True  ',x_keep_index[now_line],keep_parent + keep_y_x_index)
                         # print()
                         
-                        value = self.map_sequence_indices(parent_list,y_x_index)
+                        value,dect_key = self.map_sequence_indices(parent_list,y_x_index)
                         if isinstance(value, self.collection_type):
                             collection_image,image_len = self.collections[type(value).__name__]
-                            line_txt += (keep_len[now_line] - image_len) * ' ' + collection_image + ' '
+                            line_txt += (keep_len[now_line][1] - image_len) * ' ' + collection_image + ' '
+                        
                         else:
-                            line_txt += (keep_len[now_line] - len(str(value)))*' ' + str(value) + ' '
+                            axis_len = keep_len[now_line]
 
+                            dif = (axis_len[1] - len(str(value)))
+                            v_dif_2 = (dif // 2)
+                            if axis_len[0] == 0:
+                                print('value')
+                                print(dect_key)
+                                line_txt += v_dif_2*' ' + str(value) + ' ' + (v_dif_2 + dif%2)*' '
+                            else:
+                                if dect_key == None:
+                                    print('`___`:`value`')
+                                    line_txt += axis_len[0]*' ' + v_dif_2*' ' + str(value) + ' ' + (v_dif_2 + dif%2)*'  '
+                                else:
+                                    print('`key`:`value`')
+                                    k_dif = (axis_len[0] - len(str(value)))
+                                    k_dif_2 = (dif // 2)
+                                    line_txt +=  k_dif_2*' ' + str(dect_key) + ' ' + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + ' ' + (v_dif_2 + dif%2)*' '
+                                    
                         now_line += 1
 
             else:
-                
+
                 last_deep = None
                 for now_deep,keep_setting in enumerate(self.keep_settings[len(y_keep_index):]):
                     if keep_setting != 'f':
                         last_deep = now_deep
                         break
-
+                
                 for parent,y_x_indexs in y_line_data:
 
                     keep_parent = parent[:]
@@ -1337,14 +1398,14 @@ class SetPrint:
                     # print(parent,y_x_indexs,now_line)
                     
                     #print(search_index)
-                    parent_list = self.map_sequence_indices(self.input_list,parent)
+                    parent_list,in_dect = self.map_sequence_indices(self.input_list,parent)
 
                     before_nest = parent_deep
                     deep_types = []
 
                     for y_x_index in y_x_indexs:
 
-                        value = self.map_sequence_indices(parent_list,y_x_index)
+                        value,in_dect = self.map_sequence_indices(parent_list,y_x_index)
 
                         keep_y_x_index = y_x_index[:]
                         for deep in range(len(y_x_index)):
@@ -1363,34 +1424,60 @@ class SetPrint:
                             for i in range(before_nest - now_deep):
                                 
                                 while len(x_keep_index[now_line+1]) != before_nest -1:
-                                    line_txt += keep_len[now_line]*' ' + ' '
+                                            
+                                    axis_len = keep_len[now_line]
+                                    if axis_len[0] == 0:
+                                        line_txt += axis_len[1]*' ' + ' '
+                                    else:
+                                        line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                                     now_line += 1
 
-                                line_txt += (keep_len[now_line] - len(']'))*' ' + ']' + ' '
+                                bracket = self.brackets[deep_types[-1].__name__]
+                                line_txt += (keep_len[now_line][1] - bracket[1][1])*' ' + bracket[0][1] + ' '
                                 
                                 del deep_types[-1]
                                 before_nest -= 1
                                 now_line += 1
                            
                         while x_keep_index[now_line] != keep_parent + keep_y_x_index:
-                            line_txt += keep_len[now_line]*' ' + ' '
+
+                            axis_len = keep_len[now_line]
+                            if axis_len[0] == 0:
+                                line_txt += axis_len[1]*' ' + ' '
+                            else:
+                                line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                             now_line += 1
 
+                        value,dect_key = self.map_sequence_indices(parent_list,y_x_index)
                         if isinstance(value, self.collection_type):
                             collection_image,image_len = self.collections[type(value).__name__]
-                            line_txt += (keep_len[now_line] - image_len) * ' ' + collection_image + ' '
-                            now_line += 1
-
+                            line_txt += (keep_len[now_line][1] - image_len) * ' ' + collection_image + ' '
+                            
                             if last_deep != len(y_x_index):
                                 deep_types.append(type(value))
-                                line_txt += (keep_len[now_line] - len('['))*' ' + '[' + ' '
+                                bracket = self.brackets[type(value).__name__]
+                                line_txt += (keep_len[now_line][1] - bracket[1][0])*' ' + bracket[0][0] + ' '
 
                                 before_nest += 1
                                 now_line += 1
-                                
+                           
                         else:
-                            line_txt += (keep_len[now_line] - len(str(value)))*' ' + str(value) + ' '
-                            now_line += 1
+                            axis_len = keep_len[now_line]
+
+                            dif = (axis_len[1] - len(str(value)))
+                            v_dif_2 = (dif // 2)
+                            if axis_len[0] == 0:
+                                line_txt += v_dif_2*' ' + str(value) + ' ' + (v_dif_2 + dif%2)*' '
+                            else:
+                                if dect_key == None:
+                                    line_txt += axis_len[0]*' ' + v_dif_2*' ' + str(value) + ' ' + (v_dif_2 + dif%2)*'  '
+                                else:
+                                    print('key')
+                                    k_dif = (axis_len[0] - len(str(value)))
+                                    k_dif_2 = (dif // 2)
+                                    line_txt +=  k_dif_2*' ' + str(dect_key) + ' ' + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + ' ' + (v_dif_2 + dif%2)*' '
+                                    
+                        now_line += 1
 
 
                     if 0 < len(deep_types):
@@ -1399,35 +1486,41 @@ class SetPrint:
 
                             while len(x_keep_index[now_line+1]) != before_nest -1:
 
-                                line_txt += keep_len[now_line]*' ' + ' '
+                                axis_len = keep_len[now_line]
+                                if axis_len[0] == 0:
+                                    line_txt += axis_len[1]*' ' + ' '
+                                else:
+                                    line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                                 now_line += 1
                         
-                            line_txt += (keep_len[now_line] - len(']'))*' ' + ']' + ' '
+                            bracket = self.brackets[deep_types[-1].__name__]
+                            line_txt += (keep_len[now_line][1] - bracket[1][1])*' ' + bracket[0][1] + ' '
                             
                             del deep_types[-1]
                             before_nest -= 1
                             now_line += 1
-                        
-                        while len(x_keep_index[now_line]) < 0:
-                            line_txt += keep_len[now_line]*' ' + ' '
+
+                        # print(x_keep_index)
+
+                        while len(x_keep_index[now_line]) > len(y_keep_index):
+                            axis_len = keep_len[now_line]
+                            if axis_len[0] == 0:
+                                line_txt += axis_len[1]*' ' + ' '
+                            else:
+                                line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                             now_line += 1
 
-                        # line_txt[:-(keep_len[now_line]+1)]
-                        # line_txt += (keep_len[now_line] - len(']'))*' ' + ']' + ' '
-                        line_txt += '] '
-
-                        now_line += 1
-
+                        bracket = self.brackets[deep_types[-1].__name__]
+                        line_txt = line_txt[:-(keep_len[now_line-1][0]+1)] + (keep_len[now_line-1][0] - bracket[1][1])*' ' + bracket[0][1] + ' '
                                
             format_texts.append(line_txt)
         
 
 
         collection_image,image_len = self.collections[type(self.input_list).__name__]
-        map_width = max(10,image_len+1 + sum(keep_len) + len(keep_len))
-
+        
         self.format_texts=format_texts[:]
-        total_x_keep_data,nouse = self.total_x_keep_deata(X_keep_index,image_len+1)
+        total_x_keep_data,map_width = self.total_x_keep_deata(X_keep_index,image_len+1)
         
         for line_num,line in enumerate(self.format_texts):
             self.format_texts[line_num] = image_len*' '+' ' + line
@@ -1525,16 +1618,23 @@ class SetPrint:
             
         for line,deep_data in enumerate(x_keep_data):
 
-            if type(deep_data) == list:
+            if type(deep_data[0]) == list:
 
                 p_total_len = total_len
-                x_range_total_len,total_len = self.total_x_keep_deata(deep_data[1],total_len + deep_data[0] + 1)
-                x_keep_total_len.append([[p_total_len,deep_data[0]],x_range_total_len])
+                if deep_data[0][0] == 0:
+                    x_range_total_len,total_len = self.total_x_keep_deata(deep_data[1],total_len + deep_data[0][1] + 1)
+                    x_keep_total_len.append([[p_total_len,deep_data[0][1]],x_range_total_len])
+                else:
+                    p_total_len += deep_data[0][0] + 1
+                    x_range_total_len,total_len = self.total_x_keep_deata(deep_data[1],total_len + deep_data[0][0] + deep_data[0][1] + 2)
+                    x_keep_total_len.append([[p_total_len,deep_data[0][1]],x_range_total_len])
             else:
-                x_keep_total_len.append([total_len,deep_data])
-                total_len += deep_data +1
-                # if total_len == 104:
-                #     print('!!!')
+                if deep_data[0] == 0:
+                    x_keep_total_len.append([total_len,deep_data[1]])
+                    total_len += deep_data[1] +1
+                else:
+                    x_keep_total_len.append([total_len + deep_data[0] + 1, deep_data[1]])
+                    total_len += deep_data[0] + deep_data[1] + 2
         
         return x_keep_total_len,total_len
 
