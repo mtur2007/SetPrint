@@ -5,8 +5,8 @@
 #print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
 # 実行コード
-from test_setprint_0_3_0 import SetPrint
-# from demo_setprint_0_3_0 import SetPrint
+# from test_setprint_0_3_0 import SetPrint
+from demo_setprint_0_3_0 import SetPrint
 
 import numpy as np
 import pickle
@@ -52,10 +52,10 @@ else:
       # None  # データの欠落
       # ]
       
-      test_data = [[[[0,[0,0,0]],0,0],[[0,[0,0]],0,0]],[[[0,[0,0]],0,0,0],[0,0,0]],[[0,0,0],[0,0,0,0]]]
-      test_data = [[[[0,[0,0,0]],0,0],[[0,[0,0]],0,0]],[[[0,[0,0]],0,0,0],[0,0,0]],[[0,0,0],[0,0,0,0]],{'zero':[0,{'zero':[0,0,0,0],'one':[0,0,0,0],},0,0],'one':[0,0,0,0],}]
+      test_data = [[[0,0],[0,0]],[[0,0],[0,0]]]
+      # test_data = [[[[0,[0,0,0]],0,0],[[0,[0,0]],0,0]],[[[0,[0,0]],0,0,0],[0,0,0]],[[0,0,0],[0,0,0,0]],{'zero':[0,{'zero':[0,0,0,0],'one':[0,0,0,0],},0,0],'one':[0,0,0,0],}]
 
-      keep_settings = {1:'x',2:'y',3:'yf',10:'y'}
+      keep_settings = {1:'y',2:'yf',4:None}
 
       # keep_settings = {1:'y',2:'x',4:'f'}
 
@@ -82,7 +82,7 @@ else:
 list_data = SetPrint(test_data)
 
 # 整形
-format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
+format_texts = list_data.set_collection ( route=True, keep_settings=keep_settings )
 # format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
 
 with open('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/format_data/output.txt','w') as f:

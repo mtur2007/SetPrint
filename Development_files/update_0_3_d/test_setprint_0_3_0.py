@@ -190,7 +190,7 @@ class SetPrint:
             {  'image'   : { 'list'    : '►list' ,
                              'tuple'   : '▷tuple' ,
                              'ndarray' : '>nadarray' ,
-                             'dict'    : '◆dect' }}),
+                             'dict'    : '◆dict' }}),
 
            ("bracket"     ,
             { 'partially': { 'list'    : ( '{' , ')' ),
@@ -372,7 +372,7 @@ class SetPrint:
     
     # リストを整型する際の条件を整理 / １次元目の格納情報を整形 [→:#0]
     # [→:0] 中身は search_mapping / search_sequence とほぼ同じ
-    def set_list(self, route, keep_settings):
+    def set_collection(self, route, keep_settings):
 
         datas = self.input_list
         
@@ -1220,7 +1220,7 @@ class SetPrint:
                             line_txt += v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                         else:
                             if dict_key == None:
-                                line_txt += axis_len[0]*'-' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                                line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                             else:
                                 k_dif = (axis_len[0] - len(str(dict_key)))
                                 k_dif_2 = (dif // 2)
@@ -1316,7 +1316,7 @@ class SetPrint:
                                 line_txt += v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                             else:
                                 if dict_key == None:
-                                    line_txt += axis_len[0]*'-' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                                    line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                 else:
                                     k_dif = (axis_len[0] - len(str(dict_key)))
                                     k_dif_2 = (dif // 2)
@@ -1342,7 +1342,7 @@ class SetPrint:
                                 line_txt += v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                             else:
                                 if dict_key == None:
-                                    line_txt += axis_len[0]*'-' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                                    line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                 else:
                                     k_dif = (axis_len[0] - len(str(dict_key)))
                                     k_dif_2 = (dif // 2)
@@ -1579,7 +1579,7 @@ class SetPrint:
                     x_line = total_x_keep_data[index] if type(total_x_keep_data[index][0]) != list else total_x_keep_data[index][0]
 
                     diff_2 = x_line[1]//2
-                    x_line = x_line[0] + diff_2 # 偶数の場合は、中心より左側を中心とする。: - (1 - x_line[1]%2)
+                    x_line = x_line[0] + diff_2 - (1 - x_line[1]%2) # 偶数の場合は、中心より左側を中心とする。: - (1 - x_line[1]%2)
 
                     line_text = self.format_texts[parent_y]
                     self.format_texts[parent_y] = line_text[:previous] + (x_line - previous) * '━' + '┳' + line_text[x_line+1:]
