@@ -42,6 +42,36 @@ def check_matching_elements(mapping_point, collection_index):
 
     return max_match_index  # 最大連続一致数を持つ行のインデックス
 
+# 配列の最大ネストを調べるコード
+def max_dimension(obj):
+    """
+    オブジェクト obj の最大ネスト深度を返す関数。
+    ・NumPy配列の場合は obj.ndim を返す。
+    ・リスト、タプルの場合は再帰的に内部の最大深度を計算し、現在の階層（1）を加える。
+    ・辞書の場合は値に対して同様に計算する。
+    ・その他の型は、コンテナではないとみなし 0 を返す。
+    """
+    # NumPy配列の場合（他のコンテナ型内にあってもここで判定）
+    if isinstance(obj, np.ndarray):
+        return obj.ndim
+
+    # リストやタプルの場合
+    elif isinstance(obj, (list, tuple)):
+        if not obj:  # 空の場合
+            return 1
+        # 各要素の最大ネストを再帰的に計算し、現在の階層を加算
+        return 1 + max(max_dimension(item) for item in obj)
+
+    # 辞書の場合（ここでは値のみを対象）
+    elif isinstance(obj, dict):
+        if not obj:
+            return 1
+        return 1 + max(max_dimension(v) for v in obj.values())
+
+    # その他の型の場合（コンテナではないとみなす）
+    else:
+        return 0
+
 # リストに格納されている最大要素数とその次元を求める関数
 def find_max_elements_and_level(data, depth=0, level_counts=None):
     """

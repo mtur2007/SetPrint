@@ -13,7 +13,7 @@ import pickle
 
 from PIL import Image
 
-if False:
+if True:
       def load_pkl_file(filename: str) -> np.ndarray:
             """
             pklファイルから"Alltxtdatas"を抽出し、NumPy配列として返す。
@@ -34,7 +34,7 @@ if False:
       test_data = load_pkl_file(pkl_filename)
 
       keep_settings = ({1:'y',2:'x',3:'yf',4:'f'},{1:'x',2:'yf',3:'f'},{1:'yf',2:'f'})
-      indexs = [0]
+      indexs = []
       for index in indexs:
             test_data = test_data[index]
       keep_settings = keep_settings[len(indexs)]
