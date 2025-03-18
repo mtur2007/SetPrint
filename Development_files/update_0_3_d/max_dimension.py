@@ -1,98 +1,105 @@
 import numpy as np
 
-def convert_numpy_scalars(obj):
+def update_numpy_scalars_and_get_depth(obj):
     """
-    オブジェクト obj 内に含まれる NumPy のスカラー値（0次元配列や np.generic）を
-    通常の Python のスカラーに変換して返す関数。
+    オブジェクト内の NumPy のスカラー値（np.generic または ndim==0 の ndarray）を
+    通常の Python のスカラー値に変換し、かつ最大入れ子深度（次元数）を取得する関数。
+    
+    戻り値は (updated_obj, depth) のタプルです。
+    depth は以下のルールに従って定義:
+      - 基本型やスカラーの場合は 0
+      - コンテナの場合は 1 + max(child depths)（空の場合は 1）
     """
-    # NumPy配列の場合
+    # NumPy のスカラー（np.generic）の場合
+    if isinstance(obj, np.generic):
+        return obj.item(), 0
+
+    # NumPy 配列の場合
     if isinstance(obj, np.ndarray):
-        # 0次元配列（スカラー）の場合は変換
+        # スカラー配列の場合 (ndim == 0)
         if obj.ndim == 0:
-            return obj.item()
+            return obj.item(), 0
+        # 非 object 型の配列は更新不要。深度はそのまま ndim を用いる
+        if obj.dtype != np.object_:
+            return obj, obj.ndim
         else:
-            # 多次元配列の場合は、そのまま返す（または必要に応じて element-wise 変換も可能）
-            return obj
-    # NumPy のスカラー型の場合
-    elif isinstance(obj, np.generic):
-        return obj.item()
-    
-    # リストやタプルの場合は各要素に対して変換を適用
-    elif isinstance(obj, (list, tuple)):
-        return type(obj)(convert_numpy_scalars(item) for item in obj)
-    
-    # 辞書の場合は値側に対して変換を適用
-    elif isinstance(obj, dict):
-        return {k: convert_numpy_scalars(v) for k, v in obj.items()}
-    
-    else:
-        return obj
+            # object 型の NumPy 配列の場合、各要素を再帰的に更新
+            new_obj = obj.copy()
+            max_sub_depth = 0
+            for idx, value in np.ndenumerate(new_obj):
+                updated_val, sub_depth = update_numpy_scalars_and_get_depth(value)
+                new_obj[idx] = updated_val
+                if sub_depth > max_sub_depth:
+                    max_sub_depth = sub_depth
+            # 空の場合は 1、要素があれば 1 + 子要素の最大深度
+            return new_obj, 1 + max_sub_depth if new_obj.size > 0 else 1
 
-def max_dimension(obj):
-    """
-    オブジェクト obj の最大ネスト深度を返す関数。
-    
-    ・NumPy配列の場合：
-      - 0次元（スカラー）の場合は 0 を返し、
-      - それ以外の場合は obj.ndim を返す。
-    
-    ・リスト、タプルの場合：内部の各要素の最大深度を計算し、現在の階層1を加算。
-    
-    ・辞書の場合：値側に対して同様に計算。
-    
-    ・その他の型の場合は、コンテナではないとみなし 0 を返す。
-    """
-    # まず NumPy のスカラーが含まれている場合、変換を試みる
-    obj = convert_numpy_scalars(obj)
-    
-    # NumPy配列の場合
-    if isinstance(obj, np.ndarray):
-        if obj.ndim == 0:
-            return 0
-        return obj.ndim
-
-    # リストやタプルの場合
-    elif isinstance(obj, (list, tuple)):
-        if not obj:  # 空の場合
-            return 1
-        return 1 + max(max_dimension(item) for item in obj)
-
-    # 辞書の場合（ここでは値に対して再帰的に計算）
-    elif isinstance(obj, dict):
+    # 辞書の場合: 値を更新し再帰的に深度を取得
+    if isinstance(obj, dict):
         if not obj:
-            return 1
-        return 1 + max(max_dimension(v) for v in obj.values())
+            return obj, 1
+        new_dict = {}
+        max_sub_depth = 0
+        for key, value in obj.items():
+            updated_val, sub_depth = update_numpy_scalars_and_get_depth(value)
+            new_dict[key] = updated_val
+            if sub_depth > max_sub_depth:
+                max_sub_depth = sub_depth
+        return new_dict, 1 + max_sub_depth
 
-    # その他の型（コンテナではないもの）は 0 次元とみなす
-    else:
-        return 0
+    # リストの場合: 各要素を更新
+    if isinstance(obj, list):
+        if not obj:
+            return obj, 1
+        new_list = []
+        max_sub_depth = 0
+        for item in obj:
+            updated_item, sub_depth = update_numpy_scalars_and_get_depth(item)
+            new_list.append(updated_item)
+            if sub_depth > max_sub_depth:
+                max_sub_depth = sub_depth
+        return new_list, 1 + max_sub_depth
 
-# テスト例
-if __name__ == "__main__":
-    # 例1: NumPy のスカラー（0次元配列）
-    scalar_array = np.array(42)  # 0次元
-    converted_scalar = convert_numpy_scalars(scalar_array)
-    print("scalar_array:", scalar_array, "->", converted_scalar, type(converted_scalar))
-    print("max_dimension(scalar_array):", max_dimension(scalar_array))  # 結果は0
+    # タプルの場合: 各要素を更新してタプルに再構成
+    if isinstance(obj, tuple):
+        if not obj:
+            return obj, 1
+        new_tuple = []
+        max_sub_depth = 0
+        for item in obj:
+            updated_item, sub_depth = update_numpy_scalars_and_get_depth(item)
+            new_tuple.append(updated_item)
+            if sub_depth > max_sub_depth:
+                max_sub_depth = sub_depth
+        return tuple(new_tuple), 1 + max_sub_depth
 
-    # 例2: リスト内に NumPy のスカラーが含まれる場合
-    nested_list = [1, np.array(3.14), [2, [np.array(100)]]]
-    converted_list = convert_numpy_scalars(nested_list)
-    print("converted_list:", converted_list)
-    print("max_dimension(nested_list):", max_dimension(nested_list))
-    # 内部のネストはリストの構造に依存（NumPy のスカラーは 0 次元と扱われる）
+    # その他の型はコンテナではないとみなし、更新せず深度は 0
+    return obj, 0
 
-    # 例3: 辞書内に NumPy のスカラーおよび多次元配列が含まれる場合
-    arr = np.array([[1, 2], [3, 4]])  # ndimは2
-    nested_dict = {"a": np.array(10), "b": {"c": arr}}
-    converted_dict = convert_numpy_scalars(nested_dict)
-    print("converted_dict:", converted_dict)
-    print("max_dimension(nested_dict):", max_dimension(nested_dict))
-    # 辞書の場合、"a" は 0 次元、"b" は 1 + 2 = 3 (辞書レベル+配列の ndim)
+# --- テスト例 ---
+if __name__ == '__main__':
+    data = {
+        "a": np.array(5),  # NumPy のスカラー配列（ndim == 0）
+        "b": [1, 2, np.array(3)],  # リスト内に NumPy スカラー
+        "c": np.array([np.array(10), np.array([20, 30])], dtype=object),  # object 型配列内に NumPy 配列
+        "d": np.array([[1, 2], [3, 4]]),  # 通常の NumPy 配列（更新不要）
+        "e": np.float64(3.14),  # NumPy のスカラー（np.generic）
+        "f": "text",  # 通常の文字列
+        "g": (np.array("hello"), {"sub": np.array(100)}),  # タプルと辞書の入れ子構造
+        "h": []  # 空のリスト
+    }
 
-
-    # 例1: NumPy のスカラー（0次元配列）
-    scalar_array = np.array(42)  # 0次元
-    converted_scalar = convert_numpy_scalars(scalar_array)
-    print("scalar_array:", scalar_array, "->", converted_scalar, type(converted_scalar))
-    print("max_dimension(scalar_array):", max_dimension(scalar_array))  # 結果は0
+    updated_data, max_depth = update_numpy_scalars_and_get_depth(data)
+    
+    print("=== 変換後のデータ ===")
+    print(updated_data)
+    print("\n=== 最大入れ子深度 ===")
+    print(max_depth)
+    
+    # 型の確認
+    print("\n型の確認:")
+    print("a:", type(updated_data["a"]))         # 期待: int
+    print("b[2]:", type(updated_data["b"][2]))     # 期待: int
+    print("e:", type(updated_data["e"]))           # 期待: float
+    print("g[0]:", type(updated_data["g"][0]))     # 期待: str
+    print("g[1]['sub']:", type(updated_data["g"][1]["sub"]))  # 期待: int
