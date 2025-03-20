@@ -83,6 +83,7 @@ if __name__ == '__main__':
         "b": [1, 2, np.array(3)],  # リスト内に NumPy スカラー
         "c": np.array([np.array(10), np.array([20, 30])], dtype=object),  # object 型配列内に NumPy 配列
         "d": np.array([[1, 2], [3, 4]]),  # 通常の NumPy 配列（更新不要）
+        "#": [[1,2],[np.array(1)]],
         "e": np.float64(3.14),  # NumPy のスカラー（np.generic）
         "f": "text",  # 通常の文字列
         "g": (np.array("hello"), {"sub": np.array(100)}),  # タプルと辞書の入れ子構造

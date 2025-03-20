@@ -17,100 +17,82 @@ def Myint(num):
 =============================================================================================================================================================
 ・配列の下調べ・簡易的なアクセスを行う関数
 '''
-
-# 配列の文字列、数列がどこの次元に位置しているかを調べる関数。(オート機能の処理)
-def check_matching_elements(mapping_point, collection_index):
-
-    max_match_count = 0  # 最大連続一致数
-    max_match_index = -1  # 最大連続一致数を持つ1次元目のインデックス
-
-    collection_len = len(collection_index)
-
-    for row_index, row in enumerate(mapping_point):
-        current_match_count = 0  # 現在の行での連続一致数
-        if collection_len >= len(row):
-            for i, elem in enumerate(row):
-                if i < len(collection_index) and elem == collection_index[i]:
-                    current_match_count += 1  # 一致した場合カウントを増やす
-                else:
-                    break  # 一致が途切れたら終了
-
-            # 最大連続一致数を更新
-            if (len(row) == current_match_count) and (current_match_count > max_match_count):
-                max_match_count = current_match_count
-                max_match_index = row_index
-
-    return max_match_index  # 最大連続一致数を持つ行のインデックス
-
-# リストに格納されている最大要素数とその次元を求める関数
-def find_max_elements_and_level(data, depth=0, level_counts=None):
+def update_numpy_scalars_and_get_depth(obj):
     """
-    Find the maximum number of elements and the corresponding depth in a nested list.
-
-    Args:
-        data (list): The nested list to analyze.
-        depth (int): The current depth in the recursion (default is 0).
-        level_counts (dict): A dictionary to track the number of elements at each depth.
-
-    Returns:
-        tuple: (max_count, max_depth) where:
-               - max_count is the maximum number of elements.
-               - max_depth is the depth at which max_count was found.
+    オブジェクト内の NumPy のスカラー値（np.generic または ndim==0 の ndarray）を
+    通常の Python のスカラー値に変換し、かつ最大入れ子深度（次元数）を取得する関数。
+    
+    戻り値は (updated_obj, depth) のタプルです。
+    depth は以下のルールに従って定義:
+      - 基本型やスカラーの場合は 0
+      - コンテナの場合は 1 + max(child depths)（空の場合は 1）
     """
-    if level_counts is None:
-        level_counts = {}
+    # NumPy のスカラー（np.generic）の場合
+    if isinstance(obj, np.generic):
+        return obj.item(), 0
 
-    if isinstance(data, (list,tuple,np.ndarray)):
-        # Count elements at the current depth
-        level_counts[depth] = level_counts.get(depth, 0) + len(data)
-
-        # Recursively check sublists
-        for item in data:
-            find_max_elements_and_level(item, depth + 1, level_counts)
-
-    # Find the depth with the maximum count
-    max_depth = max(level_counts, key=level_counts.get)
-    max_count = level_counts[max_depth]
-
-    return max_count, max_depth
-
-# 配列の値にインデックスを格納したリスト配列を使ってアクセスする
-def access_nested_collection(nested_list,indices):
-
-    for i,index in enumerate(indices):
-
-        if type(nested_list) == dict:
-            if not(index in nested_list):
-                return None
-            
+    # NumPy 配列の場合
+    if isinstance(obj, np.ndarray):
+        # スカラー配列の場合 (ndim == 0)
+        if obj.ndim == 0:
+            return obj.item(), 0
+        # 非 object 型の配列は更新不要。深度はそのまま ndim を用いる
+        if obj.dtype != np.object_:
+            return obj, obj.ndim
         else:
-            if not(0 <= index < len(nested_list)):     
-                return None # インデックスが範囲外の場合はNoneを返す
-            
-        # int または str の場合、最後のインデックスでない場合はNoneを返す
-        if not isinstance(nested_list[index], (list, tuple, np.ndarray, dict)):
-            if i == len(indices) - 1:
-                value = nested_list[index]
-                return value
-        
-            else:
-                return None # インデックスが範囲外の場合はNoneを返す
-            
-        nested_list = nested_list[index]
-        
-    # 最終的な要素がリストまたは配列の場合
-    else:
-        value = nested_list
-        return value
+            # object 型の NumPy 配列の場合、各要素を再帰的に更新
+            new_obj = obj.copy()
+            max_sub_depth = 0
+            for idx, value in np.ndenumerate(new_obj):
+                updated_val, sub_depth = update_numpy_scalars_and_get_depth(value)
+                new_obj[idx] = updated_val
+                if sub_depth > max_sub_depth:
+                    max_sub_depth = sub_depth
+            # 空の場合は 1、要素があれば 1 + 子要素の最大深度
+            return new_obj, 1 + max_sub_depth if new_obj.size > 0 else 1
 
-def access_nested_keep_index(nested_list,indices):
+    # 辞書の場合: 値を更新し再帰的に深度を取得
+    if isinstance(obj, dict):
+        if not obj:
+            return obj, 1
+        new_dict = {}
+        max_sub_depth = 0
+        for key, value in obj.items():
+            updated_val, sub_depth = update_numpy_scalars_and_get_depth(value)
+            new_dict[key] = updated_val
+            if sub_depth > max_sub_depth:
+                max_sub_depth = sub_depth
+        return new_dict, 1 + max_sub_depth
 
-    for index in indices:
-        nested_list = nested_list[index][1]
-        
-    else:
-        value = nested_list
-        return value
+    # リストの場合: 各要素を更新
+    if isinstance(obj, list):
+        if not obj:
+            return obj, 1
+        new_list = []
+        max_sub_depth = 0
+        for item in obj:
+            updated_item, sub_depth = update_numpy_scalars_and_get_depth(item)
+            new_list.append(updated_item)
+            if sub_depth > max_sub_depth:
+                max_sub_depth = sub_depth
+        return new_list, 1 + max_sub_depth
+
+    # タプルの場合: 各要素を更新してタプルに再構成
+    if isinstance(obj, tuple):
+        if not obj:
+            return obj, 1
+        new_tuple = []
+        max_sub_depth = 0
+        for item in obj:
+            updated_item, sub_depth = update_numpy_scalars_and_get_depth(item)
+            new_tuple.append(updated_item)
+            if sub_depth > max_sub_depth:
+                max_sub_depth = sub_depth
+        return tuple(new_tuple), 1 + max_sub_depth
+
+    # その他の型はコンテナではないとみなし、更新せず深度は 0
+    return obj, 0
+
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------
 

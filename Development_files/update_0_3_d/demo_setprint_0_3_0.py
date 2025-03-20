@@ -17,130 +17,81 @@ def Myint(num):
 =============================================================================================================================================================
 ・配列の下調べ・簡易的なアクセスを行う関数
 '''
-
-# 配列の文字列、数列がどこの次元に位置しているかを調べる関数。(オート機能の処理)
-def check_matching_elements(mapping_point, collection_index):
-
-    max_match_count = 0  # 最大連続一致数
-    max_match_index = -1  # 最大連続一致数を持つ1次元目のインデックス
-
-    collection_len = len(collection_index)
-
-    for row_index, row in enumerate(mapping_point):
-        current_match_count = 0  # 現在の行での連続一致数
-        if collection_len >= len(row):
-            for i, elem in enumerate(row):
-                if i < len(collection_index) and elem == collection_index[i]:
-                    current_match_count += 1  # 一致した場合カウントを増やす
-                else:
-                    break  # 一致が途切れたら終了
-
-            # 最大連続一致数を更新
-            if (len(row) == current_match_count) and (current_match_count > max_match_count):
-                max_match_count = current_match_count
-                max_match_index = row_index
-
-    return max_match_index  # 最大連続一致数を持つ行のインデックス
-
-# 配列の最大ネストを調べるコード
-def max_dimension(obj):
+def update_numpy_scalars_and_get_depth(obj):
     """
-    オブジェクト obj の最大ネスト深度を返す関数。
-    ・NumPy配列の場合は obj.ndim を返す。
-    ・リスト、タプルの場合は再帰的に内部の最大深度を計算し、現在の階層（1）を加える。
-    ・辞書の場合は値に対して同様に計算する。
-    ・その他の型は、コンテナではないとみなし 0 を返す。
+    オブジェクト内の NumPy のスカラー値（np.generic または ndim==0 の ndarray）を
+    通常の Python のスカラー値に変換し、かつ最大入れ子深度（次元数）を取得する関数。
+    
+    戻り値は (updated_obj, depth) のタプルです。
+    depth は以下のルールに従って定義:
+      - 基本型やスカラーの場合は 0
+      - コンテナの場合は 1 + max(child depths)（空の場合は 1）
     """
-    # NumPy配列の場合（他のコンテナ型内にあってもここで判定）
+    # NumPy のスカラー（np.generic）の場合
+    if isinstance(obj, np.generic):
+        return obj.item(), 0
+
+    # NumPy 配列の場合
     if isinstance(obj, np.ndarray):
-        return obj.ndim
-
-    # リストやタプルの場合
-    elif isinstance(obj, (list, tuple)):
-        if not obj:  # 空の場合
-            return 1
-        # 各要素の最大ネストを再帰的に計算し、現在の階層を加算
-        return 1 + max(max_dimension(item) for item in obj)
-
-    # 辞書の場合（ここでは値のみを対象）
-    elif isinstance(obj, dict):
-        if not obj:
-            return 1
-        return 1 + max(max_dimension(v) for v in obj.values())
-
-    # その他の型の場合（コンテナではないとみなす）
-    else:
-        return 0
-
-# リストに格納されている最大要素数とその次元を求める関数
-def find_max_elements_and_level(data, depth=0, level_counts=None):
-    """
-    Find the maximum number of elements and the corresponding depth in a nested list.
-
-    Args:
-        data (list): The nested list to analyze.
-        depth (int): The current depth in the recursion (default is 0).
-        level_counts (dict): A dictionary to track the number of elements at each depth.
-
-    Returns:
-        tuple: (max_count, max_depth) where:
-               - max_count is the maximum number of elements.
-               - max_depth is the depth at which max_count was found.
-    """
-    if level_counts is None:
-        level_counts = {}
-
-    if isinstance(data, (list,tuple,np.ndarray)):
-        # Count elements at the current depth
-        level_counts[depth] = level_counts.get(depth, 0) + len(data)
-
-        # Recursively check sublists
-        for item in data:
-            find_max_elements_and_level(item, depth + 1, level_counts)
-
-    # Find the depth with the maximum count
-    max_depth = max(level_counts, key=level_counts.get)
-    max_count = level_counts[max_depth]
-
-    return max_count, max_depth
-
-# 配列の値にインデックスを格納したリスト配列を使ってアクセスする
-def access_nested_collection(nested_list,indices):
-
-    for i,index in enumerate(indices):
-
-        if type(nested_list) == dict:
-            if not(index in nested_list):
-                return None
-            
+        # スカラー配列の場合 (ndim == 0)
+        if obj.ndim == 0:
+            return obj.item(), 0
+        # 非 object 型の配列は更新不要。深度はそのまま ndim を用いる
+        if obj.dtype != np.object_:
+            return obj, obj.ndim
         else:
-            if not(0 <= index < len(nested_list)):     
-                return None # インデックスが範囲外の場合はNoneを返す
-            
-        # int または str の場合、最後のインデックスでない場合はNoneを返す
-        if not isinstance(nested_list[index], (list, tuple, np.ndarray, dict)):
-            if i == len(indices) - 1:
-                value = nested_list[index]
-                return value
-        
-            else:
-                return None # インデックスが範囲外の場合はNoneを返す
-            
-        nested_list = nested_list[index]
-        
-    # 最終的な要素がリストまたは配列の場合
-    else:
-        value = nested_list
-        return value
+            # object 型の NumPy 配列の場合、各要素を再帰的に更新
+            new_obj = obj.copy()
+            max_sub_depth = 0
+            for idx, value in np.ndenumerate(new_obj):
+                updated_val, sub_depth = update_numpy_scalars_and_get_depth(value)
+                new_obj[idx] = updated_val
+                if sub_depth > max_sub_depth:
+                    max_sub_depth = sub_depth
+            # 空の場合は 1、要素があれば 1 + 子要素の最大深度
+            return new_obj, 1 + max_sub_depth if new_obj.size > 0 else 1
 
-def access_nested_keep_index(nested_list,indices):
+    # 辞書の場合: 値を更新し再帰的に深度を取得
+    if isinstance(obj, dict):
+        if not obj:
+            return obj, 1
+        new_dict = {}
+        max_sub_depth = 0
+        for key, value in obj.items():
+            updated_val, sub_depth = update_numpy_scalars_and_get_depth(value)
+            new_dict[key] = updated_val
+            if sub_depth > max_sub_depth:
+                max_sub_depth = sub_depth
+        return new_dict, 1 + max_sub_depth
 
-    for index in indices:
-        nested_list = nested_list[index][1]
-        
-    else:
-        value = nested_list
-        return value
+    # リストの場合: 各要素を更新
+    if isinstance(obj, list):
+        if not obj:
+            return obj, 1
+        new_list = []
+        max_sub_depth = 0
+        for item in obj:
+            updated_item, sub_depth = update_numpy_scalars_and_get_depth(item)
+            new_list.append(updated_item)
+            if sub_depth > max_sub_depth:
+                max_sub_depth = sub_depth
+        return new_list, 1 + max_sub_depth
+
+    # タプルの場合: 各要素を更新してタプルに再構成
+    if isinstance(obj, tuple):
+        if not obj:
+            return obj, 1
+        new_tuple = []
+        max_sub_depth = 0
+        for item in obj:
+            updated_item, sub_depth = update_numpy_scalars_and_get_depth(item)
+            new_tuple.append(updated_item)
+            if sub_depth > max_sub_depth:
+                max_sub_depth = sub_depth
+        return tuple(new_tuple), 1 + max_sub_depth
+
+    # その他の型はコンテナではないとみなし、更新せず深度は 0
+    return obj, 0
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -402,10 +353,7 @@ class SetPrint:
     
     # リストを整型する際の条件を整理 / １次元目の格納情報を整形 [→:#0]
     # [→:0] 中身は search_mapping / search_sequence とほぼ同じ
-    def set_collection(self, route, keep_settings):
-
-        datas = self.input_list
-        
+    def set_collection(self, route, keep_settings):        
 
         # if keep_start == False:
         #     self.keep_start = 0
@@ -455,7 +403,6 @@ class SetPrint:
         
         self.brackets = self.style_settings[1][1]['partially']
 
-        self.brackets = {key: (value, [len(value[0]),len(value[1])]) for key, value in self.brackets.items()}
         self.brackets = {'list': (('[', ']'), [1, 1]), 'tuple': (('(', ')'), [1, 1]), 'ndarray': (('[', ']'), [1, 1]), 'dict': (('{', '}'), [1, 1])}
 
 
@@ -472,19 +419,20 @@ class SetPrint:
         # ber_print(1)
         if self.ber_print:
             self.ber_len = self.style_settings[5][1]['len']
-            self.line_ber_len = self.ber_len/len(datas)
+            self.line_ber_len = self.ber_len/len(self.input_list)
             print()
             print('seach_collection...')
             print('{ '+' '*self.ber_len+' }')
         
-
+        updated_data, max_depth = update_numpy_scalars_and_get_depth(self.input_list)
+       
         keep_deeps = list(keep_settings.keys())
         self.min_keep_deep = min(keep_deeps)
         self.max_keep_deep = max(keep_deeps)
 
         keep_settings = []
 
-        range_keep_type = None
+        range_keep_type = 'x'
         for deep in range(self.max_keep_deep):
             deep+=1
             if deep in dict_keep_settings.keys():
@@ -500,15 +448,18 @@ class SetPrint:
                 else:
                     keep_settings.append(range_keep_type)
         
+        for deep in range(max_depth-len(keep_settings)):
+            keep_settings.append(range_keep_type)
+        
         print()
         print('all_deep_settings\n',keep_settings)
 
         self.keep_settings = keep_settings
         
-        if isinstance(datas, self.mapping_type):
-            self.search_mapping(datas)
+        if isinstance(updated_data, self.mapping_type):
+            x_keep_index = self.search_mapping(updated_data,[])
         else:
-            x_keep_index = self.search_sequence(datas,[])
+            x_keep_index = self.search_sequence(updated_data,[])
 
         # ber_print(3)
         if self.ber_print:
@@ -658,17 +609,15 @@ class SetPrint:
                 if keep_x:    
                     if len_Kdeep_index < linenum:
                         Kdeep_index.append([0,0])
-                    direction_index = linenum
-                
-                if self.min_keep_deep <= self.now_deep <= self.max_keep_deep:
+                    direction_index = linenum                
 
-                    # インデックスのキープ化
-                    y_keep_index = self.transform_keep_index(self.now_index.copy())
+                # インデックスのキープ化
+                y_keep_index = self.transform_keep_index(self.now_index.copy())
 
-                    if y_keep_index not in self.Y_keep_index:
-                        self.Y_keep_index[y_keep_index] = []
+                if y_keep_index not in self.Y_keep_index:
+                    self.Y_keep_index[y_keep_index] = []
 
-                    self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
+                self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
                 
                 if isinstance(line, self.collection_type):
                     
@@ -712,14 +661,12 @@ class SetPrint:
                 else:
                     if type(Kdeep_index[direction_index][0]) != list:
                         if Kdeep_index[direction_index][0] < len(str(key)):
-                            print('+')
                             Kdeep_index[direction_index][0] = len(str(key))
 
                         if Kdeep_index[direction_index][1] < len(str(line)):
                             Kdeep_index[direction_index][1] = len(str(line))
                     else:
                         if Kdeep_index[direction_index][0][0] < len(str(key)):
-                            print('+')
                             Kdeep_index[direction_index][0][0] = len(str(key))
 
                         if Kdeep_index[direction_index][0][1] < len(str(line)):
@@ -859,15 +806,13 @@ class SetPrint:
                         Kdeep_index.append([0,0])
                     direction_index = linenum
                 
-                if self.min_keep_deep <= self.now_deep <= self.max_keep_deep:
+                # インデックスのキープ化
+                y_keep_index = self.transform_keep_index(self.now_index.copy())
 
-                    # インデックスのキープ化
-                    y_keep_index = self.transform_keep_index(self.now_index.copy())
+                if y_keep_index not in self.Y_keep_index:
+                    self.Y_keep_index[y_keep_index] = []
 
-                    if y_keep_index not in self.Y_keep_index:
-                        self.Y_keep_index[y_keep_index] = []
-
-                    self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
+                self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
                 
                 if isinstance(line, self.collection_type):
                     
