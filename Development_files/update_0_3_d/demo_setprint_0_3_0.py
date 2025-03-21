@@ -167,26 +167,12 @@ class SetPrint:
         # 入力データ('#'は引数の受け取り箇所)
         self.style_settings = (
 
-          (("Collections" ,
+          ("Collections" ,
             {  'image'   : { 'list'    : '►list' ,
                              'tuple'   : '▷tuple' ,
                              'ndarray' : '>nadarray' ,
                              'dict'    : '◆dict' }}),
 
-           ("bracket"     ,
-            { 'partially': { 'list'    : ( '{' , ')' ),
-                             'tuple'   : ( '<' , '>' ),
-                             'ndarray' : ( '(' , '}' ),
-                             'dict'    : ( '{' , ')' ),
-                             'None'    : ( '`' , '`' )}}),
-
-           ("padding"    ,  {  'key'   : (' ', ':') , 'value'  : ' ' }),
-           ("empty"      ,  {  'key'   : ('*', ' ') , 'value'  : '-' }),
-
-
-           ("settings"   ,  { 'print'  : True }),
-           ("progress"   ,  { 'print'  : False  ,
-                              'len'    : 20  }))
         )
         
         # 制限('#'の箇所をまとめて管理)
@@ -195,26 +181,6 @@ class SetPrint:
             ( 0, 1,     'image',   'tuple'    ) : {'type': str},
             ( 0, 1,     'image', 'ndarray'    ) : {'type': str},
             ( 0, 1,     'image',    'dict'    ) : {'type': str},
-            ( 1, 1, 'partially',    'list', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',    'list', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',   'tuple', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',   'tuple', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially', 'ndarray', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially', 'ndarray', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',    'dict', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',    'dict', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',    'None', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 1, 1, 'partially',    'None', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 2, 1,       'key',        0     ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 2, 1,       'key',        1     ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 2, 1,     'value'               ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,       'key',        0     ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,       'key',        1     ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 3, 1,     'value'               ) : {'type': str, 'min_length':1, 'max_length':1},
-            ( 4, 1,     'print'               ) : {'type': bool,},
-            ( 5, 1,     'print'               ) : {'type': bool,},
-            ( 5, 1,       'len'               ) : {'type': int, 'min':0}
-        
         }
    
     # 表示スタイルの状態を視覚化する関数 
@@ -238,26 +204,12 @@ class SetPrint:
             list_settings = [
                 'style_settings = (',
                 '',
-                f'   (({g}"Collections"{R} ,',
+                f'   ({g}"Collections"{R} ,',
                 "     {  'image'   : { "+f"'list'    {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['list']}{quote} ,",
                 f"                      'tuple'   {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['tuple']}{quote} ,",
                 f"                      'ndarray' {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['ndarray']}{quote} ,",
                 f"                      'dict'    {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['dict']}{quote} }}}}),",
                 '',
-                f'    ({g}"bracket"{R}     ,',
-                "     { 'partially': { "+f"'list'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['list'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['list'][1]}{quote} ),",
-                f"                      'tuple'   {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['tuple'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['tuple'][1]}{quote} ),",
-                f"                      'ndarray' {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['ndarray'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['ndarray'][1]}{quote} ),",
-                f"                      'dict'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['dict'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['dict'][1]}{quote} ),",
-                f"                      'None'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['None'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['None'][1]}{quote} )}}}}),",
-                '',                                       
-                f'    ({g}"padding"{R}     ,'+" {  'key'  "+f" {g}:{R} {l}{self.style_settings[2][1]['key']}{R} ,  'value' "+f"{g}:{R} {quote}{l}{self.style_settings[2][1]['value']}{quote} }}),",
-                f'    ({g}"empty"{R}       ,'+" {  'key'  "+f" {g}:{R} {l}{self.style_settings[3][1]['key']}{R} ,  'value' "+f"{g}:{R} {quote}{l}{self.style_settings[3][1]['value']}{quote} }}),",  
-                '',
-                '',
-                f'    ({g2}"settings"{R}    ,'+" { 'print'  "+g2+":"+R+" \033[34m" + str(self.style_settings[4][1]['print']) + "\033[0m }),",
-                f'    ({g2}"progress"{R}    ,'+" { 'print'  "+g2+":"+R+" \033[34m" + str(self.style_settings[5][1]['print']) + "\033[0m  ,",
-                       '                    '+"   'len'    "+g2+":"+R+" \033[34m" + str(self.style_settings[5][1]['len'])   + "\033[0m  }))",
                 ')',
             ]
             for line in list_settings:
@@ -354,31 +306,6 @@ class SetPrint:
     # リストを整型する際の条件を整理 / １次元目の格納情報を整形 [→:#0]
     # [→:0] 中身は search_mapping / search_sequence とほぼ同じ
     def set_collection(self, route, keep_settings):        
-
-        # if keep_start == False:
-        #     self.keep_start = 0
-        #     self.keep_finish = 0
-        #     self.show_all = False
-        
-        # else:
-        #     if type(keep_start) != int:
-        #         if keep_start == 'auto':
-        #             max_count, max_depth = find_max_elements_and_level(datas)  # 次元数を取得
-        #             self.keep_start = max_depth
-        #             self.show_all = True
-
-        #         else:
-        #             return
-        #     else:
-        #         self.keep_start = keep_start
-        #     # if type(keep_range) != int:
-        #     #     if keep_range == 'all':
-        #     #         self.show_all = True
-        #     #     else:
-        #     #         return
-        #     # else:
-        #     #     self.show_all = False
-        #     #     self.keep_finish = self.keep_start + keep_range
             
         dict_keep_settings = keep_settings
 
@@ -401,39 +328,17 @@ class SetPrint:
         # 値を (値, 値の文字数) に変更
         self.collections = {key: (value, len(value)) for key, value in self.collections.items()}
         
-        self.brackets = self.style_settings[1][1]['partially']
-
         self.brackets = {'list': (('[', ']'), [1, 1]), 'tuple': (('(', ')'), [1, 1]), 'ndarray': (('[', ']'), [1, 1]), 'dict': (('{', '}'), [1, 1])}
-
-
-        self.padding_key = self.style_settings[2][1]['key'][0]
-        self.padding_colon = ' '+self.style_settings[2][1]['key'][1]+' '
-        self.padding_value = self.style_settings[2][1]['value']
-
-        self.empty_key = self.style_settings[3][1]['key'][0]
-        self.empty_colon = ' '+self.style_settings[3][1]['key'][1]+' '
-        self.empty_value = self.style_settings[3][1]['value']
-        
-        # self.bracket_e = self.style_settings['bracket']['exists']
-        self.ber_print = self.style_settings[5][1]['print']
-        # ber_print(1)
-        if self.ber_print:
-            self.ber_len = self.style_settings[5][1]['len']
-            self.line_ber_len = self.ber_len/len(self.input_list)
-            print()
-            print('seach_collection...')
-            print('{ '+' '*self.ber_len+' }')
         
         updated_data, max_depth = update_numpy_scalars_and_get_depth(self.input_list)
        
         keep_deeps = list(keep_settings.keys())
-        self.min_keep_deep = min(keep_deeps)
-        self.max_keep_deep = max(keep_deeps)
+        max_keep_deep = max(keep_deeps)
 
         keep_settings = []
 
         range_keep_type = 'x'
-        for deep in range(self.max_keep_deep):
+        for deep in range(max_keep_deep):
             deep+=1
             if deep in dict_keep_settings.keys():
                 range_keep_type = dict_keep_settings[deep]
@@ -461,10 +366,6 @@ class SetPrint:
         else:
             x_keep_index = self.search_sequence(updated_data,[])
 
-        # ber_print(3)
-        if self.ber_print:
-            print('\033[F\033[F\033[KThe search_collection process has been successfully completed.\n' + '{ '+'='*self.ber_len+' }')
-        
         # <a:keep_index>
         
         # <t:print>
@@ -981,12 +882,6 @@ class SetPrint:
 
                 self.Y_keep_index[y_keep_index].append([self.now_index[:],self.y_flat_index[:]])
 
-                # ber_print(2)
-                if self.ber_print:
-                    if self.keep_start == 1:
-                        now_len = int(self.line_ber_len*(linenum+1))
-                        print('\033[F\033[K{ '+'-'*now_len+' '*(self.ber_len-now_len)+' }')
-
         else:
             for linenum in range(len(datas)):
                 self.keep_line = [linenum]
@@ -1044,12 +939,6 @@ class SetPrint:
 
                 self.Y_keep_index[y_keep_index].append([self.now_index[:],self.y_flat_index[:]])
 
-                # ber_print(2)
-                if self.ber_print:
-                    if self.keep_start == 1:
-                        now_len = int(self.line_ber_len*(linenum+1))
-                        print('\033[F\033[K{ '+'-'*now_len+' '*(self.ber_len-now_len)+' }')
-
         # print('return')
         # print(' > X.      ',self.range_idx)
         # print(' > Y.      ',self.Y_keep_index[parent_y_keep_index])
@@ -1057,11 +946,6 @@ class SetPrint:
         # print()
 
         # <t:キープ範囲調査完了>
-
-        # ber_print(2)
-        if self.ber_print:
-            if self.keep_start == 1:
-                print('\033[F\033[F\033[Kformat_keep_data...\n' + '{ '+'-'*self.ber_len+' }')
         
         # 情報復元
         self.keep_index = parent__keep_index
