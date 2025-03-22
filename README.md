@@ -1,461 +1,477 @@
-# SetPrint(ver, 0.2.2) - Simplify Formatting and Display of High-Dimensional Data!
-SetPrint is a Python library designed to easily format and display multi-dimensional data in lists.<br>
-Even for data structures with mixed dimensions, you no longer need to manually adjust spaces or formatting. It automatically achieves beautiful formatting!
+# SetPrint(ver, 0.3.0) - Easily Format and Display High-Dimensional Data!
 
-## Documentation  
-- [日本語のドキュメント](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)
+## <> A Data Visualization Tool That Properly Formats 2D/NumPy Arrays and Image Data <>
 
-## Features
-  - **Support for Flexible Data Structures**: Automatically formats multi-dimensional lists and mixed data structures.
-  - **Great for Debugging**: Organizes and displays the structure and contents of data during execution in an easy-to-understand way.
-  - **Flexible Formatting**: Visually organizes data hierarchy and content with guided formatting.
-
-### Examples of Literacy Programs
-- https://github.com/mtur2007/SetPrint/blob/main/ocr_data.txt
----
-## New Features/Fixes in ver 0.2.0
-- `set_list`
-
-   <New Features>
-   - Simplified progress bar to represent processing status<br>
-   - Added keep functionality with argument extensions for automatic list formatting<br>
-   - Enhanced customizability of display styles<br>
-   - Support for tuple types
-
-- `pick_guideprint`
-
-   <Fixes>
-   - Resolved display bugs
-
-- ## ver 0.2.2 Fixes  
-- `set_list`  
-
-   **<Fixes>**  
-   - Added the ability to toggle the display of progress bars and storage status of display style settings.  
-     `{ ======= } on / off`
-
-   - Improved the readability of storage information in display style settings.
+>> Demo Version : ver 0.3.0 [ PlaneView Included ]  
+https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/demo_setprint_0_3_0.py
 
 ---
+setprint is a powerful data‑formatting tool that extends Python’s standard pprint, allowing you to properly format not only lists and dictionaries but also NumPy arrays and 2D data (including image data).  
+It features enhanced visibility for data with missing elements or mismatched dimensions, making debugging easier.  
+
+> #### Update Information<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/SetPrint_update_image.md
+
+<br>
+
+---
+
+## ✅ Features of `setprint`<br>
+
+ - #### Automatically Adjusts for Missing Elements and Dimension Mismatches
+
+    Formats data to make “storage bugs” and the mixing of different-dimensional data—easily missed by pprint—immediately apparent.<br>
+    Automatically fills missing sections with blank spaces so that inconsistencies in your data are instantly recognizable.<br>
+
+<br>
+
+ - #### Maintains and Properly Formats the Intended Structure of `2D Arrays` (e.g., Image or Binary Data)
+
+    Unlike pprint, which struggles with formatting multi‑dimensional data, setprint correctly formats `2D arrays` by leveraging both their vertical and horizontal dimensions for an intuitive, clean display.<br>
+
+    > #### OCR Program Example<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/format_data/y_x_yf_f.txt  
+
+
+<br>
+
+ - #### Compact Representation of Array Hierarchies
+
+    Instead of using brackets ([]/()/{}),<br> 
+    setprint uses lines (┣ :┃:┗) and (┳ : ━ : ┓) to clearly show parent-child relationships and connections.
+
+    
+    ```txt
+    Parent 
+      ┣━━━ Sibling
+      ┃       ┣━━━ Child
+      ┃       ┗━━━ Child
+      ┗━━━ Sibling
+              ┣━━━ Child
+              ┗━━━ Child
+    ```
+
+    ```txt
+    Parent ━━━┳━━━━━━━━━━━━━┓
+           Sibling       Sibling
+              ┣━━━ Child    ┣━━ Child
+              ┗━━━ Child    ┗━━ Child
+    ```
+<br>
+
+- [Upcoming Updates]
+
+  > #### Index Display Feature (Planned)<br>Will make it even easier to understand data structure relationships.
+
+  > #### Storage Information Transformation Feature (Value Mapping)<br>Will simplify data transformation processes by allowing mapping of specific values.
+<br>
+
+---
+
+## 🛠 Use Cases for `setprint`
+
+
+<div style="margin-left: 20px;">
+
+🔹 Detecting Storage Bugs in Color Image Data
+
+<div style="margin-left: 20px;">
+
+📌 When Different-Dimensional Data Are Mixed (e.g., RGB Images Mixed with Grayscale Images)
+
+```python
+import numpy as np
+from setprint import setprint
+
+data = [
+    np.random.randint(0, 256, (3, 3, 3)),  # RGB image (3x3x3)
+    np.random.randint(0, 256, (3, 3)),     # Grayscale image (3x3) → Different dimension here
+    np.random.randint(0, 256, (3, 3, 3)),  # RGB image (3x3x3)
+    None                                   # Missing data
+]
+
+setprint(data)
+```
+</div>
+
+<br>
+
+🔹 Output of setprint
+
+<div style="margin-left: 20px;">
+
+```txt
+keep_settings
+['y', 'yf', 'f', 'f']
+------------------------------------------------------------------------------------------------------------
+
+►list 
+  ┣━━ >nadarray 
+  ┃       ┣━━━━ >nadarray [ >nadarray [ 57  233 198 ] >nadarray [ 122 193 78  ] >nadarray [ 87  68  15  ] ] 
+  ┃       ┣━━━━ >nadarray [ >nadarray [ 21  45  99  ] >nadarray [ 154 214 132 ] >nadarray [ 243 128 56  ] ] 
+  ┃       ┗━━━━ >nadarray [ >nadarray [ 72  94  45  ] >nadarray [ 187 29  67  ] >nadarray [ 124 232 190 ] ] 
+  ┣━━ >nadarray 
+  ┃       ┣━━━━ >nadarray [    58                        167                       205                    ] 
+  ┃       ┣━━━━ >nadarray [    134                       77                        49                     ] 
+  ┃       ┗━━━━ >nadarray [    72                        98                        36                     ] 
+  ┣━━ >nadarray 
+  ┃       ┣━━━━ >nadarray [ >nadarray [ 201 86  52  ] >nadarray [ 27  123 111 ] >nadarray [ 78  239 194 ] ] 
+  ┃       ┣━━━━ >nadarray [ >nadarray [ 94  208 193 ] >nadarray [ 234 98  72  ] >nadarray [ 43  57  65  ] ] 
+  ┃       ┗━━━━ >nadarray [ >nadarray [  9  14  186 ] >nadarray [  8  129 244 ] >nadarray [ 168 55  210 ] ] 
+  ┗━━   None    
+
+------------------------------------------------------------------------------------------------------------
+```
+
+✅ Dimension differences (3D vs 2D) and missing data are visually clear
+✅ Easily identify anomalies at a glance, making debugging effortless
+
+</div>
+
+<br>
+
+🔹 Output of pprint
+
+<div style="margin-left: 20px;">
+
+```python
+[array([[[ 57, 233, 198],
+         [122, 193,  78],
+         [ 87,  68,  15]],
+
+        [[ 21,  45,  99],
+         [154, 214, 132],
+         [243, 128,  56]],
+
+        [[ 72,  94,  45],
+         [187,  29,  67],
+         [124, 232, 190]]]),
+
+ array([[ 58, 167, 205],
+        [134,  77,  49],
+        [ 72,  98,  36]]),
+
+ array([[[201,  86,  52],
+         [ 27, 123, 111],
+         [ 78, 239, 194]],
+
+        [[ 94, 208, 193],
+         [234,  98,  72],
+         [ 43,  57,  65]],
+
+        [[  9,  14, 186],
+         [  8, 129, 244],
+         [168,  55, 210]]]),
+
+ None]
+```
+
+</div>
+</div>
+<br>
 
 ## Methods
-- ## set_list Method
 
-   - The `set_list` method of the SetPrint class provides a feature to easily format and output multi-dimensional lists and complex data structures in a visually comprehensible format.<br>
-    Using this method enables optimal formatting tailored to the dimensions of the data.
+- ## `set_collection` Method
 
-   - #### Parameters
-        - **`guide`** (bool): Enables or disables the guide display.
-            - If `True`, outputs a guide containing dimension and index information.
+    The SetPrint class’s `set_collection` method provides functionality to neatly align multi-dimensional lists and complex data structures, outputting them in a visually intuitive format.<br>
+    By using this method, you can automatically format data optimally according to its dimensions.<br>
 
-        - **`keep_start`** (int): The dimension where flattening begins.
-            - Example: `keep_start=1` expands the first dimension in the Y direction.
+   - #### Arguments
 
-        - **`keep_range`** (int): The range of dimensions to flatten.
-            - Dimensions outside the specified range are boxed in the X direction.
+        - **`route`** (bool or str): Enable root display.
+            - If `True`, lines representing hierarchical relationships are also output.<br>
+            - If `maintenance` (str), outputs both enabled and disabled root display for maintenance purposes.
 
-   - #### Return Values
+        - **`keep_setting`** { `dict`_type } ( deep/`int` : direction/`str` ): Specify the direction to expand for each dimension.
+            - { 1:'y', 3:'x', 4:'yf' } Dimensions should be specified in ascending order; unspecified dimensions inherit their parent dimension’s setting.
 
-        - `input_list`       : The original list before formatting.
-        - `grid_slice`       : A list containing the formatted text information, with each line stored individually. It can be written directly to a text file to check the results.
-        - `grid_block`       : A list maintaining the block-shaped format of the structured data.
-        - `block_Xlines_data`: Data used for displaying detailed indices with the `GuidePrint` function.
+              ※ Default setting is `x`
 
-     ### Relationship Between `keep_start` and Data Formatting
- 
-     The `keep_start` parameter specifies the dimension where formatting begins and organizes data in the most suitable format based on its structure and use case. Below are examples of how `keep_start` values affect formatting and their corresponding data types.
-
-     #### **Recommended Settings**
-
-    1. **`keep_start=1`**
-        - **Use Case**: Data expanding in the Y direction (e.g., logs or image data).
-        - **Description**: Formats data along the first dimension in the Y direction while maintaining the X direction as-is.
-        - **Example** (Debug Log):
-            ```python
-            logs = [
-                ["Value", 30, "is", "less than", 50],
-                [["Action", "Process"], ["Details", "Valid range"]],
-                [["Value", 90], ["Condition", ["greater than", 50]], ["Action", "Alert"]],
-            ]
-            ```
-        - **Formatted Result**:
-            ```plaintext
-            Formatted Log:
-            =================================================================================================================================
-
-            |  ►list [ Value   ------ -------      30   --------- -----------   ------------ --        is   ------ -----   less than 50 ]   |
-            |  ►list [ ►list { Action Process ) ►list {   Details Valid range   ------------ --   ) -----   ------ -----   --------- -- ]   |
-            |  ►list [ ►list {  Value      90 ) ►list { Condition       ►list { greater than 50 ) ) ►list { Action Alert ) --------- -- ]   |
-
-            =================================================================================================================================
-            ```
-        - **Execution Example**:
-            ```python
-            from setprint import SetPrint
-
-            # Format and display the data
-            list_data = SetPrint(logs)
-            set_datas = list_data.set_list(guide=False, keep_start=1, keep_range='all')
-
-            print("\nFormatted Log:")
-            for line in set_datas['grid_slice']:
-                print(line[:-1])  # Output formatted log
-            ```
-
-    2. **`keep_start=2`**
-        - **Use Case**: Information divided in the X direction (e.g., tabular data).
-        - **Description**: Formats data along the second dimension in the X direction, emphasizing separation in the Y direction.
-        - **Example** (Tabular Data):
-            ```python
-            data = [
-                ["Name", "Age", "Country"],
-                ["Alice", 30, "USA"],
-                ["Bob", 25, "UK"]
-            ]
-            ```
-        - **Formatted Result**:
-            ```plaintext
-            Formatted Table:
-            ====================================
-              {} |  {n}                        |
-                 |-----------------------------|
-                 :                             :
-                 |  data_type: <class 'list'>  |
-                 |  data_type: <class 'list'>  |
-                 |  data_type: <class 'list'>  |
-
-            ====================================
-             {0} |  [0]{n}                     |
-                 |-----------------------------|
-                 :                             :
-                 |     Name                    |
-                 |      Age                    |
-                 |  Country                    |
-
-            ====================================
-             {1} |  [1]{n}                     |
-                 |-----------------------------|
-                 :                             :
-                 |  Alice                      |
-                 |     30                      |
-                 |    USA                      |
-
-            ====================================
-             {2} |  [2]{n}                     |
-                 |-----------------------------|
-                 :                             :
-                 |  Bob                        |
-                 |   25                        |
-                 |   UK                        |
-
-            ====================================
-            ```
-        - **Execution Example**:
-            ```python
-            list_data = SetPrint(data)
-            set_datas = list_data.set_list(guide=True, keep_start=2, keep_range='all')
-
-            for line in set_datas['grid_slice']:
-                print(line[:-1])
-            ```
-
-    3. **`keep_start=3`**
-        - **Use Case**: Data separated in both Y and X directions (e.g., matrices or 3D arrays).
-        - **Description**: Organizes data based on the third dimension, retaining overall structure while arranging information in both Y and X directions.
-        - **Example Input Data**:
-            ```python
-            data = [
-                [[1, 2], [3, 4]],
-                [[5, 6], [7, 8]]
-            ]
-            ```
-        - **Formatted Result**:
-            ```plaintext
-            Formatted Matrix:
-            ====================================
-              {} |  {n}                        |
-                 |-----------------------------|
-                 :                             :
-                 |  data_type: <class 'list'>  |
-                 |  data_type: <class 'list'>  |
-
-            ================================================================
-             {0} |  [0]{n}                     |  [0][0]{n}  |  [0][1]{n}  |
-                 |-----------------------------|-------------|-------------|
-                 :                             :             :             :
-                 |  data_type: <class 'list'>  |  1          |  3          |
-                 |  data_type: <class 'list'>  |  2          |  4          |
-   
-            ================================================================
-             {1} |  [1]{n}                     |  [1][0]{n}  |  [1][1]{n}  |
-                 |-----------------------------|-------------|-------------|
-                 :                             :             :             :
-                 |  data_type: <class 'list'>  |  5          |  7          |
-                 |  data_type: <class 'list'>  |  6          |  8          |
-
-            ================================================================
-            ```
-       
-        - **Execution Example**:
-            ```python
-            list_data = SetPrint(data)
-            set_datas = list_data.set_list(guide=False, keep_start=3, keep_range='all')
-
-            print("\nFormatted Log:")
-            for line in set_datas['grid_slice']:
-                print(line[:-1])  # Output formatted log
-            ```
-
-    - ### Detailed Description and Style Modification
-        #### Table Summarizing Special Elements Represented in `set_list`<br>
-        (Symbols shown are default)
-
-        | Style Name      | Use Case   | Type      | Symbol/Value<br>(Customizable) | Description                                      | Specification Limits     |
-        |:---------------:|:-----------|:----------|:-------------------------------|:-------------------------------------------------|:-------------------------|
-        | "Collections"   | image      | list      | '►list'                        | Represents stored arrays                         | type: str                |
-        |    ``           | ``         | tuple     | '▷tuple'                       | Same as above                                    | type: str                |
-        |    ``           | ``         | ndarray   | '>ndarray'                     | Same as above                                    | type: str                |
-        | -------------   | --------   | --------  | ----------                     | ------------------------------------------------ | ------------------------ |
-        | "bracket"       | partially  | list      | '{' ・ ')'                     | Dimension elements different from other arrays   | type: str, len: 0<l      |
-        |    ``           | ``         | tuple     | '<' ・ '>'                     | Same as above                                    | type: str, len: 0<l      |
-        |    ``           | ``         | ndarray   | '(' ・ '}'                     | Same as above                                    | type: str, len: 0<l      |
-        |    ``           | ``         | None      | '`' ・ "``"                    | Non-existent dimension elements                  | type: str, len: l=1      |
-        | -------------   | --------   | --------  | ----------                     | ------------------------------------------------ | ------------------------ |
-        | "padding"       | style      |           | ' '                            | Fills gaps in character count                    | type: str, len: l=1      |
-        | "empty"         | style      |           | '-'                            | Represents non-existent elements                 | type: str, len: l=1      |
-        | -------------   | --------   | --------  | ----------                     | ------------------------------------------------ | ------------------------ |
-        | "settings"      | print      |           | True                           | Show or hide style setting values                | type: bool               |
-        | "progress"      | print      |           | True                           | Display or hide the progress bar                 | type: bool               |
-        |    ``           | len        |           | int: 20                        | Sets progress bar length                         | type: int, num: 0<n      |
-
-        **`set_text_style`**
-
-        You can customize the 'symbol' part of the styles.
-        - **Example Execution**
-            ```python
-            #list_data = SetPrint(list)
-            
-            arguments = (
-                    
-            　　(("Collections" , 
-                    { 'image'    : {'list'   :'►list',
-                                    'tuple'  :'▷tuple',
-                                    'ndarray':'>numpy'}}),
-                ("bracket"     , 
-                    { 'partially': {'list'   :('{',')'),                 
-                                    'tuple'  :('<','>'),
-                                    'ndarray':('(','}'),
-                                    'None'   :('`','`')}}),
-                                                    
-                ("empty"       , { 'style' : ' '}),
-                ("padding"     , { 'style' : '-'}),
-
-                ("settings"    , { 'print' : True }), # <- New  True (display) / False (hide)
-
-                ("progress"    , { 'print' : True ,   # <- New  True (display) / False (hide)
-                                   'len'   : 20 }))
-
-            )
-
-            list_data.set_text_style(arguments) # Before `set_list`
-
-            # To check arguments by index, specify them in the same order as this array.
-            # Values outside the acceptable range will be displayed, and default values will be assigned.
-
-            # set_datas = list_data.set_list(guide=True, keep_start=1, keep_range='all')
-            ```
-            Display/Hide Style Setting Values
-            ```python
-            [ Display ]
-
-            arguments = (
-                ~ omitted ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                ("settings"    , { 'print' : True })
-            )
-            list_data.set_text_style(arguments)
-
-
-            Display Content_terminal
-
-            # style_settings = (
-
-            #    (("Collections" ,
-            #      {  'image'   : { 'list'    : '►list' ,
-            #                       'tuple'   : '▷tuple' ,
-            #                       'ndarray' : '>numpy' ,
-
-            #     ("bracket"     ,
-            #      { 'partially': { 'list'    : ( '{' ・ ')' ),
-            #                       'tuple'   : ( '<' ・ '>' ),
-            #                       'ndarray' : ( '(' ・ '}' ),
-            #                       'None'    : ( '`' ・ '`' ),
-
-            #     ("empty"       , { 'style'  : ' ' ),
-            #     ("padding"     , { 'style'  : '-' ),
-
-            #     ("progress"    , { 'print'  :  False  ,
-            #                        'len'    :  20  }))
-            # )
-            
-            '''
-            [ Hide ]
-
-            arguments = (
-                ~ omitted ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                ("settings"    , { 'print' : False })
-            )
-            list_data.set_text_style(arguments)
-            '''
-            ```
-
-            Display/Hide Progress Bar
-            ```python
-            [ Display ]
-            arguments = (
-                ~ omitted ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                ("progress"    , { 'print' : True })
-            )
-            list_data.set_text_style(arguments)
-
-
-            Display Content_terminal
-
-            # ~~~~~~~~~~(processing content)
-            # { =============        } (progress)
-
-            '''
-            [ Hide ]
-            arguments = (
-                ~ omitted ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                ("progress"    , { 'print' : False })
-            )
-            list_data.set_text_style(arguments)
-            '''
-            ```
-
-
-- ## pick_guideprint Method
-      
-    `pick_guideprint` operates as follows:  
-    - **Move between blocks**: Use the `f`, `h`, `g`, and `t` keys to navigate between different blocks.  
-    - **Move within a block**: Use the `a`, `d`, `s`, and `w` keys to navigate within the current block.  
-    - **Directions**:  ← → ↓ ↑  
-
-    **Displayed Information**:  
-    - `index`: The index of the currently selected data (e.g., `{y}[x0][x1][x2]`).  
-    - `value`: The value stored in the currently selected index. The value is displayed in green, and the data type is displayed in blue.  
-
-    ### Parameters  
-
-    The `pick_guideprint` function accepts the following parameter:  
-    - `output_path`: **(Required)** The path to the linked text file.  
-
-    ### Execution Example  
-    `• python`
-    ```python
-
-    # from setprint import SetPrint
-    # list_data = setprint( `list` )
-    # list_data.SET_list(guide=True,keep_start=1,keeplen=10)
-
-    list_data.pick_guideprint( 'output_path' )
-
-    ```
-
-    ### Execution Result  
-    `• txt_file`
-    ```
-        ►list { [0][0] [0][1] [0][2]    ---------  ---------   [0][3]   --------- -----   ------------ ------------     ------ ------ ) 
-       ------------------------------- ┏         ┓ -------------------------------------------------------------------------------------
-        ►list { [1][0] [1][1]  ►list {  [1][2][0]  [1][2][1] ) [1][3]   --------- -----   ------------ ------------     ------ ------ ) 
-       ------------------------------- ┗         ┛ -------------------------------------------------------------------------------------
-        ►list { [2][0] [2][1] [2][2]    ---------  ---------    ►list { [2][3][0] ►list { [2][3][1][0] [2][3][1][1] ) ) [2][4] [2][5] ) 
-        ►list { [3][0] [3][1] [3][2]    ---------  ---------   [3][3]   --------- -----   ------------ ------------     [3][4] ------ ) 
-          [4]   ------ ------ ------    ---------  ---------   ------   --------- -----   ------------ ------------     ------ ------   
-    ```
-    `• terminal`
-    ```
-    index \ {1}[2][0]
-     value \ [1][2][0] : str
-    ```
-
-- ## bloks_border_print Method
-
-    A function that allows you to create boxes, like the output result of `setlist`, and input strings into them.  
-
-    ### Parameters  
-
-    - `All_blocks`: **(Required)** A list array containing the content to be displayed.  
-    - `line_title`: **(Required)** The titles of the blocks in the Y-direction.  
-    - `guide`    : **(Required)** Specifies whether to include titles. Accepts `True` or `False`.  
-
-    ### Example of `All_blocks` Storage  
-    ```python
-        '''
-        # 1D corresponds to the Y-direction (blocks: rows)
-        # 2D corresponds to the X-direction
-        # 3D corresponds to the Y-direction (content: rows)
-        ! All storage locations must be in the third dimension.
-        '''
+   - #### Returns
         
-                                      Column 1                        Column 2                        Column 3
-        All_blocks = [  
-                        [ ['block_title','1line','2line'], ['1_2','1_txt','2_txt'] ],                                      # 1step
-                        [ ['2_1','1_data','2_data'],       ['2_2','1_line','2_line','3_line'], ['2_3','1_txt','2_txt']],   # 2step
-                        [ ['3_1','1_txt','2_txt']]                                                                         # 3step
+        - `format_texts`: A list where each element is a line of the formatted text output.
 
-                    ]
+    <br>
 
-        line_title = ['1step','2step','3step']
-    ```
-    ```
+   - ### **Example Usage**
 
-                A visual representation of the relationship    　　　　  |
-                between the output result and `All_blocks`       　　　　|                     Output Result  
-                                                                     　 |
-        [                                                            　 |
-                                                                     　 |
-                         Column 1       Column 2  　   Column 3         |            
-           ========================================                   　|      =====================================
-            _____ [ ｜["block_title",｜["1_2",     ｜           　       |       {1step} |  block_title  |  1_2     |
-                    ｜---------------｜------------｜           　       |               |---------------|----------|
-                    ：               ：            ：           　       |               :               :          :
-                    ｜ '1line',      ｜ '1_txt',   ｜           　       |               |  1line        |  1_txt   |
-                    ｜ '2line' ],    ｜ '2_txt' ], ｜ ],         　      |               |  2line        |  2_txt   |
-                                                                     　 |
-           =====================================================      　|      ===============================================
-            _____ [ ｜["2-1",        ｜["2-2",     ｜["2_3",    ｜       |       {2step} |  2_1          |  2_2     |  2_3    |
-                    ｜---------------｜------------｜-----------｜       |               |---------------|----------|---------|
-                    ：               ：            ：           ：       |               :               :          :         :
-                    ｜ '1_data',     ｜ '1_line',  ｜ '1_txt',  ｜       |               |  1_data       |  1_line  |  1_txt  |
-                    ｜ '2_data' ],   ｜ '2_line',  ｜ '2_txt' ],｜       |               |  2_data       |  2_line  |  2_txt  |
-                    ｜               ｜ '3_line' ],｜           ｜ ],    |               |               |  3_line  |         |
-                                                                     　 |
-           =====================================================      　|      ===============================================
-            _____ [ ｜["3-1",        ｜            　           　       |       {3step} |  3_1          |
-                    ｜---------------｜            　           　       |               |---------------|
-                    ：               ：            　           　       |               :               :
-                    ｜ '1_txt',      ｜            　           　       |               |  1_txt        |
-                    ｜ '2_txt' ],    ｜ ]          　           　       |               |  2_txt        |
-                    　            　               　           　       |
-           ===========================                                　|      ==========================
-        ]  
-    ```
-    ### Return Value  
+        ```python
+        from demo_setprint_0_3_0 import SetPrint
 
-    - `grid_slice`: A list containing the formatted text information. Each line is stored individually, allowing it to be directly written to a text file for review.  
+        # Specify the array you want to format
+        list_data = SetPrint(datas)
 
-    ### Execution Example  
-    `• python`
-    ```python
+        # Specify the directions to expand (explained below)
+        keep_settings = {1: 'x', 3: 'yf', 4: 'f'}
 
-    # from setprint import SetPrint
+        # Execute formatting
+        format_texts = list_data.set_collection(route=True, keep_settings=keep_settings)
 
-    list_data = setprint( `All_blocks` )
-    grid_slice = blocks_border_print(line_title = line_title,　guide=True):
+        # Output results to a text file
+        with open('output.txt', 'w') as f:
+            for line in format_texts:
+                f.write(line + '\n')
+        ```
+    
+    <br><br>
 
-    with open('output_path','w') as f:
-        for line in grid_slice:
-            f.write(line)
+    ---
+    ## [] Relationship Between `keep_setting` and Data Alignment
 
-    ```
+    <br>
+    keep_setting allows you to specify the display direction for each dimension, enabling flexible visualization tailored to your data’s structure and purpose.<br>
+    Below, we explain how different keep_setting values affect formatting and which data formats they are best suited for.
+
+    <br>
+
+    <br>
+
+    - ## **Recommended Settings Examples**
+        
+        # 1. **`x`**
+        ### **Behavior**: Expands the specified dimension in the `X` direction.
+
+        **Use Cases**:
+        - When you want to check dimensional alignment of arrays per dimension element
+        - When you want to verify order alignment of parallel elements in the X direction
+        - When you want to verify dimensional alignment of parallel elements in the Y direction<br>
+        ※ Dimension mismatches are automatically expanded in the Y direction.
+
+        **Effect**: Expanding in the X direction creates parallel arrays along the Y axis.
+
+
+
+        <br>
+        
+        - **Example Arrays**
+
+            ```python 
+            test_data = [
+                'a','b','c'
+            ]
+            ```
+
+        - **Formatted Result**
+
+            ```plaintext
+            with_route    / out_put
+            ============= ~ -------------
+
+             ►list ┳━┳━┓  :  ►list 
+                   a b c  :        a b c 
+
+            ============= ~ -------------
+            ```
+
+        - **Example Settings**
+
+            ```python
+            keep_settings = {1:'x'}
+            ```
+        <br>
+        
+        ---
+        <br>
+        # 2. **`y`**
+
+        ### **Behavior**: Expands the specified dimension in the `Y` direction.
+
+        **Use Cases**: 
+        - When you want to verify order alignment of arrays per dimension element
+
+            ---
+
+            > [Not Recommended] Although the following specifications can theoretically be reversed,<br>they are not recommended because they break axis consistency.
+            >> - Dimensional elements where you want to verify order alignment of parallel elements in the Y direction.
+            >> - Dimensional elements where you want to verify dimensional alignment of parallel elements in the X direction.<br>
+                ※ Dimension mismatches are automatically expanded in the X direction.
+            ---
+
+        **Effect**: Expanding in the Y direction creates parallel arrays along the X axis.
+        
+        <br>
+        
+        - **Example Arrays**
+            ```python 
+            test_data = [
+                'a','b','c'
+            ]
+            ```
+
+        - **Formatted Result**
+            ```plaintext
+            with_route  / out_put
+            =========== ~ -----------
+
+             ►list      :  ►list 
+               ┣━━ a    :        a 
+               ┣━━ b    :        b 
+               ┗━━ c    :        c 
+
+            =========== ~ -----------
+            ```
+
+        - **Example Settings**
+            ```python
+            keep_settings = {1:'y'}
+            ```
+        <br>
+        
+        ---
+        <br>
+
+        # 3. **`yf`** ( y_flat )
+
+        ### **Behavior**: Expands the specified dimension in the Y direction, and any subsequent dimensions within its range are added on the same row as expansions in the X direction.
+
+        > #### Optimal setting for compactly aligning array information with dense storage, such as image data.
+
+        <br>
+
+        **Use Cases**: When you want to expand the specified dimension in the Y direction and display it as parallel arrays in the X direction, succinctly summarizing both `order alignment` (missing elements) and `dimension alignment` (dimension mismatches) in a single row.
+
+        <br>
+        
+        - **Example Arrays**
+            ```python
+            test_data = [
+                [[1,2,3], [4,5,6]],
+                [[7,8,9], [10,11,12]]
+            ]
+            ```
+
+        - **Formatted Result**
+            ```plaintext
+            with_route                                           / out_put
+            ==================================================== ~ ----------------------------------------------------
+
+             ►list                                               :  ►list 
+               ┣━━ ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ]  :        ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ] 
+               ┗━━ ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ]  :        ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ] 
+
+            ==================================================== ~ ----------------------------------------------------
+            ```
+
+        - **Example Settings**
+            ```python
+            keep_settings = {1:'yf',2:'f',3:'f'}
+            ```
+
+        <br>
+
+    ---
+
+    ## [] Parallel Arrays: Matching Array `Order`/`Dimensions`
+
+    SetPrint includes a feature that, as part of its formatting, automatically fills missing data with blank spaces by comparing parallel elements along each axis, allowing you to instantly spot “storage bugs” and “mixed data with different dimensions” for each structure/object.<br>
+    Specifically, this is represented by overlaps along the `X` and `Y` axes.
+
+    - ### Test Array
+        ```
+        keep_settings
+        ['x', 'y', 'x', 'x']
+        -----------------------------------------------------------------
+
+           ►list ━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                 ►list                       ►list 
+                   ┣━━ ►list ┳━━━┳━━━━━━━┓     ┣━━ ►list ┳━━━┳━━━━━━━┓
+                   ┃         0 ►list ┳━┓ 0     ┃         1 ►list ┳━┓ 1 
+                   ┃                 0 0       ┃                 1 1 
+                   ┗━━ ►list ┳━━━┳━━━━━━━┳━┓   ┗━━ ►list ┳━━━┳━━━━━━━┳━┓
+                             0   0       0 0             1   1       1 1 
+
+        -----------------------------------------------------------------
+        ```
+
+
+    - ## X Axis - Matching Array `Order` / Parallel Elements Along the X Axis
+        ```
+                   .     .   .   .   ⌄ ⌄ . .   .     .   .   .   ⌄ ⌄ . .
+                                     ┋ ┋                         ┋ ┋
+           ►list ──┬─────────────────┋─┋───────┐                 ┋ ┋
+                 ►list               ┋ ┋     ►list               ┋ ┋
+                   ├── ►list ┬───┬───┋─┋─┐     ├── ►list ┬───┬───┋─┋─┐
+                   │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
+                   │                 0 0       │                 1 1 
+                   └── ►list ┬───┬───┋─┋─┬─┐   └── ►list ┬───┬───┋─┋─┬─┐
+                             0   0   ┋ ┋ 0 0             1   1   ┋ ┋ 1 1 
+                                     X X                         X X
+                                     ^ ^                         ^ ^
+        ```
+        
+        Values stored in the array are displayed horizontally,<br>
+        but to maintain consistency with the `order` of parallel arrays expanded in the `Y` direction,<br>
+        any unexpected anomalous arrays or partial gaps become easy to spot.
+
+         ※ When using `f`, even if dimensions differ, dimensions within the same range are displayed on a single row, allowing you to detect dimension mismatches.
+
+
+    - ## Y Axis - Matching Array `Dimensions` / Parallel Elements Along the Y Axis
+        ```
+           ►list ──┬───────────────────────────┐
+        .        ►list                       ►list 
+        =          ├── ►list ┬───┬───────┐     ├── ►list ┬───┬───────┐
+        .          │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
+        > ┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 0 0 X ┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 1 1 X ┉┉┉ <
+        =          └── ►list ┬───┬───────┬─┐   └── ►list ┬───┬───────┬─┐
+        .                    0   0       0 0             1   1       1 1 
+        ```
+        
+        Values are displayed vertically according to array dimensions,<br>
+        but to maintain consistency with the `dimensions` of parallel arrays expanded in the `X` direction,<br>
+        any unexpected anomalous arrays or partial gaps become easy to identify.
+
+        #### ※ When the setting is `y`, the Y axis is interpreted in a parallel sense rather than as a dimension.
+        - Note / The Y axis has two meanings:<br>
+            - `Dimension mismatch` ( . ): Line breaks in this context occur automatically per dimension.<br>
+            - `Parallel elements` ( = ): Line breaks triggered by the settings `'y'` or `'yx'` indicate parallel elements.
+
+
+    ### ※ When comparing parallel elements, consistency is maintained according to the expansion direction of the nearest parallel element,<br>    so vertical alignment consistency applies only at the level of each parallel element.
+
+
+    <br><br>
+
+    ---
+    ## [] Changing Display Style
+
+    > Currently, only modifications to the array‑style text representation are supported.
+
+    - ### **雛形の実行例**
+
+        ```python
+        '''
+        from demo_setprint_0_3_0 import SetPrint
+        
+        # Specify the array you want to format
+        list_data = SetPrint(datas)
+        '''
+
+        #----------------------------------------------------
+
+        style_settings = (
+
+          ("Collections" ,
+            {  'image'   : { 'list'    : '►list' ,
+                             'tuple'   : '▷tuple' ,
+                             'ndarray' : '>nadarray' ,
+                             'dict'    : '◆dict' }}),
+
+        )
+
+        list_data.update_data_with_arguments(style_settings)
+
+        #----------------------------------------------------
+
+        """        
+        # Specify the directions to expand (explained below)
+        keep_settings = {1: 'x', 3: 'yf', 4: 'f'}    
+        
+        # Execute formatting
+        format_texts = list_data.set_collection(route=True, keep_settings=keep_settings)
+
+        # Output results to a text file
+        with open('output.txt', 'w') as f:
+            for line in format_texts:
+                f.write(line + '\n')
+        """
+        ```

@@ -8,11 +8,10 @@ except FileNotFoundError:
 
 setup(
     name='setprint',
-    version='0.2.2',
+    version='0.3.0',
     packages=find_packages(),
     install_requires=[
         'numpy',
-        'pynput'
     ],
     author='mtur',  
     author_email='2007helloworld@gmail.com',
