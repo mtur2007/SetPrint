@@ -53,10 +53,45 @@ else:
       # ]
       
       test_data = [[[0,[0,0],0],[0,0,0,0]],[[1,[1,1],1],[1,1,1,1]]]
+
+      test_data = [np.array([[[ 57, 233, 198],
+         [122, 193,  78],
+         [ 87,  68,  15]],
+
+        [[ 21,  45,  99],
+         [154, 214, 132],
+         [243, 128,  56]],
+
+        [[ 72,  94,  45],
+         [187,  29,  67],
+         [124, 232, 190]]]),
+
+      np.array([[ 58, 167, 205],
+            [134,  77,  49],
+            [ 72,  98,  36]]),
+
+      np.array([[[201,  86,  52],
+            [ 27, 123, 111],
+            [ 78, 239, 194]],
+
+            [[ 94, 208, 193],
+            [234,  98,  72],
+            [ 43,  57,  65]],
+
+            [[  9,  14, 186],
+            [  8, 129, 244],
+            [168,  55, 210]]]),
+
+      None]
+      
+      test_data = [
+                [[1,2,3], [4,5,6]],
+                [[7,8,9], [10,11,12]]
+            ]
       # test_data = {1:'x',2:'y',3:'x',4:'x'}
       # test_data = [[[[0,[0,0,0]],0,0],[[0,[0,0]],0,0]],[[[0,[0,0]],0,0,0],[0,0,0]],[[0,0,0],[0,0,0,0]],{'zero':[0,{'zero':[0,0,0,0],'one':[0,0,0,0],},0,0],'one':[0,0,0,0],}]
 
-      keep_settings = {1:'x',2:'y',3:'x'}
+      keep_settings = {1:'yf'}
 
       # keep_settings = {1:'y',2:'x',4:'f'}
 
@@ -82,17 +117,22 @@ else:
 # インスタンスを生成
 list_data = SetPrint(test_data)
 
+style_settings = (
+
+          ("Collections" ,
+            {  'image'   : { 'list'    : '►list' ,
+                             'tuple'   : '▷tuple' ,
+                             'ndarray' : '>nadarray' ,
+                             'dict'    : '◆dict' }}),
+
+        )
+
+list_data.update_data_with_arguments(style_settings)
+
 # 整形
-format_texts = list_data.set_collection ( route=True, keep_settings=keep_settings )
+format_texts = list_data.set_collection ( route='maintenance', keep_settings=keep_settings )
 # format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
 
 with open('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/format_data/output.txt','w') as f:
       for line in format_texts:
             f.write(line+'\n')
-
-[0,0,0,0,]
-[]
-[]
-[]
-[]
-[]

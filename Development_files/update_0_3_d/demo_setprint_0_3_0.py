@@ -343,15 +343,13 @@ class SetPrint:
             if deep in dict_keep_settings.keys():
                 range_keep_type = dict_keep_settings[deep]
                 if range_keep_type == 'yf':
-                    keep_settings.append('yf')
+                    keep_settings.append(range_keep_type)
+                    range_keep_type = 'f'
                 else:
                     keep_settings.append(range_keep_type)
 
             else:
-                if range_keep_type == 'yf':
-                    keep_settings.append('f')
-                else:
-                    keep_settings.append(range_keep_type)
+                keep_settings.append(range_keep_type)
         
         for deep in range(max_depth-len(keep_settings)):
             keep_settings.append(range_keep_type)
