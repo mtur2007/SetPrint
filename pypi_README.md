@@ -37,23 +37,8 @@ It features enhanced visibility for data with missing elements or mismatched dim
 
     Instead of using brackets ([]/()/{}),<br> 
     setprint uses lines (┣ :┃:┗) and (┳ : ━ : ┓) to clearly show parent-child relationships and connections.
-
-    ```txt
-    Parent 
-      ┣━━━ Sibling
-      ┃       ┣━━━ Child
-      ┃       ┗━━━ Child
-      ┗━━━ Sibling
-              ┣━━━ Child
-              ┗━━━ Child
-    ```
-
-    ```txt
-    Parent ━━━┳━━━━━━━━━━━━━┓
-           Sibling       Sibling
-              ┣━━━ Child    ┣━━ Child
-              ┗━━━ Child    ┗━━ Child
-    ```
+    
+    <img src="Development_files/update_0_3_d/images/root.png" width="300" alt="サンプル画像">
 <br>
 
 - [Upcoming Updates]
@@ -236,15 +221,7 @@ keep_settings
 
         - **Formatted Result**
 
-            ```plaintext
-            with_route    / out_put
-            ============= ~ -------------
-
-             ►list ┳━┳━┓  :  ►list 
-                   a b c  :        a b c 
-
-            ============= ~ -------------
-            ```
+            <img src="Development_files/update_0_3_d/images/x.png" width="920" alt="サンプル画像">
 
         - **Example Settings**
 
@@ -282,17 +259,8 @@ keep_settings
             ```
 
         - **Formatted Result**
-            ```plaintext
-            with_route  / out_put
-            =========== ~ -----------
 
-             ►list      :  ►list 
-               ┣━━ a    :        a 
-               ┣━━ b    :        b 
-               ┗━━ c    :        c 
-
-            =========== ~ -----------
-            ```
+            <img src="Development_files/update_0_3_d/images/y.png" width="920" alt="サンプル画像">
 
         - **Example Settings**
             ```python
@@ -324,16 +292,8 @@ keep_settings
             ```
 
         - **Formatted Result**
-            ```plaintext
-            with_route                                           / out_put
-            ==================================================== ~ ----------------------------------------------------
 
-             ►list                                               :  ►list 
-               ┣━━ ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ]  :        ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ] 
-               ┗━━ ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ]  :        ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ] 
-
-            ==================================================== ~ ----------------------------------------------------
-            ```
+            <img src="Development_files/update_0_3_d/images/yf.png" width="920" alt="サンプル画像">
 
         - **Example Settings**
             ```python
@@ -351,11 +311,11 @@ keep_settings
 
     - ### Test Array
 
-        ![サンプル画像](Development_files/update_0_3_d/images/demo.png)
+        <img src="Development_files/update_0_3_d/images/demo.png" width="500" alt="サンプル画像">
 
     - ## X Axis - Matching Array `Order` / Parallel Elements Along the X Axis
 
-        ![サンプル画像](Development_files/update_0_3_d/images/x_axis.png)
+        <img src="Development_files/update_0_3_d/images/x_axis.png" width="500" alt="サンプル画像">
         
         Values stored in the array are displayed horizontally,<br>
         but to maintain consistency with the `order` of parallel arrays expanded in the `Y` direction,<br>
@@ -366,8 +326,8 @@ keep_settings
 
     - ## Y Axis - Matching Array `Dimensions` / Parallel Elements Along the Y Axis
         
-        ![サンプル画像](Development_files/update_0_3_d/images/y_axis.png)
-        
+        <img src="Development_files/update_0_3_d/images/y_axis.png" width="500" alt="サンプル画像">
+
         Values are displayed vertically according to array dimensions,<br>
         but to maintain consistency with the `dimensions` of parallel arrays expanded in the `X` direction,<br>
         any unexpected anomalous arrays or partial gaps become easy to identify.
