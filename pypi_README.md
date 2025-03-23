@@ -350,8 +350,21 @@ keep_settings
     Specifically, this is represented by overlaps along the `X` and `Y` axes.
 
     - ### Test Array
+        ```
+        keep_settings
+        ['x', 'y', 'x', 'x']
+        -----------------------------------------------------------------
 
-        <!-- ![サンプル画像](Development_files/image/demo.png "y-x-y-yf--yf") -->
+           ►list ━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                 ►list                       ►list 
+                   ┣━━ ►list ┳━━━┳━━━━━━━┓     ┣━━ ►list ┳━━━┳━━━━━━━┓
+                   ┃         0 ►list ┳━┓ 0     ┃         1 ►list ┳━┓ 1 
+                   ┃                 0 0       ┃                 1 1 
+                   ┗━━ ►list ┳━━━┳━━━━━━━┳━┓   ┗━━ ►list ┳━━━┳━━━━━━━┳━┓
+                             0   0       0 0             1   1       1 1 
+
+        -----------------------------------------------------------------
+        ```
 
 
     - ## X Axis - Matching Array `Order` / Parallel Elements Along the X Axis
