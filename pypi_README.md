@@ -38,7 +38,8 @@ It features enhanced visibility for data with missing elements or mismatched dim
     Instead of using brackets ([]/()/{}),<br> 
     setprint uses lines (┣ :┃:┗) and (┳ : ━ : ┓) to clearly show parent-child relationships and connections.
     
-    <img src="Development_files/update_0_3_d/images/root.png" width="300" alt="サンプル画像">
+    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/update_0_3_d/images/root.png" width="300" alt="サンプル画像">
+
 <br>
 
 - [Upcoming Updates]
@@ -221,7 +222,8 @@ keep_settings
 
         - **Formatted Result**
 
-            <img src="Development_files/update_0_3_d/images/x.png" width="920" alt="サンプル画像">
+            <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/update_0_3_d/images/x.png" width="920" alt="サンプル画像">
+
 
         - **Example Settings**
 
@@ -260,7 +262,8 @@ keep_settings
 
         - **Formatted Result**
 
-            <img src="Development_files/update_0_3_d/images/y.png" width="920" alt="サンプル画像">
+            <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/update_0_3_d/images/y.png" width="920" alt="サンプル画像">
+
 
         - **Example Settings**
             ```python
@@ -292,8 +295,8 @@ keep_settings
             ```
 
         - **Formatted Result**
-
-            <img src="Development_files/update_0_3_d/images/yf.png" width="920" alt="サンプル画像">
+            
+            <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/update_0_3_d/images/yf.png" width="920" alt="サンプル画像">
 
         - **Example Settings**
             ```python
@@ -311,11 +314,12 @@ keep_settings
 
     - ### Test Array
 
-        <img src="Development_files/update_0_3_d/images/demo.png" width="500" alt="サンプル画像">
+        <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/update_0_3_d/images/demo.png" width="500" alt="サンプル画像">
+
 
     - ## X Axis - Matching Array `Order` / Parallel Elements Along the X Axis
 
-        <img src="Development_files/update_0_3_d/images/x_axis.png" width="500" alt="サンプル画像">
+        <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/update_0_3_d/images/x_axis.png" width="500" alt="サンプル画像">
         
         Values stored in the array are displayed horizontally,<br>
         but to maintain consistency with the `order` of parallel arrays expanded in the `Y` direction,<br>
@@ -326,7 +330,8 @@ keep_settings
 
     - ## Y Axis - Matching Array `Dimensions` / Parallel Elements Along the Y Axis
         
-        <img src="Development_files/update_0_3_d/images/y_axis.png" width="500" alt="サンプル画像">
+        <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/update_0_3_d/images/y_axis.png" width="500" alt="サンプル画像">
+
 
         Values are displayed vertically according to array dimensions,<br>
         but to maintain consistency with the `dimensions` of parallel arrays expanded in the `X` direction,<br>
