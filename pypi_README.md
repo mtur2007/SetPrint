@@ -1,15 +1,22 @@
+## [ demo ]
+
+---
+
 # SetPrint(ver, 0.3.0) - Easily Format and Display High-Dimensional Data!
 
 ## <> A Data Visualization Tool That Properly Formats 2D/NumPy Arrays and Image Data <>
 
->> Demo Version : ver 0.3.0 [ PlaneView Included ]  
-https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/demo_setprint_0_3_0.py
+---
+
+*Read this in [English](https://github.com/mtur2007/SetPrint/blob/main/README.md) or [日本語](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)*
+
+> #### TestPyPI : Testing environment<br>https://test.pypi.org/project/setprint/
 
 ---
 setprint is a powerful data‑formatting tool that extends Python’s standard pprint, allowing you to properly format not only lists and dictionaries but also NumPy arrays and 2D data (including image data).  
 It features enhanced visibility for data with missing elements or mismatched dimensions, making debugging easier.  
 
-> #### Update Information<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/SetPrint_update_image.md
+> Update Information<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/SetPrint_update_image.md
 
 <br>
 

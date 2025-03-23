@@ -1,17 +1,23 @@
- ## [ demo ]
+## [ demo ]
+
 ---
+
 # SetPrint(ver, 0.3.0) - 高次元データを簡単に整形・表示！
 
 ## <> 2D/NumPy配列や画像データも適切に整形可能なデータ可視化ツール <>
 
->> デモ版 : ver 0.3.0 [ PlaneView 搭載版 ]<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/demo_setprint_0_3_0.py
+---
+
+*Read this in [English](https://github.com/mtur2007/SetPrint/blob/main/README.md) or [日本語](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)*
+
+> #### TestPyPI : テスト公開場所<br>https://test.pypi.org/project/setprint/
 
 ---
 setprint は、Python標準の pprint を拡張し、リストや辞書だけでなく、<br>
 NumPy配列や2Dデータ（画像データ含む）も適切に整形できる 強力なデータ整形ツールです。<br>
 特に、配列の欠落や次元違いが発生しているデータの視認性を向上 させ、デバッグを容易にする機能を備えています。<br>
 
-> #### アップデート情報<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/SetPrint_update_image.md
+> アップデート情報<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/SetPrint_update_image.md
 
 <br>
 
