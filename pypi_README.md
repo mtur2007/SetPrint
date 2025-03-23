@@ -350,37 +350,12 @@ keep_settings
     Specifically, this is represented by overlaps along the `X` and `Y` axes.
 
     - ### Test Array
-        ```
-        keep_settings
-        ['x', 'y', 'x', 'x']
-        -----------------------------------------------------------------
 
-           ►list ━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-                 ►list                       ►list 
-                   ┣━━ ►list ┳━━━┳━━━━━━━┓     ┣━━ ►list ┳━━━┳━━━━━━━┓
-                   ┃         0 ►list ┳━┓ 0     ┃         1 ►list ┳━┓ 1 
-                   ┃                 0 0       ┃                 1 1 
-                   ┗━━ ►list ┳━━━┳━━━━━━━┳━┓   ┗━━ ►list ┳━━━┳━━━━━━━┳━┓
-                             0   0       0 0             1   1       1 1 
-
-        -----------------------------------------------------------------
-        ```
-
+        ![サンプル画像](Development_files/update_0_3_d/images/demo.png)
 
     - ## X Axis - Matching Array `Order` / Parallel Elements Along the X Axis
-        ```
-                   .     .   .   .   ⌄ ⌄ . .   .     .   .   .   ⌄ ⌄ . .
-                                     ┋ ┋                         ┋ ┋
-           ►list ──┬─────────────────┋─┋───────┐                 ┋ ┋
-                 ►list               ┋ ┋     ►list               ┋ ┋
-                   ├── ►list ┬───┬───┋─┋─┐     ├── ►list ┬───┬───┋─┋─┐
-                   │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
-                   │                 0 0       │                 1 1 
-                   └── ►list ┬───┬───┋─┋─┬─┐   └── ►list ┬───┬───┋─┋─┬─┐
-                             0   0   ┋ ┋ 0 0             1   1   ┋ ┋ 1 1 
-                                     X X                         X X
-                                     ^ ^                         ^ ^
-        ```
+
+        ![サンプル画像](Development_files/update_0_3_d/images/x_axis.png)
         
         Values stored in the array are displayed horizontally,<br>
         but to maintain consistency with the `order` of parallel arrays expanded in the `Y` direction,<br>
@@ -390,15 +365,8 @@ keep_settings
 
 
     - ## Y Axis - Matching Array `Dimensions` / Parallel Elements Along the Y Axis
-        ```
-           ►list ──┬───────────────────────────┐
-        .        ►list                       ►list 
-        =          ├── ►list ┬───┬───────┐     ├── ►list ┬───┬───────┐
-        .          │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
-        > ┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 0 0 X ┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 1 1 X ┉┉┉ <
-        =          └── ►list ┬───┬───────┬─┐   └── ►list ┬───┬───────┬─┐
-        .                    0   0       0 0             1   1       1 1 
-        ```
+        
+        ![サンプル画像](Development_files/update_0_3_d/images/y_axis.png)
         
         Values are displayed vertically according to array dimensions,<br>
         but to maintain consistency with the `dimensions` of parallel arrays expanded in the `X` direction,<br>
