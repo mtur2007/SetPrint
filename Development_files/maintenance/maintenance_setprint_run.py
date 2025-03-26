@@ -52,7 +52,7 @@ def replace_hash_with_custom_indices(lst, path=[]):
         elif item == '#':  # `'#'` を検出したらその位置をフォーマットに置き換え
             path_txt = ''
 
-            pin_deep = max([deep for deep in parent_point if deep < len(current_path)])
+            pin_deep = max([deep for deep in keep_settings if deep < len(current_path)])
 
             for indes in current_path[:pin_deep-1]:
                 path_txt += str(indes) + '-'
@@ -84,125 +84,141 @@ insert_text_after_match_with_indent(input_file, output_file, keep_index, trackin
 # メンテナンス用 データの整形
 from maintenance_setprint import SetPrint
 
-test_sequence = [
-    [
+if False:
+    test_sequence = [
         [
-            '-before',
-            '++@_fter',
+            [
+                '-before',
+                '++@_fter',
+            ],
+
+            [
+                '++before',
+                '-@_fter'
+            ]
+        ],
+        #------------------------
+        [
+            [
+                '-before',
+                ['++@_fter']
+            ],
+
+            [
+                '++before',
+                ('-@_fter',)
+            ]
+        ],
+        #------------------------
+        [
+            [
+                ('-before',),
+                ['++@_fter']
+            ],
+
+            [
+                ['++before'],
+                ('-@_fter',)
+            ],
+        ],
+        # /f/ ==================================
+        [
+            [
+                ('-before',('-before',)),
+                ['++@_fter',['++@_fter']]
+            ],
+
+            [
+                ['++before',['++@_fter']],
+                ('-@_fter',('-before',))
+            ],
         ],
 
-        [
-            '++before',
-            '-@_fter'
-        ]
-    ],
-    #------------------------
-    [
-        [
-            '-before',
-            ['++@_fter']
-        ],
-
-        [
-            '++before',
-            ('-@_fter',)
-        ]
-    ],
-    #------------------------
-    [
-        [
-            ('-before',),
-            ['++@_fter']
-        ],
-
-        [
-            ['++before'],
-            ('-@_fter',)
-        ],
-    ],
-    # /f/ ==================================
-    [
-        [
-            ('-before',('-before',)),
-            ['++@_fter',['++@_fter']]
-        ],
-
-        [
-            ['++before',['++@_fter']],
-            ('-@_fter',('-before',))
-        ],
-    ],
-
-]
-
-test_mapping = [
-    [
-        {
-            '-before':'--',
-            '++@_fter':'++++',
-        },
-
-        {
-            '++before':'++++',
-            '-@_fter':'--'
-        }
-    ],
-    #------------------------
-    [
-        {
-            '-before':'--',
-            '++@_fter':{'++@_fter':'++++'}
-        },
-
-        {
-            '++before':'++++',
-            '-@_fter':{'-@_fter':'--'}
-        }
-    ],
-    #------------------------
-    [
-        {
-            '-before':{'-before':'--'},
-            '++@_fter':{'++@_fter':'++++'}
-        },
-
-        {
-
-            '++before':{'++before':'++++'},
-            '-@_fter':{'-@_fter':'--'}
-        },
-    ],
-    # /f/ ==================================
-    [
-        {
-            '-before':{'-before':{'-before':'--'}},
-            '++@_fter':{'++@_fter':{'++@_fter':'++++'}}
-        },
-
-        {
-            '++before':{'++before':{'++before':'++++'}},
-            '-@_fter':{'-@_fter':{'-@_fter':'--'}}
-        },
     ]
-]
 
-# keep_setting={1:'x',3:'x',100:'y'}
-# keep_setting={1:'x',3:'y',100:'y'}
-keep_settings={1:'x',3:'yf',100:'y'}
+    test_mapping = [
+        [
+            {
+                '-before':'--',
+                '++@_fter':'++++',
+            },
+
+            {
+                '++before':'++++',
+                '-@_fter':'--'
+            }
+        ],
+        #------------------------
+        [
+            {
+                '-before':'--',
+                '++@_fter':{'++@_fter':'++++'}
+            },
+
+            {
+                '++before':'++++',
+                '-@_fter':{'-@_fter':'--'}
+            }
+        ],
+        #------------------------
+        [
+            {
+                '-before':{'-before':'--'},
+                '++@_fter':{'++@_fter':'++++'}
+            },
+
+            {
+
+                '++before':{'++before':'++++'},
+                '-@_fter':{'-@_fter':'--'}
+            },
+        ],
+        # /f/ ==================================
+        [
+            {
+                '-before':{'-before':{'-before':'--'}},
+                '++@_fter':{'++@_fter':{'++@_fter':'++++'}}
+            },
+
+            {
+                '++before':{'++before':{'++before':'++++'}},
+                '-@_fter':{'-@_fter':{'-@_fter':'--'}}
+            },
+        ]
+    ]
+
+    # keep_setting={1:'x',3:'x',100:'y'}
+    # keep_setting={1:'x',3:'y',100:'y'}
+    keep_settings={1:'x',3:'yf',100:'y'}
 
 
-# '#'部分のインデックスを自動追加 - 親インデックスを自動強調
-parent_point = [0] + [ deep-1 if deep_setting == 'yf' else deep for deep, deep_setting in keep_settings.items() ]
+    # '#'部分のインデックスを自動追加 - 親インデックスを自動強調
+    parent_point = [0] + [ deep-1 if deep_setting == 'yf' else deep for deep, deep_setting in keep_settings.items() ]
 
-test_data = test_sequence if 0 == 0 else test_mapping
+    test_data = test_sequence if 0 == 0 else test_mapping
 
-replace_hash_with_custom_indices(test_data)
+    replace_hash_with_custom_indices(test_data)
+
+else:
+    test_data = [
+          ['#','#','#'],
+          ['#',['#',['#']],'#'],
+          ['#',['#','#'],'#']
+     ]
+
+    keep_settings = {1:'y',2:'x'}
+
+    replace_hash_with_custom_indices(test_data, path=[])
+
+    print(test_data)
+
 
 # インスタンスを生成
 list_data = SetPrint(test_data)
 
-list_data.set_text_style(style_settings) # set_listの前
-return_data = list_data.set_list(route='maintenance',keep_settings=keep_settings)
+list_data.update_data_with_arguments(keep_settings)
+
+return_data = list_data.set_collection(route='maintenance',keep_settings=keep_settings)
 
 if tracking_image:
     with open('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/format_data/output_maintenance.txt','w') as f:

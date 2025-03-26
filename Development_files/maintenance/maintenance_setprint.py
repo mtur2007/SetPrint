@@ -17,100 +17,82 @@ def Myint(num):
 =============================================================================================================================================================
 ・配列の下調べ・簡易的なアクセスを行う関数
 '''
-
-# 配列の文字列、数列がどこの次元に位置しているかを調べる関数。(オート機能の処理)
-def check_matching_elements(mapping_point, collection_index):
-
-    max_match_count = 0  # 最大連続一致数
-    max_match_index = -1  # 最大連続一致数を持つ1次元目のインデックス
-
-    collection_len = len(collection_index)
-
-    for row_index, row in enumerate(mapping_point):
-        current_match_count = 0  # 現在の行での連続一致数
-        if collection_len >= len(row):
-            for i, elem in enumerate(row):
-                if i < len(collection_index) and elem == collection_index[i]:
-                    current_match_count += 1  # 一致した場合カウントを増やす
-                else:
-                    break  # 一致が途切れたら終了
-
-            # 最大連続一致数を更新
-            if (len(row) == current_match_count) and (current_match_count > max_match_count):
-                max_match_count = current_match_count
-                max_match_index = row_index
-
-    return max_match_index  # 最大連続一致数を持つ行のインデックス
-
-# リストに格納されている最大要素数とその次元を求める関数
-def find_max_elements_and_level(data, depth=0, level_counts=None):
+def update_numpy_scalars_and_get_depth(obj):
     """
-    Find the maximum number of elements and the corresponding depth in a nested list.
-
-    Args:
-        data (list): The nested list to analyze.
-        depth (int): The current depth in the recursion (default is 0).
-        level_counts (dict): A dictionary to track the number of elements at each depth.
-
-    Returns:
-        tuple: (max_count, max_depth) where:
-               - max_count is the maximum number of elements.
-               - max_depth is the depth at which max_count was found.
+    オブジェクト内の NumPy のスカラー値（np.generic または ndim==0 の ndarray）を
+    通常の Python のスカラー値に変換し、かつ最大入れ子深度（次元数）を取得する関数。
+    
+    戻り値は (updated_obj, depth) のタプルです。
+    depth は以下のルールに従って定義:
+      - 基本型やスカラーの場合は 0
+      - コンテナの場合は 1 + max(child depths)（空の場合は 1）
     """
-    if level_counts is None:
-        level_counts = {}
+    # NumPy のスカラー（np.generic）の場合
+    if isinstance(obj, np.generic):
+        return obj.item(), 0
 
-    if isinstance(data, (list,tuple,np.ndarray)):
-        # Count elements at the current depth
-        level_counts[depth] = level_counts.get(depth, 0) + len(data)
-
-        # Recursively check sublists
-        for item in data:
-            find_max_elements_and_level(item, depth + 1, level_counts)
-
-    # Find the depth with the maximum count
-    max_depth = max(level_counts, key=level_counts.get)
-    max_count = level_counts[max_depth]
-
-    return max_count, max_depth
-
-# 配列の値にインデックスを格納したリスト配列を使ってアクセスする
-def access_nested_collection(nested_list,indices):
-
-    for i,index in enumerate(indices):
-
-        if type(nested_list) == dict:
-            if not(index in nested_list):
-                return None
-            
+    # NumPy 配列の場合
+    if isinstance(obj, np.ndarray):
+        # スカラー配列の場合 (ndim == 0)
+        if obj.ndim == 0:
+            return obj.item(), 0
+        # 非 object 型の配列は更新不要。深度はそのまま ndim を用いる
+        if obj.dtype != np.object_:
+            return obj, obj.ndim
         else:
-            if not(0 <= index < len(nested_list)):     
-                return None # インデックスが範囲外の場合はNoneを返す
-            
-        # int または str の場合、最後のインデックスでない場合はNoneを返す
-        if not isinstance(nested_list[index], (list, tuple, np.ndarray, dict)):
-            if i == len(indices) - 1:
-                value = nested_list[index]
-                return value
-        
-            else:
-                return None # インデックスが範囲外の場合はNoneを返す
-            
-        nested_list = nested_list[index]
-        
-    # 最終的な要素がリストまたは配列の場合
-    else:
-        value = nested_list
-        return value
+            # object 型の NumPy 配列の場合、各要素を再帰的に更新
+            new_obj = obj.copy()
+            max_sub_depth = 0
+            for idx, value in np.ndenumerate(new_obj):
+                updated_val, sub_depth = update_numpy_scalars_and_get_depth(value)
+                new_obj[idx] = updated_val
+                if sub_depth > max_sub_depth:
+                    max_sub_depth = sub_depth
+            # 空の場合は 1、要素があれば 1 + 子要素の最大深度
+            return new_obj, 1 + max_sub_depth if new_obj.size > 0 else 1
 
-def access_nested_keep_index(nested_list,indices):
+    # 辞書の場合: 値を更新し再帰的に深度を取得
+    if isinstance(obj, dict):
+        if not obj:
+            return obj, 1
+        new_dict = {}
+        max_sub_depth = 0
+        for key, value in obj.items():
+            updated_val, sub_depth = update_numpy_scalars_and_get_depth(value)
+            new_dict[key] = updated_val
+            if sub_depth > max_sub_depth:
+                max_sub_depth = sub_depth
+        return new_dict, 1 + max_sub_depth
 
-    for index in indices:
-        nested_list = nested_list[index][1]
-        
-    else:
-        value = nested_list
-        return value
+    # リストの場合: 各要素を更新
+    if isinstance(obj, list):
+        if not obj:
+            return obj, 1
+        new_list = []
+        max_sub_depth = 0
+        for item in obj:
+            updated_item, sub_depth = update_numpy_scalars_and_get_depth(item)
+            new_list.append(updated_item)
+            if sub_depth > max_sub_depth:
+                max_sub_depth = sub_depth
+        return new_list, 1 + max_sub_depth
+
+    # タプルの場合: 各要素を更新してタプルに再構成
+    if isinstance(obj, tuple):
+        if not obj:
+            return obj, 1
+        new_tuple = []
+        max_sub_depth = 0
+        for item in obj:
+            updated_item, sub_depth = update_numpy_scalars_and_get_depth(item)
+            new_tuple.append(updated_item)
+            if sub_depth > max_sub_depth:
+                max_sub_depth = sub_depth
+        return tuple(new_tuple), 1 + max_sub_depth
+
+    # その他の型はコンテナではないとみなし、更新せず深度は 0
+    return obj, 0
+
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -190,7 +172,7 @@ class SetPrint:
             {  'image'   : { 'list'    : '►list' ,
                              'tuple'   : '▷tuple' ,
                              'ndarray' : '>nadarray' ,
-                             'dict'    : '◆dect' }}),
+                             'dict'    : '◆dict' }}),
 
            ("bracket"     ,
             { 'partially': { 'list'    : ( '{' , ')' ),
@@ -447,7 +429,7 @@ class SetPrint:
     
     # リストを整型する際の条件を整理 / １次元目の格納情報を整形 [→:#0]
     # [→:0] 中身は search_mapping / search_sequence とほぼ同じ
-    def set_list(self, route, keep_settings):
+    def set_collection(self, route, keep_settings):
 
         datas = self.input_list
         
@@ -777,6 +759,7 @@ class SetPrint:
                     else:
                         if type(Kdeep_index[direction_index][0]) != list:
                             if Kdeep_index[direction_index][0] < len(str(key)):
+                                print('+')
                                 Kdeep_index[direction_index][0] = len(str(key))
 
                             if Kdeep_index[direction_index][1] < self.collections[type(line).__name__][1]:
@@ -791,12 +774,14 @@ class SetPrint:
                 else:
                     if type(Kdeep_index[direction_index][0]) != list:
                         if Kdeep_index[direction_index][0] < len(str(key)):
+                            print('+')
                             Kdeep_index[direction_index][0] = len(str(key))
 
                         if Kdeep_index[direction_index][1] < len(str(line)):
                             Kdeep_index[direction_index][1] = len(str(line))
                     else:
                         if Kdeep_index[direction_index][0][0] < len(str(key)):
+                            print('+')
                             Kdeep_index[direction_index][0][0] = len(str(key))
 
                         if Kdeep_index[direction_index][0][1] < len(str(line)):
@@ -1135,7 +1120,7 @@ class SetPrint:
                     if type(Kdeep_index[0][0]) != list:
                         if Kdeep_index[0][0] < len(str(key)):
                             Kdeep_index[0][0] = len(str(key))
-                            
+
                         if Kdeep_index[0][1] < len(str(line)):
                             Kdeep_index[0][1] = len(str(line))
                     else:
@@ -1277,7 +1262,7 @@ class SetPrint:
     
     
     def map_sequence_indices(self,nested_list,indices):
-        last_deep = len(nested_list)-1
+        last_deep = len(indices)-1
         last_dict = None
         for now_deep,index in enumerate(indices):
             if isinstance(nested_list, self.mapping_type):
@@ -1289,7 +1274,7 @@ class SetPrint:
         
         value = nested_list
         dict_key = dict_key if last_deep == last_dict else None
-
+       
         return value,dict_key
 
     # [→:4] キープデータの整形
@@ -1326,8 +1311,8 @@ class SetPrint:
                     # print(parent,y_x_indexs,now_line)
                     
                     #print(search_index)
-                    parent_list,in_dect = self.map_sequence_indices(self.input_list,parent)
-
+                    parent_list,no_use = self.map_sequence_indices(self.input_list,parent)
+                    
                     for y_x_index in y_x_indexs:
 
                         keep_y_x_index = y_x_index[:]
@@ -1350,29 +1335,30 @@ class SetPrint:
                         # print('True  ',x_keep_index[now_line],keep_parent + keep_y_x_index)
                         # print()
                         
-                        value,dect_key = self.map_sequence_indices(parent_list,y_x_index)
+                        value,dict_key = self.map_sequence_indices(parent_list,y_x_index)
                         if isinstance(value, self.collection_type):
-                            collection_image,image_len = self.collections[type(value).__name__]
-                            line_txt += (keep_len[now_line][1] - image_len) * ' ' + collection_image + ' '
+                            axis_len = keep_len[now_line]
+
+                            value,image_len = self.collections[type(value).__name__]
+
+                            dif = (axis_len[1] - image_len)
+                            v_dif_2 = (dif // 2)
                         
                         else:
                             axis_len = keep_len[now_line]
-
+                            
                             dif = (axis_len[1] - len(str(value)))
                             v_dif_2 = (dif // 2)
-                            if axis_len[0] == 0:
-                                print('value')
-                                print(dect_key)
-                                line_txt += v_dif_2*' ' + str(value) + ' ' + (v_dif_2 + dif%2)*' '
+                        
+                        if axis_len[0] == 0:
+                            line_txt += v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                        else:
+                            if dict_key == None:
+                                line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                             else:
-                                if dect_key == None:
-                                    print('`___`:`value`')
-                                    line_txt += axis_len[0]*' ' + v_dif_2*' ' + str(value) + ' ' + (v_dif_2 + dif%2)*'  '
-                                else:
-                                    print('`key`:`value`')
-                                    k_dif = (axis_len[0] - len(str(value)))
-                                    k_dif_2 = (dif // 2)
-                                    line_txt +=  k_dif_2*' ' + str(dect_key) + ' ' + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + ' ' + (v_dif_2 + dif%2)*' '
+                                k_dif = (axis_len[0] - len(str(dict_key)))
+                                k_dif_2 = (dif // 2)
+                                line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                     
                         now_line += 1
 
@@ -1448,37 +1434,56 @@ class SetPrint:
                                 line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                             now_line += 1
 
-                        value,dect_key = self.map_sequence_indices(parent_list,y_x_index)
-                        if isinstance(value, self.collection_type):
-                            collection_image,image_len = self.collections[type(value).__name__]
-                            line_txt += (keep_len[now_line][1] - image_len) * ' ' + collection_image + ' '
-                            
-                            if last_deep != len(y_x_index):
-                                deep_types.append(type(value))
-                                bracket = self.brackets[type(value).__name__]
-                                line_txt += (keep_len[now_line][1] - bracket[1][0])*' ' + bracket[0][0] + ' '
+                        value,dict_key = self.map_sequence_indices(parent_list,y_x_index)
 
-                                before_nest += 1
-                                now_line += 1
-                           
-                        else:
+                        if isinstance(value, self.collection_type):
+                            
                             axis_len = keep_len[now_line]
 
+                            data_type = type(value)
+                            value,image_len = self.collections[type(value).__name__]
+
+                            dif = (axis_len[1] - image_len)
+                            v_dif_2 = (dif // 2)
+
+                            if axis_len[0] == 0:
+                                line_txt += v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                            else:
+                                if dict_key == None:
+                                    line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                                else:
+                                    k_dif = (axis_len[0] - len(str(dict_key)))
+                                    k_dif_2 = (dif // 2)
+                                    line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                                    
+                            
+                            if last_deep != len(y_x_index):
+                                before_nest += 1
+                                now_line += 1
+
+                                deep_types.append(data_type)
+                                bracket = self.brackets[data_type.__name__]
+                                line_txt += (keep_len[now_line][1] - bracket[1][0])*' ' + bracket[0][0] + ' '
+                           
+                        else:
+
+                            axis_len = keep_len[now_line]
+                            
                             dif = (axis_len[1] - len(str(value)))
                             v_dif_2 = (dif // 2)
+                            
                             if axis_len[0] == 0:
-                                line_txt += v_dif_2*' ' + str(value) + ' ' + (v_dif_2 + dif%2)*' '
+                                line_txt += v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                             else:
-                                if dect_key == None:
-                                    line_txt += axis_len[0]*' ' + v_dif_2*' ' + str(value) + ' ' + (v_dif_2 + dif%2)*'  '
+                                if dict_key == None:
+                                    line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                 else:
-                                    print('key')
-                                    k_dif = (axis_len[0] - len(str(value)))
+                                    k_dif = (axis_len[0] - len(str(dict_key)))
                                     k_dif_2 = (dif // 2)
-                                    line_txt +=  k_dif_2*' ' + str(dect_key) + ' ' + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + ' ' + (v_dif_2 + dif%2)*' '
+                                    line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                     
                         now_line += 1
-
+                        
 
                     if 0 < len(deep_types):
 
@@ -1511,7 +1516,7 @@ class SetPrint:
                             now_line += 1
 
                         bracket = self.brackets[deep_types[-1].__name__]
-                        line_txt = line_txt[:-(keep_len[now_line-1][0]+1)] + (keep_len[now_line-1][0] - bracket[1][1])*' ' + bracket[0][1] + ' '
+                        line_txt = line_txt[:-(keep_len[now_line-1][1]+1)] + (keep_len[now_line-1][1] - bracket[1][1])*' ' + bracket[0][1] + ' '
                                
             format_texts.append(line_txt)
         
@@ -1625,16 +1630,17 @@ class SetPrint:
                     x_range_total_len,total_len = self.total_x_keep_deata(deep_data[1],total_len + deep_data[0][1] + 1)
                     x_keep_total_len.append([[p_total_len,deep_data[0][1]],x_range_total_len])
                 else:
-                    p_total_len += deep_data[0][0] + 1
+                    # p_total_len += deep_data[0][0] + 1
                     x_range_total_len,total_len = self.total_x_keep_deata(deep_data[1],total_len + deep_data[0][0] + deep_data[0][1] + 2)
-                    x_keep_total_len.append([[p_total_len,deep_data[0][1]],x_range_total_len])
+                    x_keep_total_len.append([[p_total_len,deep_data[0][0]+deep_data[0][1]+1],x_range_total_len])
             else:
                 if deep_data[0] == 0:
                     x_keep_total_len.append([total_len,deep_data[1]])
                     total_len += deep_data[1] +1
                 else:
-                    x_keep_total_len.append([total_len + deep_data[0] + 1, deep_data[1]])
-                    total_len += deep_data[0] + deep_data[1] + 2
+                    # total_len += deep_data[0] + 1
+                    x_keep_total_len.append([total_len, deep_data[0] + deep_data[1] + 1])
+                    total_len += deep_data[1] + deep_data[0] + 2
         
         return x_keep_total_len,total_len
 
@@ -1706,7 +1712,8 @@ class SetPrint:
                     x_keep = index
                     x_line = total_x_keep_data[index] if type(total_x_keep_data[index][0]) != list else total_x_keep_data[index][0]
 
-                    x_line = x_line[0] + x_line[1]//2 - (1 - x_line[1]%2) # 偶数の場合は、中心より左側を中心とする。: - (1 - x_line[1]%2)
+                    diff_2 = x_line[1]//2
+                    x_line = x_line[0] + diff_2 - (1 - x_line[1]%2) # 偶数の場合は、中心より左側を中心とする。: - (1 - x_line[1]%2)
 
                     line_text = self.format_texts[parent_y]
                     self.format_texts[parent_y] = line_text[:previous] + (x_line - previous) * '━' + '┳' + line_text[x_line+1:]
