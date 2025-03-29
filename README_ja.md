@@ -89,7 +89,6 @@ NumPy配列や2Dデータ（画像データ含む）も適切に整形できる 
 
 ```python
 import numpy as np
-from setprint import setprint
 
 data = [
     
@@ -233,8 +232,8 @@ keep_settings
 
         ```python
 
-        from demo_setprint_0_3_0 import SetPrint
-
+        from setprint import SetPrint
+        
         
         #                 整形したい配列を指定
         #                         ∨

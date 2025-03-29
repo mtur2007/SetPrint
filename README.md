@@ -84,7 +84,7 @@ setprint is a powerful data formatting tool that extends Python’s built-in ppr
 
 ```python
 import numpy as np
-from setprint import setprint
+
 
 data = [
     
@@ -226,7 +226,7 @@ keep_settings
     - ### **Example Execution Template**
 
         ```python
-        from demo_setprint_0_3_0 import SetPrint
+        from setprint import SetPrint
 
         # Specify the array you want to format
         #                         ∨
