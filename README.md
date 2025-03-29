@@ -10,14 +10,36 @@
 
 *Read this in [English](https://github.com/mtur2007/SetPrint/blob/main/README.md) or [日本語](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)*
 
-> #### TestPyPI: Test Release Location<br>https://test.pypi.org/project/setprint/
 
 ---
 setprint is a powerful data formatting tool that extends Python’s built-in pprint. It not only formats lists and dictionaries but also properly formats NumPy arrays and 2D data (including image data). In particular, it enhances the visibility of missing data or dimensional mismatches, making debugging easier.
 
-> Update Information  
-> https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/SetPrint_update_image.md
+- ### Installation
+    ```python
+    pip install setprint
+    ```
+- ### Example Usage
+    ```python
+    from setprint import SetPrint
 
+    # Specify the array you want to format
+    #                      ∨
+    list_data = SetPrint(datas)
+
+    # Specify the direction in which to expand
+    # (This will be explained in detail below)
+    #                      ∨
+    keep_settings = {1: 'x', 3: 'yf', 4: 'f'}
+
+    # Execute the formatting
+    format_texts = list_data.set_collection(route=True, keep_settings=keep_settings)
+
+    # Display the results: writing to a text file
+    # (The output method is up to you, but do not forget to add a newline '\n' at the end!)
+    with open('output.txt', 'w') as f:
+        for line in format_texts:
+            f.write(line + '\n')
+    ```
 <br>
 
 ---

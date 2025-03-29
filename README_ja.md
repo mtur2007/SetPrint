@@ -10,14 +10,44 @@
 
 *Read this in [English](https://github.com/mtur2007/SetPrint/blob/main/README.md) or [日本語](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)*
 
-> #### TestPyPI : テスト公開場所<br>https://test.pypi.org/project/setprint/
 
 ---
 setprint は、Python標準の pprint を拡張し、リストや辞書だけでなく、<br>
 NumPy配列や2Dデータ（画像データ含む）も適切に整形できる 強力なデータ整形ツールです。<br>
 特に、配列の欠落や次元違いが発生しているデータの視認性を向上 させ、デバッグを容易にする機能を備えています。<br>
 
-> アップデート情報<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/SetPrint_update_image.md
+
+- ### インストール方法
+    ```python
+    pip install setprint
+    ```
+
+- ### **雛形の実行例**
+
+    ```python
+
+    from setprint import SetPrint
+
+    
+    #                 整形したい配列を指定
+    #                         ∨
+    list_data    = SetPrint(datas)
+    
+    #            '''  展開したい方向を指定
+    #                 （以下で詳しく説明）  '''
+    #                         ∨
+    keep_settings = {1:'x',3:'yf',4:'f'}
+
+    # 整形の実行
+    format_texts  = list_data.set_collection ( route=True, keep_settings=keep_settings )
+
+    # 結果の表示 : テキストファイルへの書き込み 
+    # (表示方法は任意 : !!! 最後に 改行'\n' を忘れずに !!! )
+    with open('output.txt','w') as f:
+        for line in format_texts:
+                f.write(line+'\n')
+
+    ```
 
 <br>
 
@@ -233,7 +263,7 @@ keep_settings
         ```python
 
         from setprint import SetPrint
-        
+
         
         #                 整形したい配列を指定
         #                         ∨
