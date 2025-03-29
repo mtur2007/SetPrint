@@ -29,6 +29,7 @@ setprint is a powerful data formatting tool that extends Python’s built-in ppr
     It formats “storage bugs” and “mixed-dimension data,” which are easily overlooked with pprint, so that they are immediately recognizable.  
     The tool automatically fills missing parts with blanks, making data inconsistencies immediately apparent.
     
+    <br> By comparing the expected arrays (such as samples or templates) with the actual arrays,<br> you can highlight anomalies, allowing you to instantly discern bugs and grasp the structure.
 <br>
 
  - ### Debug and Visualize by Structure/Object
@@ -143,7 +144,7 @@ keep_settings
   ┃       ┃                         170 255  0            85  255  0             0  255  4  
   ┃       ┗━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
   ┃                       >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
-  ┃                                  0  170 255            0  85  255            0   0  255 
+  ┃                                  0  170 255            0  85  255            4   0  255 
   ┣━━ >nadarray 
   ┃       ┣━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
   ┃       ┃               >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
