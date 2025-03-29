@@ -28,7 +28,7 @@ setprint is a powerful data formatting tool that extends Python’s built-in ppr
 
     It formats “storage bugs” and “mixed-dimension data,” which are easily overlooked with pprint, so that they are immediately recognizable.  
     The tool automatically fills missing parts with blanks, making data inconsistencies immediately apparent.
-    
+
     <br> By comparing the expected arrays (such as samples or templates) with the actual arrays,<br> you can highlight anomalies, allowing you to instantly discern bugs and grasp the structure.
 <br>
 
@@ -202,7 +202,7 @@ keep_settings
 
 - ## `set_collection` Method
 
-    The set_list method of the SetPrint class provides functionality to neatly arrange multi-dimensional lists and complex data structures, outputting them in a visually understandable format.  
+    The set_collection method of the SetPrint class provides functionality to neatly arrange multi-dimensional lists and complex data structures, outputting them in a visually understandable format.  
     By using this method, you can optimally format the data according to its dimensions.
     
    - #### Parameters

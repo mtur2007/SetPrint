@@ -131,7 +131,7 @@ setprint(data)
 
 - ## `set_collection` Method
 
-    The set_list method of the SetPrint class provides functionality to neatly arrange multi-dimensional lists and complex data structures, outputting them in a visually understandable format.  
+    The set_collection method of the SetPrint class provides functionality to neatly arrange multi-dimensional lists and complex data structures, outputting them in a visually understandable format.  
     By using this method, you can optimally format the data according to its dimensions.
     
    - #### Parameters
