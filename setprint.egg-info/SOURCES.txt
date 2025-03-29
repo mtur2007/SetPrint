@@ -1,0 +1,10 @@
+README.md
+setup.py
+setprint/SetPrint.py
+setprint/__init__.py
+setprint.egg-info/PKG-INFO
+setprint.egg-info/SOURCES.txt
+setprint.egg-info/dependency_links.txt
+setprint.egg-info/not-zip-safe
+setprint.egg-info/requires.txt
+setprint.egg-info/top_level.txt
