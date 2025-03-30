@@ -2,13 +2,14 @@
 
 ---
 
-# SetPrint(ver, 0.3.0) - Easily Format and Display High-Dimensional Data!
+# SetPrint(ver, 0.3.1) - Easily Format and Display High-Dimensional Data!
 
 ## <> A Data Visualization Tool That Properly Formats Even 2D/NumPy Arrays and Image Data <>
 
 ---
 
 *Read this in [English](https://github.com/mtur2007/SetPrint/blob/main/README.md) or [日本語](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)*
+
 
 ---
 setprint is a powerful data formatting tool that extends Python’s built-in pprint. It not only formats lists and dictionaries but also properly formats NumPy arrays and 2D data (including image data). In particular, it enhances the visibility of missing data or dimensional mismatches, making debugging easier.
@@ -49,7 +50,7 @@ setprint is a powerful data formatting tool that extends Python’s built-in ppr
 
     It formats “storage bugs” and “mixed-dimension data,” which are easily overlooked with pprint, so that they are immediately recognizable.  
     The tool automatically fills missing parts with blanks, making data inconsistencies immediately apparent.
-    
+
     <br> By comparing the expected arrays (such as samples or templates) with the actual arrays,<br> you can highlight anomalies, allowing you to instantly discern bugs and grasp the structure.
 <br>
 
@@ -65,10 +66,25 @@ setprint is a powerful data formatting tool that extends Python’s built-in ppr
 
  - ### Compact Representation of Containment Relationships
 
-    Instead of using brackets ([], (), {}) to represent parent-child relationships, setprint uses lines (┣ :┃:┗) and (┳ : ━ : ┓) to clearly show the connections.
-
-    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/root.png" width="320" alt="サンプル画像">
+    Instead of using brackets ([], (), {}) to represent parent-child relationships, <br>
+    setprint uses lines (┣ :┃:┗) and (┳ : ━ : ┓) to clearly show the connections.
     
+    ```txt
+    Parent 
+      ┣━━━ Sibling
+      ┃       ┣━━━ Child
+      ┃       ┗━━━ Child
+      ┗━━━ Sibling
+              ┣━━━ Child
+              ┗━━━ Child
+    ```
+
+    ```txt
+    Parent ━━━┳━━━━━━━━━━━━━┓
+           Sibling       Sibling
+              ┣━━━ Child    ┣━━ Child
+              ┗━━━ Child    ┗━━ Child
+    ```
     
 <br>
 
@@ -90,7 +106,7 @@ setprint is a powerful data formatting tool that extends Python’s built-in ppr
 
 ```python
 import numpy as np
-from setprint import setprint
+
 
 data = [
     
@@ -136,12 +152,69 @@ setprint(data)
 
 🔹 Output of setprint
 
-<img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_x.png" width="1000" alt="サンプル画像">
+```txt
+keep_settings
+['y', 'y', 'x', 'x']
+--------------------------------------------------------------------------------------------
+
+►list 
+  ┣━━ >nadarray 
+  ┃       ┣━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
+  ┃       ┃               >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
+  ┃       ┃                         255  0   4            255 85   0            255 170  0  
+  ┃       ┣━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
+  ┃       ┃               >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
+  ┃       ┃                         170 255  0            85  255  0             0  255  4  
+  ┃       ┗━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
+  ┃                       >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
+  ┃                                  0  170 255            0  85  255            4   0  255 
+  ┣━━ >nadarray 
+  ┃       ┣━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
+  ┃       ┃               >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
+  ┃       ┃                          4   0  255            0  85  255            0  170 255 
+  ┃       ┣━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
+  ┃       ┃               >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
+  ┃       ┃                          0  255 170            0  255 85             4  255  0  
+  ┃       ┗━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
+  ┃                       >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
+  ┃                                 255 170  0            255 85   0            255  0   4  
+  ┣━━ >nadarray 
+  ┃       ┣━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
+  ┃       ┃                  77                    126                   176    
+  ┃       ┣━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
+  ┃       ┃                  200                   175                   150    
+  ┃       ┗━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
+  ┃                          129                   79                    29     
+  ┗━━   None    
+
+--------------------------------------------------------------------------------------------
+
+```
 
 #### Version with Root Omission Settings
+```txt
+keep_settings
+['y', 'yf', 'f', 'f']
+------------------------------------------------------------------------------------------------------------
 
-<img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_yf.png" width="1000" alt="サンプル画像">
+►list 
+  ┣━━ >nadarray 
+  ┃       ┣━━━━ >nadarray [ >nadarray [ 255  0   4  ] >nadarray [ 255 85   0  ] >nadarray [ 255 170  0  ] ] 
+  ┃       ┣━━━━ >nadarray [ >nadarray [ 170 255  0  ] >nadarray [ 85  255  0  ] >nadarray [  0  255  4  ] ] 
+  ┃       ┗━━━━ >nadarray [ >nadarray [  0  170 255 ] >nadarray [  0  85  255 ] >nadarray [  4   0  255 ] ] 
+  ┣━━ >nadarray 
+  ┃       ┣━━━━ >nadarray [ >nadarray [  4   0  255 ] >nadarray [  0  85  255 ] >nadarray [  0  170 255 ] ] 
+  ┃       ┣━━━━ >nadarray [ >nadarray [  0  255 170 ] >nadarray [  0 255  85  ] >nadarray [  4  255  0  ] ] 
+  ┃       ┗━━━━ >nadarray [ >nadarray [ 255 170  0  ] >nadarray [ 255 85   0  ] >nadarray [ 255  0   4  ] ] 
+  ┣━━ >nadarray 
+  ┃       ┣━━━━ >nadarray [    77                        126                       176                    ] 
+  ┃       ┣━━━━ >nadarray [    200                       175                       150                    ] 
+  ┃       ┗━━━━ >nadarray [    129                       79                        29                     ] 
+  ┗━━   None    
 
+------------------------------------------------------------------------------------------------------------
+
+```
 
 ✅ Differences in dimensions (3D vs 2D) and missing data are visually clear  
 ✅ You can immediately pinpoint abnormalities, making debugging easier
@@ -175,7 +248,7 @@ setprint(data)
     - ### **Example Execution Template**
 
         ```python
-        from demo_setprint_0_3_0 import SetPrint
+        from setprint import SetPrint
 
         # Specify the array you want to format
         #                         ∨
@@ -223,9 +296,15 @@ setprint(data)
             ```
 
         - **Formatting Result**
-            
-            <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/x.png" width="950" alt="サンプル画像">
+            ```plaintext
+            with_route    / out_put
+            ============= ~ -------------
 
+             ***** ┳━┳━┓  :  ***** 
+                   a b c  :        a b c 
+
+            ============= ~ -------------
+            ```
 
         - **Setting Example**
             ```python
@@ -255,8 +334,17 @@ setprint(data)
             ```
 
         - **Formatting Result**
-            <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y.png" width="950" alt="サンプル画像">
+            ```plaintext
+            with_route  / out_put
+            =========== ~ -----------
 
+             ►list      :  ►list 
+               ┣━━ a    :        a 
+               ┣━━ b    :        b 
+               ┗━━ c    :        c 
+
+            =========== ~ -----------
+            ```
 
         - **Setting Example**
             ```python
@@ -282,8 +370,16 @@ setprint(data)
             ```
 
         - **Formatting Result**
-            <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/yf.png" width="950" alt="サンプル画像">
-
+            ```plaintext
+            with_route                                           / out_put
+            ==================================================== ~ ----------------------------------------------------
+            
+             ►list                                               :  ►list 
+               ┣━━ ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ]  :        ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ] 
+               ┗━━ ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ]  :        ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ] 
+            
+            ==================================================== ~ ----------------------------------------------------
+            ```
 
         - **Setting Example**
             ```python
@@ -297,22 +393,50 @@ setprint(data)
     As part of its formatting, setprint visually represents “storage bugs” and “mixed-dimension data” by aligning the array’s `order`/`dimensions` linearly using duplicated axes.
 
     - ### Test Array
-        
-        <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Axis.png" width="600" alt="サンプル画像">
+        ```
+        keep_settings
+        ['x', 'y', 'x', 'x']
+        -----------------------------------------------------------------
+
+           ►list ━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                 ►list                       ►list 
+                   ┣━━ ►list ┳━━━┳━━━━━━━┓     ┣━━ ►list ┳━━━┳━━━━━━━┓
+                   ┃         0 ►list ┳━┓ 0     ┃         1 ►list ┳━┓ 1 
+                   ┃                 0 0       ┃                 1 1 
+                   ┗━━ ►list ┳━━━┳━━━━━━━┳━┓   ┗━━ ►list ┳━━━┳━━━━━━━┳━┓
+                             0   0       0 0             1   1       1 1 
+        -----------------------------------------------------------------
+        ```
 
     - ## y-Axis – Alignment of Array `Order`/Parallel Elements in the y Direction
-        
-        <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Y_Axis.png" width="600" alt="サンプル画像">
-
+        ```
+                   =     .   .   .   ⌄ ⌄ . .   =     .   .   .   ⌄ ⌄ . .
+                                     ┋ ┋                         ┋ ┋
+           ►list ──┬─────────────────┋─┋───────┐                 ┋ ┋
+                 ►list               ┋ ┋     ►list               ┋ ┋
+                   ├── ►list ┬───┬───┋─┋─┐     ├── ►list ┬───┬───┋─┋─┐
+                   │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
+                   │                 0 0       │                 1 1 
+                   └── ►list ┬───┬───┋─┋─┬─┐   └── ►list ┬───┬───┋─┋─┬─┐
+                             0   0   ┋ ┋ 0 0             1   1   ┋ ┋ 1 1 
+                                     X X                         X X
+                                     ^ ^                         ^ ^
+        ```
         This axis maintains the order alignment of parallel arrays expanded in the y direction.  
-        
-    - ## x-Axis – Alignment of Array `Dimensions`/Parallel Elements in the x Direction
-               
-        <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/X_Axis.png" width="600" alt="サンプル画像">
-        
-        This axis maintains the dimensional alignment of parallel arrays expanded in the x direction.
-        
+       
         Note: With the 'f' option, even if the dimensions differ, dimensions within the specified range are displayed on one line, making it impossible to detect mismatches in dimensions.
+
+    - ## x-Axis – Alignment of Array `Dimensions`/Parallel Elements in the x Direction
+        ```
+           ►list ──┬───────────────────────────┐
+        .        ►list                       ►list 
+        =          ├── ►list ┬───┬───────┐     ├── ►list ┬───┬───────┐
+        .          │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
+        > ┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 0 0 X ┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 1 1 X ┉┉┉<
+        =          └── ►list ┬───┬───────┬─┐   └── ►list ┬───┬───────┬─┐
+        .                    0   0       0 0             1   1       1 1 
+        ```
+        This axis maintains the dimensional alignment of parallel arrays expanded in the x direction.
 
     ---
 

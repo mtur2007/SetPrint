@@ -497,7 +497,7 @@ class SetPrint:
             
             if not keep_x:
                 if len(Kdeep_index) == 0:
-                    Kdeep_index = [[0,0]]
+                    Kdeep_index = [[0,1]]
                     #Kdeep_index = ['y']
                     
             len_Kdeep_index = len(Kdeep_index)-1
@@ -507,7 +507,7 @@ class SetPrint:
                 
                 if keep_x:    
                     if len_Kdeep_index < linenum:
-                        Kdeep_index.append([0,0])
+                        Kdeep_index.append([0,1])
                     direction_index = linenum                
 
                 # インデックスのキープ化
@@ -689,7 +689,7 @@ class SetPrint:
             
             if not keep_x:
                 if len(Kdeep_index) == 0:
-                    Kdeep_index = [[0,0]]
+                    Kdeep_index = [[0,1]]
                     #Kdeep_index = ['y']
 
             len_Kdeep_index = len(Kdeep_index)-1
@@ -701,7 +701,7 @@ class SetPrint:
                 
                 if keep_x:    
                     if len_Kdeep_index < linenum:
-                        Kdeep_index.append([0,0])
+                        Kdeep_index.append([0,1])
                     direction_index = linenum
                 
                 # インデックスのキープ化
@@ -1437,7 +1437,8 @@ class SetPrint:
                 index += 1
                     
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
-                    self.format_route(line,total_x_keep_data[index][1],total_x_keep_data[index][0],now_deep+1,now_y_keep_index+[0])
+                    if len(line) != 0:
+                        self.format_route(line,total_x_keep_data[index][1],total_x_keep_data[index][0],now_deep+1,now_y_keep_index+[0])
 
         elif set_keep_type == 'yf':
             

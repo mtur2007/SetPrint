@@ -2,8 +2,8 @@
 #print('\n'+'/ \033[38;2;255;165;0m\033[1mtest\033[0m / \033[38;5;27mtest\033[0m '*10+'/\n')
 
 # 実行コード
-# from test_setprint_0_3_0 import SetPrint
-from development_ver_0_3_1 import SetPrint
+# from setprint import SetPrint
+#from development_ver_0_3_1 import SetPrint
 
 import numpy as np
 
@@ -54,8 +54,8 @@ elif False:
 
 elif True:
 
-      test_data    = [[[0,0,0]],[[1,1,1]],[[2,2,[]]],[]]
-      keep_settings = {1:'yf',4:'x'}
+      test_data    = [[[[0,0,0]],[['1--',1,1]],[[2,2,[]]]],[{'one':[0,0,[[0,'',0],[0,0]]]},[[1,1,1]],[[2,2,[]]]],[]]
+      keep_settings = {1:'y',2:'x',4:'x',5:'yf'}
 
       '''
 
@@ -78,6 +78,10 @@ elif True:
 
       # 原因
       # ルートの表示の際、空配列にアクセスしようとしてインデックスエラーを引き起こしていた
+
+else:
+      test_data = [{'bug':'**'},[['[0][1][0]']]]
+      keep_settings = {1:'yf'}
 
 # インスタンスを生成
 list_data = SetPrint(test_data)
