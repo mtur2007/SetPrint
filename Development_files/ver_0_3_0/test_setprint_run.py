@@ -173,8 +173,8 @@ else:
 
             # None]
             
-            test_data = [{'a':0},1,2,3,[4]]
-            keep_settings = {1:'yf'}
+            test_data = [{'a':0},1,2,3,[''],4]
+            keep_settings = {1:'x'}
 
       else:
 

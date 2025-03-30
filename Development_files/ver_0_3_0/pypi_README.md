@@ -10,14 +10,35 @@
 
 *Read this in [English](https://github.com/mtur2007/SetPrint/blob/main/README.md) or [日本語](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)*
 
-> #### TestPyPI: Test Release Location<br>https://test.pypi.org/project/setprint/
-
 ---
 setprint is a powerful data formatting tool that extends Python’s built-in pprint. It not only formats lists and dictionaries but also properly formats NumPy arrays and 2D data (including image data). In particular, it enhances the visibility of missing data or dimensional mismatches, making debugging easier.
 
-> Update Information  
-> https://github.com/mtur2007/SetPrint/blob/main/Development_files/update_0_3_d/SetPrint_update_image.md
+- ### Installation
+    ```python
+    pip install setprint
+    ```
+- ### Example Usage
+    ```python
+    from setprint import SetPrint
 
+    # Specify the array you want to format
+    #                      ∨
+    list_data = SetPrint(datas)
+
+    # Specify the direction in which to expand
+    # (This will be explained in detail below)
+    #                      ∨
+    keep_settings = {1: 'x', 3: 'yf', 4: 'f'}
+
+    # Execute the formatting
+    format_texts = list_data.set_collection(route=True, keep_settings=keep_settings)
+
+    # Display the results: writing to a text file
+    # (The output method is up to you, but do not forget to add a newline '\n' at the end!)
+    with open('output.txt', 'w') as f:
+        for line in format_texts:
+            f.write(line + '\n')
+    ```
 <br>
 
 ---
@@ -284,13 +305,14 @@ setprint(data)
         <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Y_Axis.png" width="600" alt="サンプル画像">
 
         This axis maintains the order alignment of parallel arrays expanded in the y direction.  
-        ※ With the setting `f`, even if dimensions differ, arrays within the same range are displayed in one line so that mismatches can still be recognized.
-
+        
     - ## x-Axis – Alignment of Array `Dimensions`/Parallel Elements in the x Direction
                
         <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/X_Axis.png" width="600" alt="サンプル画像">
         
         This axis maintains the dimensional alignment of parallel arrays expanded in the x direction.
+        
+        Note: With the 'f' option, even if the dimensions differ, dimensions within the specified range are displayed on one line, making it impossible to detect mismatches in dimensions.
 
     ---
 

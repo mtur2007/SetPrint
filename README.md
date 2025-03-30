@@ -204,7 +204,7 @@ keep_settings
   ┃       ┗━━━━ >nadarray [ >nadarray [  0  170 255 ] >nadarray [  0  85  255 ] >nadarray [  4   0  255 ] ] 
   ┣━━ >nadarray 
   ┃       ┣━━━━ >nadarray [ >nadarray [  4   0  255 ] >nadarray [  0  85  255 ] >nadarray [  0  170 255 ] ] 
-  ┃       ┣━━━━ >nadarray [ >nadarray [  0  255 170 ] >nadarray [  0 255 85  ] >nadarray [  4  255  0  ] ] 
+  ┃       ┣━━━━ >nadarray [ >nadarray [  0  255 170 ] >nadarray [  0 255  85  ] >nadarray [  4  255  0  ] ] 
   ┃       ┗━━━━ >nadarray [ >nadarray [ 255 170  0  ] >nadarray [ 255 85   0  ] >nadarray [ 255  0   4  ] ] 
   ┣━━ >nadarray 
   ┃       ┣━━━━ >nadarray [    77                        126                       176                    ] 
@@ -423,7 +423,8 @@ keep_settings
                                      ^ ^                         ^ ^
         ```
         This axis maintains the order alignment of parallel arrays expanded in the y direction.  
-        ※ With the setting `f`, even if dimensions differ, arrays within the same range are displayed in one line so that mismatches can still be recognized.
+       
+        Note: With the 'f' option, even if the dimensions differ, dimensions within the specified range are displayed on one line, making it impossible to detect mismatches in dimensions.
 
     - ## x-Axis – Alignment of Array `Dimensions`/Parallel Elements in the x Direction
         ```
