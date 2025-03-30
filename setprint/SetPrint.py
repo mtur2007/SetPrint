@@ -545,7 +545,6 @@ class SetPrint:
                     else:
                         if type(Kdeep_index[direction_index][0]) != list:
                             if Kdeep_index[direction_index][0] < len(str(key)):
-                                print('+')
                                 Kdeep_index[direction_index][0] = len(str(key))
 
                             if Kdeep_index[direction_index][1] < self.collections[type(line).__name__][1]:
@@ -1080,7 +1079,7 @@ class SetPrint:
                                 line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                             else:
                                 k_dif = (axis_len[0] - len(str(dict_key)))
-                                k_dif_2 = (dif // 2)
+                                k_dif_2 = (k_dif // 2)
                                 line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                     
                         now_line += 1
@@ -1107,12 +1106,70 @@ class SetPrint:
                     # print(parent,y_x_indexs,now_line)
                     
                     #print(search_index)
-                    parent_list,in_dect = self.map_sequence_indices(self.input_list,parent)
-
+                    parent_list,dict_key = self.map_sequence_indices(self.input_list,parent)
+                    value = parent_list
+                    
                     before_nest = parent_deep
                     deep_types = []
 
-                    for y_x_index in y_x_indexs:
+                    while x_keep_index[now_line] != keep_parent:
+
+                        axis_len = keep_len[now_line]
+                        if axis_len[0] == 0:
+                            line_txt += axis_len[1]*' ' + ' '
+                        else:
+                            line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
+                        now_line += 1
+
+                    if isinstance(value, self.collection_type):
+                        
+                        axis_len = keep_len[now_line]
+
+                        data_type = type(value)
+                        value,image_len = self.collections[type(value).__name__]
+
+                        dif = (axis_len[1] - image_len)
+                        v_dif_2 = (dif // 2)
+
+                        if axis_len[0] == 0:
+                            line_txt += v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                        else:
+                            if dict_key == None:
+                                line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                            else:
+                                k_dif = (axis_len[0] - len(str(dict_key)))
+                                k_dif_2 = (k_dif // 2)
+                                line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                                
+                        
+                        if last_deep != 0:
+                            before_nest += 1
+                            now_line += 1
+
+                            deep_types.append(data_type)
+                            bracket = self.brackets[data_type.__name__]
+                            line_txt += (keep_len[now_line][1] - bracket[1][0])*' ' + bracket[0][0] + ' '
+                        
+                    else:
+
+                        axis_len = keep_len[now_line]
+                        
+                        dif = (axis_len[1] - len(str(value)))
+                        v_dif_2 = (dif // 2)
+                        
+                        if axis_len[0] == 0:
+                            line_txt += v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                        else:
+                            if dict_key == None:
+                                line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                            else:
+                                k_dif = (axis_len[0] - len(str(dict_key)))
+                                k_dif_2 = (k_dif // 2)
+                                line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                                
+                    now_line += 1
+
+                    for y_x_index in y_x_indexs[1:]:
 
                         value,in_dect = self.map_sequence_indices(parent_list,y_x_index)
 
@@ -1156,7 +1213,7 @@ class SetPrint:
                             else:
                                 line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                             now_line += 1
-
+                        
                         value,dict_key = self.map_sequence_indices(parent_list,y_x_index)
 
                         if isinstance(value, self.collection_type):
@@ -1176,7 +1233,7 @@ class SetPrint:
                                     line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                 else:
                                     k_dif = (axis_len[0] - len(str(dict_key)))
-                                    k_dif_2 = (dif // 2)
+                                    k_dif_2 = (k_dif // 2)
                                     line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                     
                             
@@ -1202,7 +1259,7 @@ class SetPrint:
                                     line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                 else:
                                     k_dif = (axis_len[0] - len(str(dict_key)))
-                                    k_dif_2 = (dif // 2)
+                                    k_dif_2 = (k_dif // 2)
                                     line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                     
                         now_line += 1

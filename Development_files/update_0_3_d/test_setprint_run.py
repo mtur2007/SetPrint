@@ -173,7 +173,8 @@ else:
 
             # None]
             
-            keep_settings = {1:'y',2:'yf'}
+            test_data = [{'a':0},1,2,3,[4]]
+            keep_settings = {1:'yf'}
 
       else:
 
