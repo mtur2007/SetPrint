@@ -84,7 +84,7 @@ else:
       'template':[0,1,2],
       'Expected':[0,['1-0','1-1'],2]
       }
-      keep_settings = {1:'x',2:'x'}
+      keep_settings = {1:'y',2:'x'}
 
 # インスタンスを生成
 list_data = SetPrint(test_data)
@@ -102,7 +102,7 @@ style_settings = (
 list_data.update_data_with_arguments(style_settings)
 
 # 整形
-format_texts = list_data.set_collection ( route=True, keep_settings=keep_settings )
+format_texts = list_data.set_collection ( route=False, y_axis=True, keep_settings=keep_settings )
 # format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
 
 with open('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/ver_0_3_1/output.txt','w') as f:
