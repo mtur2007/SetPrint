@@ -170,7 +170,7 @@ class SetPrint:
           ("Collections" ,
             {  'image'   : { 'list'    : '►list' ,
                              'tuple'   : '▷tuple' ,
-                             'ndarray' : '>nadarray' ,
+                             'ndarray' : '>ndarray' ,
                              'dict'    : '◆dict' }}),
 
         )

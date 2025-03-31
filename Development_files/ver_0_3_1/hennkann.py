@@ -16,4 +16,4 @@ def process_file(input_file):
 
 if __name__ == "__main__":
     # input.txt というファイルを処理
-    process_file("/Users/matsuurakenshin/WorkSpace/development/setprint_package/GPT_honnyaku.txt")
+    process_file("/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/ver_0_3_1/GPT_honnyaku.txt")

@@ -1,10 +1,6 @@
-## [ demo ]
+# SetPrint(ver, 0.3.1) – Easily Format and Display High-Dimensional Data!
 
----
-
-# SetPrint(ver, 0.3.1) - Easily Format and Display High-Dimensional Data!
-
-## <> A Data Visualization Tool That Properly Formats Even 2D/NumPy Arrays and Image Data <>
+## <> A Data Visualization Tool Capable of Properly Formatting 2D/NumPy Arrays and Image Data <>
 
 ---
 
@@ -12,31 +8,30 @@
 
 ---
 
-setprint is a powerful data formatting tool that extends Python’s built-in pprint—not only for lists and dictionaries but also for NumPy arrays and 2D data (including image data). It is designed to enhance the visibility of missing data and mismatched dimensions, thereby making debugging much easier.
+Setprint extends Python’s built-in pprint so that not only lists and dictionaries but also NumPy arrays and 2D data (including image data) can be formatted appropriately. It is a powerful data formatting tool that enhances the visibility of missing elements and dimension mismatches in arrays, thereby making debugging easier.
 
 - ### Installation
     ```python
     pip install setprint
     ```
 
-- ### **Example Execution Template**
-
+- ### **Example Usage Template**
     ```python
     from setprint import SetPrint
 
-    # Specify the array you want to format
-    #                  　　    ∨
-    list_data 　　= SetPrint(datas)
+    # Specify the array to be formatted
+    #                         ∨
+    list_data = SetPrint(datas)
     
-    # Specify the expansion direction (detailed explanation follows)
-    #                          ∨
+    # Specify the expansion direction (explained in detail below)
+    #                         ∨
     keep_settings = {1:'x', 3:'yf', 4:'f'}
 
     # Execute the formatting
-    format_texts = list_data.set_collection(route=True, keep_settings=keep_settings)
+    format_texts = list_data.set_collection(route=True, y_axis=False, keep_settings=keep_settings)
 
-    # Display the result: writing to a text file
-    # (The output method is flexible; just be sure to include a newline '\n' at the end!)
+    # Display the result: Writing to a text file 
+    # (You can display it as desired; just don’t forget to include a newline '\n' at the end!)
     with open('output.txt', 'w') as f:
         for line in format_texts:
             f.write(line + '\n')
@@ -48,71 +43,71 @@ setprint is a powerful data formatting tool that extends Python’s built-in ppr
 
 ## ✅ Features of `setprint`
 
- - ### Automatically Adjusts for Missing Data and Dimension Differences
+ - ### Automatically Adjusts for Missing Elements and Dimension Differences
 
-    It formats “storage bugs” and “mixed-dimension data” that are easily overlooked by pprint so that they can be instantly identified.  
-    Missing parts are automatically filled with blanks, enabling immediate detection of data inconsistencies.
+    Unlike pprint, which may easily overlook “storage bugs” or the mixing of data with different dimensions, setprint formats data so that such irregularities are immediately noticeable. It automatically fills in missing parts with blank spaces, so data inconsistencies are revealed at once.
     
     <br>
-    By comparing the expected structure (for example, from a template or sample) with the actual array, you can highlight anomalies and quickly identify bugs or structural discrepancies.
-    
+    By comparing the expected structure (templates or examples) with the actual array, you can quickly pinpoint abnormalities and understand the overall structure.
+
 <br>
 
- - ### Debug and Visualize by Structure/Object
+ - ### Debug and Visualize by Object/Structure
 
-    With setprint, debugging and visualization can be performed on a per-structure or per-object basis, resolving issues like uniform formatting or unwanted line breaks.  
-    Consequently,  
-    **arrays intended to maintain a 2D structure (such as image data or binary data) can be formatted and displayed while preserving their designed layout.**
-    
-    > #### Example from an OCR Program  
+    With setprint, you can perform debugging and visualization on a per-object (or per-structure) basis.
+    **It resolves issues such as uniform formatting or unwanted automatic line breaks.**
+
+    Therefore, it is possible to maintain the intended structure when formatting 2D arrays (such as image or binary data).
+
+    > #### Example of an OCR Program  
     > https://github.com/mtur2007/SetPrint/blob/main/Development_files/format_data/y_x_yf_f.txt
 
 <br>
 
- - ### Compact Representation of Containment Relationships
+ - ### Compact Representation of Data Relationships
 
-    Instead of representing relationships between parent and child elements with brackets ([]/()/{}) the tool uses lines (┣ :┃:┗) and (┳ : ━ : ┓) to clearly depict connections.
+    Instead of using brackets like []/()/{} to represent parent-child relationships, setprint uses lines (e.g., ┣, ┃, ┗ and ┳, ━, ┓) to clearly indicate connections.
     
     ```txt
-    Parent 
-      ┣━━━ Sibling
-      ┃       ┣━━━ Child
-      ┃       ┗━━━ Child
-      ┗━━━ Sibling
-              ┣━━━ Child
-              ┗━━━ Child
+    Parent Element 
+      ┣━━ Sibling Element
+      ┃     ┣━━ Child Element
+      ┃     ┗━━ Child Element
+      ┗━━ Sibling Element
+            ┣━━ Child Element
+            ┗━━ Child Element
     ```
 
     ```txt
-    Parent ━━━┳━━━━━━━━━━━━━┓
-           Sibling       Sibling
-              ┣━━━ Child    ┣━━━ Child
-              ┗━━━ Child    ┗━━━ Child
+    Parent Element ━━┳━━━━━━━━━━━┓
+          Sibling         Sibling
+            ┣━━ Child     ┣━━ Child
+            ┗━━ Child     ┗━━ Child
     ```
 <br>
 
 - [Upcoming Updates]
 
-  > #### An index display feature is planned, which will help further clarify data structure relationships.
+  > #### A feature to display indices is planned, allowing for an even clearer understanding of data structure.
   
-  > #### A conversion feature for stored data (mapping specific values) is planned to simplify data transformation processes.
+  > #### A mapping function to convert stored information (mapping specific values) will be added to ease data transformation.
 
 <br>
 
 ---
 
-## 🛠 Usage Example of `setprint`
+## 🛠 Examples of Using `setprint`
 
 🔹 Example of Visualizing Three Different Formats of Image Data
 
-📌 For cases where data with different dimensions coexist (e.g. a mix of RGB and grayscale images)
+📌 Case: When data of different dimensions are mixed (e.g., mixing RGB images with grayscale images)
 
 ```python
 import numpy as np
 
 data = [
     
-    # RGB image (3x3x3) – Sample array 
+    # RGB image (3x3x3) – sample array
     np.array([[[255,   0,   4],
                [255,  85,   0],
                [255, 170,   0]],
@@ -125,7 +120,7 @@ data = [
                [  0,  85, 255],
                [  4,   0, 255]]]),
     
-    # Sample array in a different format: BGR image
+    # Sample array in a different format (BGR image)
     np.array([[[  4,   0, 255],
                [  0,  85, 255],
                [  0, 170, 255]],
@@ -138,7 +133,7 @@ data = [
                [255,  85,   0],
                [255,   0,   4]]]),
     
-    # Grayscale image (3x3) → This one has a different dimension
+    # Grayscale image (3x3) → Only this one has different dimensions
     np.array([[ 77, 126, 176],
               [200, 175, 150],
               [129,  79,  29]]),
@@ -153,381 +148,437 @@ setprint(data)
 <br>
 
 🔹 Output from setprint
-
 ```txt
-keep_settings
-['y', 'y', 'x', 'x']
---------------------------------------------------------------------------------------------
-
-►list 
-  ┣━━ >nadarray 
-  ┃       ┣━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
-  ┃       ┃               >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
-  ┃       ┃                         255  0   4            255 85   0            255 170  0  
-  ┃       ┣━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
-  ┃       ┃               >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
-  ┃       ┃                         170 255  0            85  255  0             0  255  4  
-  ┃       ┗━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
-  ┃                       >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
-  ┃                                  0  170 255            0  85  255            4   0  255 
-  ┣━━ >nadarray 
-  ┃       ┣━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
-  ┃       ┃               >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
-  ┃       ┃                          4   0  255            0  85  255            0  170 255 
-  ┃       ┣━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
-  ┃       ┃               >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
-  ┃       ┃                          0  255 170            0  255 85             4  255  0  
-  ┃       ┗━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
-  ┃                       >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓  >nadarray ━┳━━━┳━━━┓
-  ┃                                 255 170  0            255 85   0            255  0   4  
-  ┣━━ >nadarray 
-  ┃       ┣━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
-  ┃       ┃                  77                    126                   176    
-  ┃       ┣━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
-  ┃       ┃                  200                   175                   150    
-  ┃       ┗━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
-  ┃                          129                   79                    29     
-  ┗━━   None    
+keep_settings                                                                            :  keep_settings
+['y', 'y', 'x', 'x']                                                                     :  ['y', 'y', 'x', 'x']
+y_axis : False                                                                           :  y_axis : True
+---------------------------------------------------------------------------------------  :  ---------------------------------------------------------------------------------------
+                                                                                         :  
+►list                                                                                    :  ►list    ┊        ┊        ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊  
+  ┣━━ >ndarray                                                                           :    ┣━━ >ndarray    ┊        ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊  
+  ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃      ┃              >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓    :    ┃      ┃        ┊     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  
+  ┃      ┃                       255  0   4           255 85   0           255 170  0    :    ┃      ┃        ┊        ┊     255  0   4     ┊     255 85   0     ┊     255 170  0  
+  ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃      ┃              >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓    :    ┃      ┃        ┊     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  
+  ┃      ┃                       170 255  0           85  255  0            0  255  4    :    ┃      ┃        ┊        ┊     170 255  0     ┊     85  255  0     ┊      0  255  4  
+  ┃      ┗━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┗━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃                     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓    :    ┃      ┊        ┊     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  
+  ┃                               0  170 255           0  85  255           4   0  255   :    ┃      ┊        ┊        ┊      0  170 255    ┊      0  85  255    ┊      4   0  255 
+  ┣━━ >ndarray                                                                           :    ┣━━ >ndarray    ┊        ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊  
+  ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃      ┃              >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓    :    ┃      ┃        ┊     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  
+  ┃      ┃                        4   0  255           0  85  255           0  170 255   :    ┃      ┃        ┊        ┊      4   0  255    ┊      0  85  255    ┊      0  170 255 
+  ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃      ┃              >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓    :    ┃      ┃        ┊     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  
+  ┃      ┃                        0  255 170           0  255 85            4  255  0    :    ┃      ┃        ┊        ┊      0  255 170    ┊      0  255 85     ┊      4  255  0  
+  ┃      ┗━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┗━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃                     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓    :    ┃      ┊        ┊     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  
+  ┃                              255 170  0           255 85   0           255  0   4    :    ┃      ┊        ┊        ┊     255 170  0     ┊     255 85   0     ┊     255  0   4  
+  ┣━━ >ndarray                                                                           :    ┣━━ >ndarray    ┊        ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊  
+  ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃      ┃                 77                  126                  176                  :    ┃      ┃        ┊        77     ┊   ┊   ┊    126     ┊   ┊   ┊    176     ┊   ┊   ┊  
+  ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃      ┃                200                  175                  150                  :    ┃      ┃        ┊       200     ┊   ┊   ┊    175     ┊   ┊   ┊    150     ┊   ┊   ┊  
+  ┃      ┗━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┗━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃                       129                   79                   29                  :    ┃      ┊        ┊       129     ┊   ┊   ┊     79     ┊   ┊   ┊     29     ┊   ┊   ┊  
+  ┗━━   None                                                                             :    ┗━━   None      ┊        ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊  
+                                                                                         :  
+---------------------------------------------------------------------------------------  :  ---------------------------------------------------------------------------------------
 ```
 
-#### Version with Root Omission Settings
-
-```txt
-keep_settings
-['y', 'yf', 'f', 'f']
-------------------------------------------------------------------------------------------------------------
-
-►list 
-  ┣━━ >nadarray 
-  ┃       ┣━━━━ >nadarray [ >nadarray [ 255  0   4  ] >nadarray [ 255 85   0  ] >nadarray [ 255 170  0  ] ] 
-  ┃       ┣━━━━ >nadarray [ >nadarray [ 170 255  0  ] >nadarray [ 85  255  0  ] >nadarray [  0  255  4  ] ] 
-  ┃       ┗━━━━ >nadarray [ >nadarray [  0  170 255 ] >nadarray [  0  85  255 ] >nadarray [  4   0  255 ] ] 
-  ┣━━ >nadarray 
-  ┃       ┣━━━━ >nadarray [ >nadarray [  4   0  255 ] >nadarray [  0  85  255 ] >nadarray [  0  170 255 ] ] 
-  ┃       ┣━━━━ >nadarray [ >nadarray [  0  255 170 ] >nadarray [  0  255 85  ] >nadarray [  4  255  0  ] ] 
-  ┃       ┗━━━━ >nadarray [ >nadarray [ 255 170  0  ] >nadarray [ 255 85   0  ] >nadarray [ 255  0   4  ] ] 
-  ┣━━ >nadarray 
-  ┃       ┣━━━━ >nadarray [    77                        126                       176                    ] 
-  ┃       ┣━━━━ >nadarray [    200                       175                       150                    ] 
-  ┃       ┗━━━━ >nadarray [    129                       79                        29                     ] 
-  ┗━━   None    
-
-------------------------------------------------------------------------------------------------------------
-
-<br>
 
 #### Version with Root Omission Settings
-
 ```txt
-keep_settings
-['y', 'yf', 'f', 'f']
-------------------------------------------------------------------------------------------------------------
-...
+['y', 'yf', 'f', 'f']                                                                                    :  ['y', 'yf', 'f', 'f']
+y_axis : False                                                                                           :  y_axis : True
+-------------------------------------------------------------------------------------------------------  :  -------------------------------------------------------------------------------------------------------
+                                                                                                         :  
+►list                                                                                                    :  ►list    ┊        ┊          ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊      
+  ┣━━ >ndarray                                                                                           :    ┣━━ >ndarray    ┊          ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊      
+  ┃      ┣━━━━ >ndarray [ >ndarray [ 255  0   4  ] >ndarray [ 255 85   0  ] >ndarray [ 255 170  0  ] ]   :    ┃      ┣━━━━ >ndarray [ >ndarray [ 255  0   4  ] >ndarray [ 255 85   0  ] >ndarray [ 255 170  0  ] ] 
+  ┃      ┣━━━━ >ndarray [ >ndarray [ 170 255  0  ] >ndarray [ 85  255  0  ] >ndarray [  0  255  4  ] ]   :    ┃      ┣━━━━ >ndarray [ >ndarray [ 170 255  0  ] >ndarray [ 85  255  0  ] >ndarray [  0  255  4  ] ] 
+  ┃      ┗━━━━ >ndarray [ >ndarray [  0  170 255 ] >ndarray [  0  85  255 ] >ndarray [  4   0  255 ] ]   :    ┃      ┗━━━━ >ndarray [ >ndarray [  0  170 255 ] >ndarray [  0  85  255 ] >ndarray [  4   0  255 ] ] 
+  ┣━━ >ndarray                                                                                           :    ┣━━ >ndarray    ┊          ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊      
+  ┃      ┣━━━━ >ndarray [ >ndarray [  4   0  255 ] >ndarray [  0  85  255 ] >ndarray [  0  170 255 ] ]   :    ┃      ┣━━━━ >ndarray [ >ndarray [  4   0  255 ] >ndarray [  0  85  255 ] >ndarray [  0  170 255 ] ] 
+  ┃      ┣━━━━ >ndarray [ >ndarray [  0  255 170 ] >ndarray [  0  255 85  ] >ndarray [  4  255  0  ] ]   :    ┃      ┣━━━━ >ndarray [ >ndarray [  0  255 170 ] >ndarray [  0  255 85  ] >ndarray [  4  255  0  ] ] 
+  ┃      ┗━━━━ >ndarray [ >ndarray [ 255 170  0  ] >ndarray [ 255 85   0  ] >ndarray [ 255  0   4  ] ]   :    ┃      ┗━━━━ >ndarray [ >ndarray [ 255 170  0  ] >ndarray [ 255 85   0  ] >ndarray [ 255  0   4  ] ] 
+  ┣━━ >ndarray                                                                                           :    ┣━━ >ndarray    ┊          ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊      
+  ┃      ┣━━━━ >ndarray [    77                      126                      176                    ]   :    ┃      ┣━━━━ >ndarray [    77       ┊   ┊   ┊      126       ┊   ┊   ┊      176       ┊   ┊   ┊    ] 
+  ┃      ┣━━━━ >ndarray [   200                      175                      150                    ]   :    ┃      ┣━━━━ >ndarray [   200       ┊   ┊   ┊      175       ┊   ┊   ┊      150       ┊   ┊   ┊    ] 
+  ┃      ┗━━━━ >ndarray [   129                       79                       29                    ]   :    ┃      ┗━━━━ >ndarray [   129       ┊   ┊   ┊       79       ┊   ┊   ┊       29       ┊   ┊   ┊    ] 
+  ┗━━   None                                                                                             :    ┗━━   None      ┊          ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊      
+                                                                                                         :  
+-------------------------------------------------------------------------------------------------------  :  -------------------------------------------------------------------------------------------------------
 ```
 
-<br>
+## [] Parallel Arrays: Matching Array `Order` and `Dimensions`
 
-✅ Differences in dimensions (3D vs 2D) and missing data are clearly visible  
-✅ Abnormalities can be immediately identified, making debugging much easier
+As part of the formatting process, setprint represents “storage bugs” and the mixing of data with different dimensions by aligning the array’s `order` and `dimensions` using overlapping axes.
 
-<br>
+- ### Test Array
+    ```
+    keep_settings
+    ['x', 'y', 'x', 'x']
+    -----------------------------------------------------------------
+
+       ►list ━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+             ►list                       ►list 
+               ┣━━ ►list ┳━━━┳━━━━━━━┓     ┣━━ ►list ┳━━━┳━━━━━━━┓
+               ┃         0 ►list ┳━┓ 0     ┃         1 ►list ┳━┓ 1 
+               ┃                 0 0       ┃                 1 1 
+               ┗━━ ►list ┳━━━┳━━━━━━━┳━┓   ┗━━ ►list ┳━━━┳━━━━━━━┳━┓
+                         0   0       0 0             1   1       1 1 
+
+    -----------------------------------------------------------------
+    ```
+
+- ## y-Axis – Alignment with the Order of the Parallel Array Expanded in the x Direction
+    ```
+               .     =   =   =   ⌄ ⌄ = =   .     =   =   =   ⌄ ⌄ = =
+                                 ┋ ┋                         ┋ ┋
+       ►list ──┬─────────────────┋─┋───────┐                 ┋ ┋
+             ►list               ┋ ┋     ►list               ┋ ┋
+               ├── ►list ┬───┬───┋─┋─┐     ├── ►list ┬───┬───┋─┋─┐
+               │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
+               │                 0 0       │                 1 1 
+               └── ►list ┬───┬───┋─┋─┬─┐   └── ►list ┬───┬───┋─┋─┬─┐
+                         0   0   ┋ ┋ 0 0             1   1   ┋ ┋ 1 1 
+                                 X X                         X X
+                                 ^ ^                         ^ ^
+    ```
+    This axis maintains the order alignment with the parallel array expanded in the x direction.
+
+- ## x-Axis – Alignment with the Dimensions of the Parallel Array Expanded in the y Direction
+    ```
+       ►list ──┬───────────────────────────┐
+    =        ►list                       ►list 
+    =          ├── ►list ┬───┬───────┐     ├── ►list ┬───┬───────┐
+    =          │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
+    > ┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 0 0 X ┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 1 1 X ┉┉┉ <
+    =          └── ►list ┬───┬───────┬─┐   └── ►list ┬───┬───────┬─┐
+    =                    0   0       0 0             1   1       1 1 
+    ```
+    This axis maintains the dimensional alignment with the parallel array expanded in the y direction.
+    
+    ※ In the case of the 'f' setting, even if dimensions differ, as long as they are within range, they are displayed on one line—so differences may not be noticeable.
 
 ---
 
-- ## [] Parallel Arrays: Alignment of Array `Order`/`Dimensions`
-    
-    In setprint, as part of its formatting process, “storage bugs” and “mixed-dimension data” are represented linearly by duplicating axes to visualize the alignment of array `order` and `dimensions`.
+### ※ Regarding the Parallel Elements Represented on Both Axes
 
-    - ### Test Array
-        ```
-        keep_settings
-        ['x', 'y', 'x', 'x']
-        -----------------------------------------------------------------
+In setprint, when visualizing the alignment of array order and dimensions, arrays are arranged in parallel along both the y and x axes for comparison.
 
-           ►list ━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-                 ►list                       ►list 
-                   ┣━━ ►list ┳━━━┳━━━━━━━┓     ┣━━ ►list ┳━━━┳━━━━━━━┓
-                   ┃         0 ►list ┳━┓ 0     ┃         1 ►list ┳━┓ 1 
-                   ┃                 0 0       ┃                 1 1 
-                   ┗━━ ►list ┳━━━┳━━━━━━━┳━┓   ┗━━ ►list ┳━━━┳━━━━━━━┳━┓
-                             0   0       0 0             1   1       1 1 
+Because the meaning of each axis may differ, note the following in exceptional cases:
 
-        -----------------------------------------------------------------
-        ```
+- **Parallel Element ( = )**  
+  The parts expanded with the settings 'x' or 'f' serve as both order alignment and parallel elements; their specific meaning is determined by the user’s application.  
+  The parts expanded with the settings 'y' or 'yf' represent parallel elements solely.
+  
+  > In the context of aligning dimensions, line breaks and formatting occur automatically with the 'x' or 'f' expansion settings.
 
-    - ## y-Axis – Alignment of Order with the Parallel Array in the x Direction
-        ```
-                   .     =   =   =   ⌄ ⌄ = =   .     =   =   =   ⌄ ⌄ = =
-                                     ┋ ┋                         ┋ ┋
-           ►list ──┬─────────────────┋─┋───────┐                 ┋ ┋
-                 ►list               ┋ ┋     ►list               ┋ ┋
-                   ├── ►list ┬───┬───┋─┋─┐     ├── ►list ┬───┬───┋─┋─┐
-                   │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
-                   │                 0 0       │                 1 1 
-                   └── ►list ┬───┬───┋─┋─┬─┐   └── ►list ┬───┬───┋─┋─┬─┐
-                             0   0   ┋ ┋ 0 0             1   1   ┋ ┋ 1 1 
-                                     X X                         X X
-                                     ^ ^                         ^ ^
-        ```
-        This axis maintains the order alignment with the parallel array expanded in the x direction.
+### ※ Note that alignment is maintained only for axes expanding in the vertical or horizontal directions. For axes expanded in parallel, alignment is done per parallel element.
 
-    - ## x-Axis – Alignment of Dimensions with the Parallel Array in the y Direction
-        ```
-           ►list ──┬───────────────────────────┐
-        =        ►list                       ►list 
-        =          ├── ►list ┬───┬───────┐     ├── ►list ┬───┬───────┐
-        =          │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
-        > ┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 0 0 X ┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 1 1 X ┉┉┉┉┉<
-        =          └── ►list ┬───┬───────┬─┐   └── ►list ┬───┬───────┬─┐
-        =                    0   0       0 0             1   1       1 1 
-        ```
-        This axis maintains the alignment of dimensions with the parallel array expanded in the y direction.
-
-        ※ With the `f` option, even if dimensions differ, dimensions within the specified range are displayed on one line, making it impossible to detect mismatches in dimensions.
-
-    <br>
-
-    ---
-
-    ### ※ About the Parallel Elements Represented by Both Axes
-        
-    In setprint, to enable debugging and visualization on a per-structure/object basis, arrays are arranged in parallel along the y and x directions for comparison of array order and dimensions.
-
-    During this process, the meaning of each axis may differ; here are some clarifications:
-
-    - `Parallel Elements` ( = ) 
-        
-        Portions expanded with the settings `'x'` or `'f'` serve as both order alignment and parallel elements—the interpretation depends on the context.  
-        Portions expanded with the settings `'y'` or `'yf'` represent only parallel elements, without implying dimensional alignment.
-        
-        > Line breaks or representations indicating dimensional alignment are automatically applied when using the `'x'` or `'f'` options.
-
-    ### ※ Consistency is maintained only along the expansion direction and its perpendicular axis; for parallel axes, consistency is maintained on a per-parallel-element basis.
-
-<br>
+---
 
 ## Methods
 
 - ## `set_collection` Method
 
-    The SetPrint class’s `set_collection` method is used to execute the formatting as shown in the examples above. It neatly arranges multi-dimensional lists and complex data structures, outputting them in a visually understandable format. This method enables optimal formatting according to the data’s dimensions.
-    
+The `set_collection` class method executes the formatting as demonstrated in the example above. It arranges multidimensional lists and complex data structures into a visually understandable format, enabling optimal formatting according to your data’s dimensions.
+
    - #### Parameters
-
-        - **`route`** (bool or str): Whether to enable the root display.
-            - If set to `True`, lines representing containment relationships will also be output.
-              <br>*If set to `maintenance` (str), a maintenance format is used, showing both enabled and disabled root display results simultaneously.*
-
-        - **`keep_setting`** { `dict`_type } ( deep/`int` : direction/`str` ): Specifies the expansion direction for each dimension.
-            - For example, { 1: 'y', 3: 'x', 4: 'yf' } specifies dimensions in descending order; dimensions not specified will inherit the parent’s setting.
-
-              ※ The default setting is `x`
+        - **`route`** (bool or str): Whether to enable root display.
+            - If set to True, lines representing the storage relationships are also output.
+              <br>※ If set to 'maintenance' (str), both enabled and disabled root displays are output for maintenance purposes.
+        
+        - **`y_axis`** (bool or str): Whether to enable y-axis display.
+            - If set to True, the y-axis is output as well.
+            
+        - **`keep_setting`** { dict_type } (deep/int : direction/str): Specifies the expansion direction for each dimension.
+            - For example, {1:'y', 3:'x', 4:'yf'} — dimensions are specified in descending order, and unspecified dimensions inherit the parent setting.
+            - ※ The default setting is 'x'.
 
    - #### Return Value
-        
-        - `format_texts`: A list containing the formatted text output for each line.
+        - `format_texts`: A list in which each element is a line of the formatted text.
 
-    <br>
-
-    - ### **Example Execution Template**
-
+   - ### **Example Usage Template**
         ```python
         from setprint import SetPrint
 
-        # Specify the array you want to format
-        #                     　　 ∨
-        list_data 　　= SetPrint(datas)
+        # Specify the array to be formatted
+        #                         ∨
+        list_data = SetPrint(datas)
         
-        # Specify the expansion direction (detailed explanation follows)
-        #                    　　  ∨
+        # Specify the expansion direction (explained in detail below)
+        #                         ∨
         keep_settings = {1:'x', 3:'yf', 4:'f'}
 
         # Execute the formatting
-        format_texts = list_data.set_collection(route=True, keep_settings=keep_settings)
+        format_texts = list_data.set_collection(route=True, y_axis=False, keep_settings=keep_settings)
 
-        # Hide the output and write the result to a text file
-        with open('output.txt', 'w') as f:
+        # Do not display the result; instead, write it to a text file
+        with open('output.txt','w') as f:
             for line in format_texts:
-                f.write(line + '\n')
+                f.write(line+'\n')
         ```
-    
-    <br><br>
 
-    ---
-    ## [] Relationship Between keep_setting and Data Alignment
+<br><br>
 
-    The `keep_setting` parameter allows you to specify the display direction for each dimension, enabling flexible formatting according to the data’s structure and usage.  
-    Below are descriptions of how different `keep_setting` values affect behavior and the data formats they best suit.
-    <br>
+---
 
-    <br>
+## [] Relationship Between keep_setting and Data Alignment
 
-    - ## **Setting Examples**
+The `keep_setting` parameter allows you to specify the display direction for each dimension, offering flexible display options based on your data’s structure and intended use. Below are explanations of the behavior differences for various `keep_setting` values along with examples of suitable data types.
+
+- ## **Example Settings**
        
-        # 1. **`y`**
-        
-        ### **Behavior**: Expands the specified dimension in the y direction.
+  # 1. **`y`**
+  
+  ### **Behavior**: Expands the specified dimension in the y direction.
 
-        **Usage**: When you want to verify the order alignment of array elements on a per-dimension basis.
+  **Use Case**: When you want to verify the order alignment of each element in the array.
 
-        **Effect**: Expansion in the y direction results in parallel arrays along the x axis.
-        
-        <br>
-        
-        - **Array Example**
+  **Effect**: Expanding in the y direction results in parallel arrays in the x direction.
+  
+  <br>
+  
+  - **Array Example**
+      ```python
+      test_data = [
+          'a','b','c'
+      ]
+      ```
+  
+  - **Formatted Result**
+      ```plaintext
+      with_route  / out_put
+      =========== ~ -----------
 
-            ```python 
-            test_data = ['a', 'b', 'c']
-            ```
+       ►list      :  ►list 
+         ┣━━ a    :        a 
+         ┣━━ b    :        b 
+         ┗━━ c    :        c 
 
-        - **Formatted Output**
-            ```plaintext
-            with_route  / out_put
-            =========== ~ -----------
+      =========== ~ -----------
+      ```
+  
+  - **Setting Example**
+      ```python
+      keep_settings = {1:'y'}
+      ```
 
-             ►list      :  ►list 
-               ┣━━ a    :        a 
-               ┣━━ b    :        b 
-               ┗━━ c    :        c 
+  <br>
+  
+  ---
 
-            =========== ~ -----------
-            ```
+  <br>
 
-        - **Setting Example**
-            ```python
-            keep_settings = {1: 'y'}
-            ```
-        <br>
-        
-        ---
+  # 2. **`x`**
+  
+  ### **Behavior**: Expands the specified dimension in the x direction.
 
-        <br>
+  **Use Case:**
+  - When you want to verify the dimensional alignment of each element in the array.
+  - For dimensions that need to have their order aligned with an array expanded using the 'y' setting.
+  - For dimensions that need to have their dimensions aligned with an array expanded using the 'x' setting.
+  - (Note: Arrays with mismatched dimensions are automatically expanded in the y direction.)
+  
+  **Effect**: Expanding in the x direction results in parallel arrays in the y direction.
 
-        # 2. **`x`**
-        ### **Behavior**: Expands the specified dimension in the X direction.
+  <br>
 
-        **Usage**:
-        - When you want to verify the dimensional alignment of arrays element by element.
-        - When you want to compare the order alignment of arrays (expanded using a `y` setting) with parallel arrays.
-        - When you want to compare the dimensional alignment of arrays (expanded using an `x` setting) with parallel arrays.<br>
-        ※ Differences in array dimensions are automatically expanded in the y direction.
-        
-        **Effect**: Expansion in the x direction results in parallel arrays along the y axis.
+  ### **Details**:
 
-        <br>
-        
-        - **Array Example**
-            ```python 
-            test_data = ['a', 'b', 'c']
-            ```
+   1. ### To verify the dimensional alignment of each element
 
-        - **Formatted Output**
-            ```plaintext
-            with_route    / out_put
-            ============= ~ -------------
+      - **Array Example**
+          ```python
+          test_data = [
+              'a','b','c'
+          ]
+          ```
+      
+      - **Formatted Result**
+          ```plaintext
+          with_route    / out_put
+          ============= ~ -------------
 
-             ***** ┳━┳━┓  :  ***** 
-                   a b c  :        a b c 
+          ***** ┳━┳━┓  :  ***** 
+                a b c  :        a b c 
 
-            ============= ~ -------------
-            ```
+          ============= ~ -------------
+          ```
+      
+      - **Setting Example**
+          ```python
+          keep_settings = {1:'x'}
+          ```
 
-        - **Setting Example**
-            ```python
-            keep_settings = {1: 'x'}
-            ```
-        <br>
-        
-        ---
-        <br>
+  <br>
 
-        <br>
+   2. ### For dimensions (expanded with 'y') that need order alignment
 
-        # 3. **`yf`** (y_flat)
+      - **Array Example**
+          ```python
+          test_data = {
+              'template':[0,1,2],
+              'Generate':[0,['1-0','1-1'],2]
+          }
+          ```
+      
+      - **Formatted Result**
+          ```plaintext
+          keep_settings
+          ['y', 'x', 'x']
+          ---------------------------------------
 
-        ### **Behavior**: Expands the specified dimension in the y direction and displays subsequent dimensions on the same line as an expansion in the x direction.
+          ◆dict 
+            ┣━━ template:►list ┳━━━┳━━━━━━━━━━━┓
+            ┃                  0   1           2 
+            ┗━━ Generate:►list ┳━━━┳━━━━━━━━━━━┓
+                               0 ►list ━┳━━━┓  2 
+                                       1-0 1-1 
 
-        > #### Ideal for compactly aligning densely packed array data, such as stored photo data.
+          ---------------------------------------
+          ```
+      
+      - **Setting Example**
+          ```python
+          keep_settings = {1:'y',2:'x'}
+          ```
 
-        <br>
+  <br>
 
-        **Usage**: Expands the specified dimension in the y direction and presents the subsequent arrays as parallel arrays in the x direction, concisely summarizing both the `order alignment` (for missing data) and the `dimensional alignment` (for mismatched dimensions) in one line.
-                
-        <br>
-        
+   3. ### For dimensions (expanded with 'x') that need to verify dimensional alignment
 
-        - **Array Example**
-            ```python
-            test_data = [
-                [[1, 2, 3], [4, 5, 6]],
-                [[7, 8, 9], [10, 11, 12]]
-            ]
-            ```
+      - **Array Example**
+          ```python
+          test_data = {
+              'template':[0,1,2],
+              'Generate':[0,['1-0','1-1'],2]
+          }
+          ```
+      
+      - **Formatted Result**
+          ```plaintext
+          keep_settings
+          ['x', 'x', 'x']
+          ------------------------------------------------------------
 
-        - **Formatted Output**
-            ```plaintext
-            with_route                                           / out_put
-            ==================================================== ~ ----------------------------------------------------
-            
-             ►list                                               :  ►list 
-               ┣━━ ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ]  :        ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ] 
-               ┗━━ ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ]  :        ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ] 
-            
-            ==================================================== ~ ----------------------------------------------------
-            ```
+          ◆dict ━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓
+                template:►list ┳━┳━┓ Generate:►list ┳━━━┳━━━━━━━━━━━┓
+                               0 1 2                0 ►list ━┳━━━┓  2 
+                                                            1-0 1-1 
 
-        - **Setting Example**
-            ```python
-            keep_settings = {1: 'yf', 2: 'f', 3: 'f'}
-            ```
-        <br>
+          ------------------------------------------------------------
+          ```
+      
+      - **Setting Example**
+          ```python
+          keep_settings = {1:'x',2:'x'}
+          ```
 
-    <br><br>
+  <br>
 
-    ---
-    ## [] Changing the Display Style
+  ---
+
+  <br>
+
+  # 3. **`yf`** (y_flat)
+
+  ### **Behavior**: Expands the specified dimension in the y direction and then displays subsequent dimensions on the same line as an expansion in the x direction.
+
+  > #### Ideal for compactly formatting arrays with densely packed storage information, such as photo data.
+
+  <br>
+
+  **Use Case**: To display the array dimensions expanded in the y direction along with parallel arrays in the x direction—thereby concisely summarizing both order alignment (including missing elements) and dimensional alignment in a single row.
+          
+  <br>
+  
+  - **Array Example**
+      ```python
+      test_data = [
+          [[1,2,3], [4,5,6]],
+          [[7,8,9], [10,11,12]]
+      ]
+      ```
+  
+  - **Formatted Result**
+      ```plaintext
+      with_route                                           / out_put
+      ==================================================== ~ ----------------------------------------------------
+
+       ►list                                               :  ►list 
+         ┣━━ ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ]  :        ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ] 
+         ┗━━ ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ]  :        ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ] 
+
+      ==================================================== ~ ----------------------------------------------------
+      ```
+  
+  - **Setting Example**
+      ```python
+      keep_settings = {1:'yf',2:'f',3:'f'}
+      ```
+
+<br>
+
+---
+
+## [] Display/Hide y-Axis
+### For large outputs, an additional feature allows you to display or hide the y-axis to help grasp the order of the parallel arrays.
+```python
+format_texts = list_data.set_collection(route=True, y_axis=True/False, keep_settings=keep_settings)
+#                                                      ^^^^^^ ====:-----
+```
+
+<br>
+
+---
+## [] Changing the Display Style
+
+> Currently, only the text image for array types can be modified.
+
+- ### **Example Execution Template**
+
+    ```python
+    '''
+    from demo_setprint_0_3_0 import SetPrint
     
-    > Currently, only the text image for array types can be modified.
+    # Specify the array you want to format
+    #                         ∨
+    list_data = SetPrint(datas)        
+    '''
 
-    - ### **Example Execution Template**
+    #----------------------------------------------------
 
-        ```python
-        '''
-        from demo_setprint_0_3_0 import SetPrint
-        
-        # Specify the array you want to format
-        #                         ∨
-        list_data = SetPrint(datas)        
-        '''
-
-        #----------------------------------------------------
-
-        style_settings = (
-          ("Collections",
-            { 'image': {
-                'list': '►list',
-                'tuple': '▷tuple',
-                'ndarray': '>nadarray',
-                'dict': '◆dict'
-              }
+    style_settings = (
+        ("Collections",
+        { 'image': {
+            'list': '►list',
+            'tuple': '▷tuple',
+            'ndarray': '>nadarray',
+            'dict': '◆dict'
             }
-          ),
-        )
+        }
+        ),
+    )
 
-        list_data.update_data_with_arguments(style_settings)
+    list_data.update_data_with_arguments(style_settings)
 
-        #----------------------------------------------------
-        """        
-        # Specify the expansion direction (detailed explanation follows)
-        #                         ∨
-        keep_settings = {1: 'x', 3: 'yf', 4: 'f'}
+    #----------------------------------------------------
+    """        
+    # Specify the expansion direction (detailed explanation follows)
+    #                         ∨
+    keep_settings = {1: 'x', 3: 'yf', 4: 'f'}
 
-        # Execute the formatting
-        format_texts = list_data.set_collection(route=True, keep_settings=keep_settings)
+    # Execute the formatting
+    format_texts = list_data.set_collection(route=True, keep_settings=keep_settings)
 
-        # Hide the output and write the result to a text file
-        with open('output.txt', 'w') as f:
-            for line in format_texts:
-                f.write(line + '\n')
-        """
-        ```
+    # Hide the output and write the result to a text file
+    with open('output.txt', 'w') as f:
+        for line in format_texts:
+            f.write(line + '\n')
+    """
+    ```

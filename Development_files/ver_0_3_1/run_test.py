@@ -21,7 +21,7 @@ if True:
             ("Collections" ,
                   {  'image'   : { 'list'    : '++++++' ,
                               'tuple'   : '---' ,
-                              'ndarray' : '>nadarray' ,
+                              'ndarray' : '>ndarray' ,
                               'dict'    : '◆dict' }}),
 
             )
@@ -106,7 +106,7 @@ list_data = SetPrint(test_data)
 list_data.update_data_with_arguments(style_settings)
 
 # 整形
-format_texts = list_data.set_collection ( route=False, y_axis=True, keep_settings=keep_settings )
+format_texts = list_data.set_collection ( route=True, y_axis=False, keep_settings=keep_settings )
 # format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
 
 with open('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/ver_0_3_1/output.txt','w') as f:

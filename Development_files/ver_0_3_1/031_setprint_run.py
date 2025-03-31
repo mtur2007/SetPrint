@@ -123,7 +123,7 @@ else:
 
       ]
 
-      keep_settings = {1:'y',2:'yf'}
+      keep_settings = {1:'y',3:'x'}
 
 # インスタンスを生成
 list_data = SetPrint(test_data)
@@ -133,15 +133,15 @@ style_settings = (
           ("Collections" ,
             {  'image'   : { 'list'    : '►list' ,
                              'tuple'   : '▷tuple' ,
-                             'ndarray' : '>nadarray' ,
+                             'ndarray' : '>ndarray' ,
                              'dict'    : '◆dict' }}),
 
         )
 
-list_data.update_data_with_arguments(style_settings)
+# list_data.update_data_with_arguments(style_settings)
 
 # 整形
-format_texts = list_data.set_collection ( route=True, y_axis=True, keep_settings=keep_settings )
+format_texts = list_data.set_collection ( route=True, y_axis=False, keep_settings=keep_settings )
 # format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
 
 with open('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/ver_0_3_1/output.txt','w') as f:
