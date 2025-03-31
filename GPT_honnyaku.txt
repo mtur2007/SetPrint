@@ -15,13 +15,13 @@
 setprint is a powerful data formatting tool that extends Python’s built-in pprint—not only for lists and dictionaries but also for NumPy arrays and 2D data (including image data). It is designed to enhance the visibility of missing data and mismatched dimensions, thereby making debugging much easier.
 
 - ### Installation
-    ```python
+    XYZBACKTICKSXYZpython
     pip install setprint
-    ```
+    XYZBACKTICKSXYZ
 
 - ### **Example Execution Template**
 
-    ```python
+    XYZBACKTICKSXYZpython
     from setprint import SetPrint
 
     # Specify the array you want to format
@@ -40,7 +40,7 @@ setprint is a powerful data formatting tool that extends Python’s built-in ppr
     with open('output.txt', 'w') as f:
         for line in format_texts:
             f.write(line + '\n')
-    ```
+    XYZBACKTICKSXYZ
 
 <br>
 
@@ -73,7 +73,7 @@ setprint is a powerful data formatting tool that extends Python’s built-in ppr
 
     Instead of representing relationships between parent and child elements with brackets ([]/()/{}) the tool uses lines (┣ :┃:┗) and (┳ : ━ : ┓) to clearly depict connections.
     
-    ```txt
+    XYZBACKTICKSXYZtxt
     Parent Element 
       ┣━━ Sibling Element
       ┃     ┣━━ Child Element
@@ -81,14 +81,14 @@ setprint is a powerful data formatting tool that extends Python’s built-in ppr
       ┗━━ Sibling Element
             ┣━━ Child Element
             ┗━━ Child Element
-    ```
+    XYZBACKTICKSXYZ
 
-    ```txt
+    XYZBACKTICKSXYZtxt
     Parent Element ━━┳━━━━━━━━━━━┓
           Sibling Element     Sibling Element
             ┣━━ Child Element   ┣━━ Child Element
             ┗━━ Child Element   ┗━━ Child Element
-    ```
+    XYZBACKTICKSXYZ
 <br>
 
 - [Upcoming Updates]
@@ -107,7 +107,7 @@ setprint is a powerful data formatting tool that extends Python’s built-in ppr
 
 📌 For cases where data with different dimensions coexist (e.g. a mix of RGB and grayscale images)
 
-```python
+XYZBACKTICKSXYZpython
 import numpy as np
 
 data = [
@@ -148,13 +148,13 @@ data = [
 ]
 
 setprint(data)
-```
+XYZBACKTICKSXYZ
 
 <br>
 
 🔹 Output from setprint
 
-```txt
+XYZBACKTICKSXYZtxt
 keep_settings
 ['y', 'y', 'x', 'x']
 --------------------------------------------------------------------------------------------
@@ -188,18 +188,18 @@ keep_settings
   ┃       ┗━━━━ >nadarray ━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
   ┃                          129                   79                    29     
   ┗━━   None    
-```
+XYZBACKTICKSXYZ
 
 <br>
 
 #### Version with Root Omission Settings
 
-```txt
+XYZBACKTICKSXYZtxt
 keep_settings
 ['y', 'yf', 'f', 'f']
 ------------------------------------------------------------------------------------------------------------
 ...
-```
+XYZBACKTICKSXYZ
 
 <br>
 
