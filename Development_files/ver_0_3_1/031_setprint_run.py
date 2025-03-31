@@ -80,8 +80,11 @@ elif False:
       # ルートの表示の際、空配列にアクセスしようとしてインデックスエラーを引き起こしていた
 
 else:
-      test_data = [[0,['1-0','1-1'],2],[0,[['1-0-0','1-0-1']],2]]
-      keep_settings = {1:'y',2:'x'}
+      test_data = {
+      'template':[0,1,2],
+      'Expected':[0,['1-0','1-1'],2]
+      }
+      keep_settings = {1:'x',2:'x'}
 
 # インスタンスを生成
 list_data = SetPrint(test_data)
