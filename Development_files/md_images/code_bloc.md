@@ -55,6 +55,7 @@ keep_settings
 
 ---------------------------------------------------------------------------------------
 ```
+<img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_y_x.png" width="900" alt="サンプル画像">
 
 ```plaintext
 keep_settings
@@ -156,6 +157,8 @@ keep_settings
 
 ---------------------------------------
 ```
+<img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_x_x.png" width="940" alt="サンプル画像">
+
 ```plaintext
 keep_settings
 ['x', 'x', 'x']

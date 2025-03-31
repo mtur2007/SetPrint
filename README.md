@@ -136,11 +136,11 @@ setprint(data)
 
 🔹 Output from setprint
 
-<img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_x.png" width="1000" alt="サンプル画像">
+<img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_y_x.png" width="900" alt="サンプル画像">
 
 #### Version with Root Omission Settings
 
-<img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_yf.png" width="1000" alt="サンプル画像">
+<img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_yf.png" width="900" alt="サンプル画像">
 
 ## [] Parallel Arrays: Matching Array `Order` and `Dimensions`
 
@@ -330,7 +330,7 @@ The `keep_setting` parameter allows you to specify the display direction for eac
       
       - **Formatted Result**
 
-          <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_x_x.png" width="950" alt="サンプル画像">
+          <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_x_x.png" width="940" alt="サンプル画像">
       
       - **Setting Example**
           ```python
@@ -351,7 +351,7 @@ The `keep_setting` parameter allows you to specify the display direction for eac
       
       - **Formatted Result**
           
-          <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/x_3.png" width="950" alt="サンプル画像">
+          <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/x_3.png" width="940" alt="サンプル画像">
       
       - **Setting Example**
           ```python
