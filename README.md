@@ -158,7 +158,7 @@ As part of the formatting process, setprint represents “storage bugs” and th
 
 - ## x-Axis – Alignment with the Dimensions of the Parallel Array Expanded in the y Direction
     
-    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Axis.png" width="610" alt="サンプル画像">
+    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/X_Axis.png" width="610" alt="サンプル画像">
 
     This axis maintains the dimensional alignment with the parallel array expanded in the y direction.
     
