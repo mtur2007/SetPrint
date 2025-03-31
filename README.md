@@ -148,34 +148,18 @@ As part of the formatting process, setprint represents “storage bugs” and th
 
 - ### Test Array
     
-    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Axis.png" width="600" alt="サンプル画像">
+    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Axis.png" width="610" alt="サンプル画像">
 
 - ## y-Axis – Alignment with the Order of the Parallel Array Expanded in the x Direction
-    ```
-               .     =   =   =   ⌄ ⌄ = =   .     =   =   =   ⌄ ⌄ = =
-                                 ┋ ┋                         ┋ ┋
-       ►list ──┬─────────────────┋─┋───────┐                 ┋ ┋
-             ►list               ┋ ┋     ►list               ┋ ┋
-               ├── ►list ┬───┬───┋─┋─┐     ├── ►list ┬───┬───┋─┋─┐
-               │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
-               │                 0 0       │                 1 1 
-               └── ►list ┬───┬───┋─┋─┬─┐   └── ►list ┬───┬───┋─┋─┬─┐
-                         0   0   ┋ ┋ 0 0             1   1   ┋ ┋ 1 1 
-                                 X X                         X X
-                                 ^ ^                         ^ ^
-    ```
+    
+    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Y_Axis.png" width="610" alt="サンプル画像">
+
     This axis maintains the order alignment with the parallel array expanded in the x direction.
 
 - ## x-Axis – Alignment with the Dimensions of the Parallel Array Expanded in the y Direction
-    ```
-       ►list ──┬───────────────────────────┐
-    =        ►list                       ►list 
-    =          ├── ►list ┬───┬───────┐     ├── ►list ┬───┬───────┐
-    =          │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
-    > ┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 0 0 X ┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 1 1 X ┉┉┉ <
-    =          └── ►list ┬───┬───────┬─┐   └── ►list ┬───┬───────┬─┐
-    =                    0   0       0 0             1   1       1 1 
-    ```
+    
+    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Axis.png" width="610" alt="サンプル画像">
+
     This axis maintains the dimensional alignment with the parallel array expanded in the y direction.
     
     ※ In the case of the 'f' setting, even if dimensions differ, as long as they are within range, they are displayed on one line—so differences may not be noticeable.
