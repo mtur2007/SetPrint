@@ -11,90 +11,94 @@
 *Read this in [English](https://github.com/mtur2007/SetPrint/blob/main/README.md) or [日本語](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)*
 
 ---
-setprint is a powerful data formatting tool that extends Python’s built-in pprint. It not only formats lists and dictionaries but also properly formats NumPy arrays and 2D data (including image data). In particular, it enhances the visibility of missing data or dimensional mismatches, making debugging easier.
+
+setprint is a powerful data formatting tool that extends Python’s built-in pprint—not only for lists and dictionaries but also for NumPy arrays and 2D data (including image data). It is designed to enhance the visibility of missing data and mismatched dimensions, thereby making debugging much easier.
 
 - ### Installation
     ```python
     pip install setprint
     ```
-- ### Example Usage
+
+- ### **Example Execution Template**
+
     ```python
     from setprint import SetPrint
 
     # Specify the array you want to format
-    #                      ∨
-    list_data = SetPrint(datas)
-
-    # Specify the direction in which to expand
-    # (This will be explained in detail below)
-    #                      ∨
-    keep_settings = {1: 'x', 3: 'yf', 4: 'f'}
+    #                  　　    ∨
+    list_data 　　= SetPrint(datas)
+    
+    # Specify the expansion direction (detailed explanation follows)
+    #                          ∨
+    keep_settings = {1:'x', 3:'yf', 4:'f'}
 
     # Execute the formatting
     format_texts = list_data.set_collection(route=True, keep_settings=keep_settings)
 
-    # Display the results: writing to a text file
-    # (The output method is up to you, but do not forget to add a newline '\n' at the end!)
+    # Display the result: writing to a text file
+    # (The output method is flexible; just be sure to include a newline '\n' at the end!)
     with open('output.txt', 'w') as f:
         for line in format_texts:
             f.write(line + '\n')
     ```
+
 <br>
 
 ---
 
 ## ✅ Features of `setprint`
 
- - ### Automatically Adjusts Missing or Mismatched Dimensions
+ - ### Automatically Adjusts for Missing Data and Dimension Differences
 
-    It formats “storage bugs” and “mixed-dimension data,” which are easily overlooked with pprint, so that they are immediately recognizable.  
-    The tool automatically fills missing parts with blanks, making data inconsistencies immediately apparent.
+    It formats “storage bugs” and “mixed-dimension data” that are easily overlooked by pprint so that they can be instantly identified.  
+    Missing parts are automatically filled with blanks, enabling immediate detection of data inconsistencies.
     
-    <br> By comparing the expected arrays (such as samples or templates) with the actual arrays,<br> you can highlight anomalies, allowing you to instantly discern bugs and grasp the structure.
+    <br>
+    By comparing the expected structure (for example, from a template or sample) with the actual array, you can highlight anomalies and quickly identify bugs or structural discrepancies.
+    
 <br>
 
  - ### Debug and Visualize by Structure/Object
 
-    With setprint, you can debug and visualize data by each structure/object, eliminating issues such as uniform structure or unwanted line breaks.  
+    With setprint, debugging and visualization can be performed on a per-structure or per-object basis, resolving issues like uniform formatting or unwanted line breaks.  
     Consequently,  
-    **arrays that are meant to maintain a 2D structure (such as image data or binary data) can be formatted and displayed while preserving their intended structure.**
+    **arrays intended to maintain a 2D structure (such as image data or binary data) can be formatted and displayed while preserving their designed layout.**
     
-    > #### Example from an OCR Program<br>https://github.com/mtur2007/SetPrint/blob/main/Development_files/format_data/y_x_yf_f.txt
+    > #### Example from an OCR Program  
+    > https://github.com/mtur2007/SetPrint/blob/main/Development_files/format_data/y_x_yf_f.txt
 
 <br>
 
  - ### Compact Representation of Containment Relationships
 
-    Instead of using brackets ([], (), {}) to represent parent-child relationships, setprint uses lines (┣ :┃:┗) and (┳ : ━ : ┓) to clearly show the connections.
+    Instead of representing relationships between parent and child elements with brackets ([]/()/{})<br> the tool uses lines (┣ :┃:┗) and (┳ : ━ : ┓) to clearly depict connections.
 
-    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/root.png" width="320" alt="サンプル画像">
-    
-    
+    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/root.png" width="310" alt="サンプル画像">
+
 <br>
 
-- [Planned Updates]
+- [Upcoming Updates]
 
-  > #### A feature to display indexes is planned, allowing for even clearer understanding of data structure relationships.
+  > #### An index display feature is planned, which will help further clarify data structure relationships.
   
-  > #### A feature to convert stored information (i.e., mapping of specific values) is planned, making data transformation processes easier.
+  > #### A conversion feature for stored data (mapping specific values) is planned to simplify data transformation processes.
 
 <br>
 
 ---
 
-## 🛠 Usage Examples of `setprint`
+## 🛠 Usage Example of `setprint`
 
-🔹 Example of visualizing three different formats of image data
+🔹 Example of Visualizing Three Different Formats of Image Data
 
-📌 In cases where data of different dimensions coexist (a mix of RGB and grayscale images)
+📌 For cases where data with different dimensions coexist (e.g. a mix of RGB and grayscale images)
 
 ```python
 import numpy as np
-from setprint import setprint
 
 data = [
     
-    # RGB image (3x3x3) - Sample array 
+    # RGB image (3x3x3) – Sample array 
     np.array([[[255,   0,   4],
                [255,  85,   0],
                [255, 170,   0]],
@@ -134,17 +138,62 @@ setprint(data)
 
 <br>
 
-🔹 Output of setprint
+🔹 Output from setprint
 
 <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_x.png" width="1000" alt="サンプル画像">
 
 #### Version with Root Omission Settings
-
 <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_yf.png" width="1000" alt="サンプル画像">
 
+<br>
 
-✅ Differences in dimensions (3D vs 2D) and missing data are visually clear  
-✅ You can immediately pinpoint abnormalities, making debugging easier
+✅ Differences in dimensions (3D vs 2D) and missing data are clearly visible  
+✅ Abnormalities can be immediately identified, making debugging much easier
+
+<br>
+
+---
+
+- ## [] Parallel Arrays: Alignment of Array `Order`/`Dimensions`
+    
+    In setprint, as part of its formatting process, “storage bugs” and “mixed-dimension data” are represented linearly by duplicating axes to visualize the alignment of array `order` and `dimensions`.
+
+    - ### Test Array
+
+        <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Axis.png" width="600" alt="サンプル画像">
+
+    - ## y-Axis – Alignment of Order with the Parallel Array in the x Direction
+
+        <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Y_Axis.png" width="600" alt="サンプル画像">
+
+        This axis maintains the order alignment with the parallel array expanded in the x direction.
+
+    - ## x-Axis – Alignment of Dimensions with the Parallel Array in the y Direction
+        
+        <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/X_Axis.png" width="600" alt="サンプル画像">
+        
+        This axis maintains the alignment of dimensions with the parallel array expanded in the y direction.
+
+        ※ With the `f` option, even if dimensions differ, dimensions within the specified range are displayed on one line, making it impossible to detect mismatches in dimensions.
+
+    <br>
+
+    ---
+
+    ### ※ About the Parallel Elements Represented by Both Axes
+        
+    In setprint, to enable debugging and visualization on a per-structure/object basis, arrays are arranged in parallel along the y and x directions for comparison of array order and dimensions.
+
+    During this process, the meaning of each axis may differ; here are some clarifications:
+
+    - `Parallel Elements` ( = ) 
+        
+        Portions expanded with the settings `'x'` or `'f'` serve as both order alignment and parallel elements—the interpretation depends on the context.  
+        Portions expanded with the settings `'y'` or `'yf'` represent only parallel elements, without implying dimensional alignment.
+        
+        > Line breaks or representations indicating dimensional alignment are automatically applied when using the `'x'` or `'f'` options.
+
+    ### ※ Consistency is maintained only along the expansion direction and its perpendicular axis; for parallel axes, consistency is maintained on a per-parallel-element basis.
 
 <br>
 
@@ -152,187 +201,157 @@ setprint(data)
 
 - ## `set_collection` Method
 
-    The set_collection method of the SetPrint class provides functionality to neatly arrange multi-dimensional lists and complex data structures, outputting them in a visually understandable format.  
-    By using this method, you can optimally format the data according to its dimensions.
+    The SetPrint class’s `set_collection` method is used to execute the formatting as shown in the examples above. It neatly arranges multi-dimensional lists and complex data structures, outputting them in a visually understandable format. This method enables optimal formatting according to the data’s dimensions.
     
    - #### Parameters
 
-        - **`route`** (bool or str): Whether to enable the root display.  
-            - If `True`, lines representing the containment relationships are also output.  
-              *If set to `maintenance` (str), it will output in maintenance notation, showing both enabled and disabled root display results.*
+        - **`route`** (bool or str): Whether to enable the root display.
+            - If set to `True`, lines representing containment relationships will also be output.
+              <br>*If set to `maintenance` (str), a maintenance format is used, showing both enabled and disabled root display results simultaneously.*
 
-        - **`keep_setting`** { `dict`_type } ( deep/`int` : direction/`str` ): Specifies the expansion direction for each dimension.  
-            - For example, { 1:'y', 3:'x', 4:'yf' } specifies dimensions in descending order; dimensions not specified will inherit the parent's setting.
+        - **`keep_setting`** { `dict`_type } ( deep/`int` : direction/`str` ): Specifies the expansion direction for each dimension.
+            - For example, { 1: 'y', 3: 'x', 4: 'yf' } specifies dimensions in descending order; dimensions not specified will inherit the parent’s setting.
 
-              ※ The default setting value is `x`.
+              ※ The default setting is `x`
 
    - #### Return Value
         
-        - `format_texts`: A list of formatted text information for each line.
+        - `format_texts`: A list containing the formatted text output for each line.
 
     <br>
 
     - ### **Example Execution Template**
 
         ```python
-        from demo_setprint_0_3_0 import SetPrint
+        from setprint import SetPrint
 
         # Specify the array you want to format
-        #                         ∨
-        list_data    = SetPrint(datas)
+        #                     　　 ∨
+        list_data 　　= SetPrint(datas)
         
-        # Specify the expansion direction (explained in detail below)
-        #                         ∨
-        keep_settings = {1:'x',3:'yf',4:'f'}
+        # Specify the expansion direction (detailed explanation follows)
+        #                    　　  ∨
+        keep_settings = {1:'x', 3:'yf', 4:'f'}
 
         # Execute the formatting
-        format_texts  = list_data.set_collection ( route=True, keep_settings=keep_settings )
+        format_texts = list_data.set_collection(route=True, keep_settings=keep_settings)
 
         # Hide the output and write the result to a text file
-        with open('output.txt','w') as f:
+        with open('output.txt', 'w') as f:
             for line in format_texts:
-                f.write(line+'\n')
+                f.write(line + '\n')
         ```
     
     <br><br>
 
     ---
-    ## [] Relationship between keep_setting and Data Alignment
+    ## [] Relationship Between keep_setting and Data Alignment
 
-    The keep_setting parameter lets you specify the display direction for each dimension, allowing for flexible display tailored to the data’s structure and purpose.  
-    Below are explanations of the different behaviors based on the values of keep_setting and the data formats that are most suitable.
+    The `keep_setting` parameter allows you to specify the display direction for each dimension, enabling flexible formatting according to the data’s structure and usage.  
+    Below are descriptions of how different `keep_setting` values affect behavior and the data formats they best suit.
+    <br>
 
     <br>
 
-    - ## **Recommended Setting Examples**
+    - ## **Setting Examples**
        
-        # 1. **`x`**
+        # 1. **`y`**
+        
+        ### **Behavior**: Expands the specified dimension in the y direction.
+
+        **Usage**: When you want to verify the order alignment of array elements on a per-dimension basis.
+
+        **Effect**: Expansion in the y direction results in parallel arrays along the x axis.
+        
+        <br>
+        
+        - **Array Example**
+
+            ```python 
+            test_data = ['a', 'b', 'c']
+            ```
+
+        - **Formatted Output**
+
+            <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y.png" width="950" alt="サンプル画像">
+
+        - **Setting Example**
+            ```python
+            keep_settings = {1: 'y'}
+            ```
+        <br>
+        
+        ---
+
+        <br>
+
+        # 2. **`x`**
         ### **Behavior**: Expands the specified dimension in the X direction.
 
         **Usage**:
-        - When you want to check the alignment of array dimensions for each element.
-        - When you want to verify the order of array elements arranged in parallel in the x direction.
-        - When you want to verify the order of array elements arranged in parallel in the y direction.  
-          ※ Differences in array dimensions are automatically expanded in the y direction.
+        - When you want to verify the dimensional alignment of arrays element by element.
+        - When you want to compare the order alignment of arrays (expanded using a `y` setting) with parallel arrays.
+        - When you want to compare the dimensional alignment of arrays (expanded using an `x` setting) with parallel arrays.<br>
+        ※ Differences in array dimensions are automatically expanded in the y direction.
         
-        **Effect**: Expanding in the x direction results in arrays arranged in parallel along the y axis.
+        **Effect**: Expansion in the x direction results in parallel arrays along the y axis.
 
+        <br>
+        
         - **Array Example**
             ```python 
-            test_data = ['a','b','c']
+            test_data = ['a', 'b', 'c']
             ```
 
-        - **Formatting Result**
+        - **Formatted Output**
             
             <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/x.png" width="950" alt="サンプル画像">
 
-
         - **Setting Example**
             ```python
-            keep_settings = {1:'x'}
+            keep_settings = {1: 'x'}
             ```
+        <br>
         
         ---
-        
-        # 2. **`y`**
-        
-        ### **Behavior**: Expands the specified dimension in the Y direction.
+        <br>
 
-        **Usage**: 
-        - When you want to check the order of array elements for each dimension.
+        <br>
 
-            > [Not Recommended] The following specification can theoretically be reversed,  
-            > but it is not recommended as it leads to inconsistency in axes.  
-            > - Array elements arranged in parallel in the y direction for order checking.  
-            > - Array elements arranged in parallel in the x direction for checking dimensional alignment.  
-            >   ※ Differences in array dimensions are automatically expanded in the x direction.
-
-        **Effect**: Expanding in the y direction results in arrays arranged in parallel along the x axis.
-
-        - **Array Example**
-            ```python 
-            test_data = ['a','b','c']
-            ```
-
-        - **Formatting Result**
-            <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y.png" width="950" alt="サンプル画像">
-
-
-        - **Setting Example**
-            ```python
-            keep_settings = {1:'y'}
-            ```
-        
-        ---
-        
         # 3. **`yf`** (y_flat)
 
-        ### **Behavior**: Expands the specified dimension in the y direction, and subsequent dimensions within the range are displayed on the same line as an expansion in the x direction.
+        ### **Behavior**: Expands the specified dimension in the y direction and displays subsequent dimensions on the same line as an expansion in the x direction.
 
-        > #### Ideal for compactly aligning densely packed array information, such as stored photo data.
+        > #### Ideal for compactly aligning densely packed array data, such as stored photo data.
 
-        **Usage**: Expands the specified dimension in the y direction and displays the subsequent arrays as parallel arrays in the x direction, concisely summarizing both the `order alignment` (missing data) and `dimensional matching` (mismatched dimensions) in one line.
+        <br>
+
+        **Usage**: Expands the specified dimension in the y direction and presents the subsequent arrays as parallel arrays in the x direction, concisely summarizing both the `order alignment` (for missing data) and the `dimensional alignment` (for mismatched dimensions) in one line.
                 
+        <br>
+        
+
         - **Array Example**
             ```python
             test_data = [
-                [[1,2,3], [4,5,6]],
-                [[7,8,9], [10,11,12]]
+                [[1, 2, 3], [4, 5, 6]],
+                [[7, 8, 9], [10, 11, 12]]
             ]
             ```
 
-        - **Formatting Result**
+        - **Formatted Output**
+            
             <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/yf.png" width="950" alt="サンプル画像">
-
 
         - **Setting Example**
             ```python
-            keep_settings = {1:'yf',2:'f',3:'f'}
+            keep_settings = {1: 'yf', 2: 'f', 3: 'f'}
             ```
+        <br>
+
+    <br><br>
 
     ---
-
-    ## [] Parallel Arrays: Alignment of Array `Order`/`Dimensions`
-    
-    As part of its formatting, setprint visually represents “storage bugs” and “mixed-dimension data” by aligning the array’s `order`/`dimensions` linearly using duplicated axes.
-
-    - ### Test Array
-        
-        <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Axis.png" width="600" alt="サンプル画像">
-
-    - ## y-Axis – Alignment of Array `Order`/Parallel Elements in the y Direction
-        
-        <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Y_Axis.png" width="600" alt="サンプル画像">
-
-        This axis maintains the order alignment of parallel arrays expanded in the y direction.  
-        
-    - ## x-Axis – Alignment of Array `Dimensions`/Parallel Elements in the x Direction
-               
-        <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/X_Axis.png" width="600" alt="サンプル画像">
-        
-        This axis maintains the dimensional alignment of parallel arrays expanded in the x direction.
-        
-        Note: With the 'f' option, even if the dimensions differ, dimensions within the specified range are displayed on one line, making it impossible to detect mismatches in dimensions.
-
-    ---
-
-    ### ※ About the Parallel Elements Represented by Both Axes
-        
-    In setprint, to enable debugging and visualization by structure/object, arrays are arranged in parallel along the x and y directions to visualize the alignment of array order/dimensions.
-
-    In this process, the meaning of each axis can differ. Here is an explanation of such exceptions:
-
-    - `Parallel Elements` ( = ) 
-        
-        Parts expanded with settings `'x'` or `'f'` serve as both `order alignment` and `parallel elements`, with their interpretation left to the use case.  
-        Parts expanded with settings `'y'` or `'yf'` represent solely `parallel elements` and do not imply dimensional alignment.
-        
-        > Line breaks/representations that indicate dimensional alignment are automatically applied during expansion with `'x'` or `'f'`.
-
-    ### ※ Consistency is maintained only along the expansion direction and its perpendicular axis; for parallel axes, consistency is maintained only at the level of parallel elements.
-
-    ---
-
     ## [] Changing the Display Style
     
     > Currently, only the text image for array types can be modified.
@@ -345,31 +364,37 @@ setprint(data)
         
         # Specify the array you want to format
         #                         ∨
-        list_data    = SetPrint(datas)        
+        list_data = SetPrint(datas)        
         '''
 
         #----------------------------------------------------
+
         style_settings = (
-          ("Collections" ,
-            {  'image'   : { 'list'    : '►list' ,
-                             'tuple'   : '▷tuple' ,
-                             'ndarray' : '>nadarray' ,
-                             'dict'    : '◆dict' }}),
+          ("Collections",
+            { 'image': {
+                'list': '►list',
+                'tuple': '▷tuple',
+                'ndarray': '>nadarray',
+                'dict': '◆dict'
+              }
+            }
+          ),
         )
+
         list_data.update_data_with_arguments(style_settings)
 
         #----------------------------------------------------
         """        
-        # Specify the expansion direction (explained in detail below)
+        # Specify the expansion direction (detailed explanation follows)
         #                         ∨
-        keep_settings = {1:'x',3:'yf',4:'f'}
+        keep_settings = {1: 'x', 3: 'yf', 4: 'f'}
 
         # Execute the formatting
-        format_texts = list_data.set_collection ( route=True, keep_settings=keep_settings )
+        format_texts = list_data.set_collection(route=True, keep_settings=keep_settings)
 
         # Hide the output and write the result to a text file
-        with open('output.txt','w') as f:
+        with open('output.txt', 'w') as f:
             for line in format_texts:
-                f.write(line+'\n')
+                f.write(line + '\n')
         """
         ```

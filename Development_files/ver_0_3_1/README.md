@@ -25,12 +25,12 @@ setprint is a powerful data formatting tool that extends Python’s built-in ppr
     from setprint import SetPrint
 
     # Specify the array you want to format
-    #                         ∨
-    list_data = SetPrint(datas)
+    #                  　　    ∨
+    list_data 　　= SetPrint(datas)
     
     # Specify the expansion direction (detailed explanation follows)
-    #                         ∨
-    keep_settings = {1: 'x', 3: 'yf', 4: 'f'}
+    #                          ∨
+    keep_settings = {1:'x', 3:'yf', 4:'f'}
 
     # Execute the formatting
     format_texts = list_data.set_collection(route=True, keep_settings=keep_settings)
@@ -74,20 +74,20 @@ setprint is a powerful data formatting tool that extends Python’s built-in ppr
     Instead of representing relationships between parent and child elements with brackets ([]/()/{}) the tool uses lines (┣ :┃:┗) and (┳ : ━ : ┓) to clearly depict connections.
     
     ```txt
-    Parent Element 
-      ┣━━ Sibling Element
-      ┃     ┣━━ Child Element
-      ┃     ┗━━ Child Element
-      ┗━━ Sibling Element
-            ┣━━ Child Element
-            ┗━━ Child Element
+    Parent 
+      ┣━━━ Sibling
+      ┃       ┣━━━ Child
+      ┃       ┗━━━ Child
+      ┗━━━ Sibling
+              ┣━━━ Child
+              ┗━━━ Child
     ```
 
     ```txt
-    Parent Element ━━┳━━━━━━━━━━━┓
-          Sibling Element     Sibling Element
-            ┣━━ Child Element   ┣━━ Child Element
-            ┗━━ Child Element   ┗━━ Child Element
+    Parent ━━━┳━━━━━━━━━━━━━┓
+           Sibling       Sibling
+              ┣━━━ Child    ┣━━━ Child
+              ┗━━━ Child    ┗━━━ Child
     ```
 <br>
 
@@ -189,6 +189,30 @@ keep_settings
   ┃                          129                   79                    29     
   ┗━━   None    
 ```
+
+#### Version with Root Omission Settings
+
+```txt
+keep_settings
+['y', 'yf', 'f', 'f']
+------------------------------------------------------------------------------------------------------------
+
+►list 
+  ┣━━ >nadarray 
+  ┃       ┣━━━━ >nadarray [ >nadarray [ 255  0   4  ] >nadarray [ 255 85   0  ] >nadarray [ 255 170  0  ] ] 
+  ┃       ┣━━━━ >nadarray [ >nadarray [ 170 255  0  ] >nadarray [ 85  255  0  ] >nadarray [  0  255  4  ] ] 
+  ┃       ┗━━━━ >nadarray [ >nadarray [  0  170 255 ] >nadarray [  0  85  255 ] >nadarray [  4   0  255 ] ] 
+  ┣━━ >nadarray 
+  ┃       ┣━━━━ >nadarray [ >nadarray [  4   0  255 ] >nadarray [  0  85  255 ] >nadarray [  0  170 255 ] ] 
+  ┃       ┣━━━━ >nadarray [ >nadarray [  0  255 170 ] >nadarray [  0  255 85  ] >nadarray [  4  255  0  ] ] 
+  ┃       ┗━━━━ >nadarray [ >nadarray [ 255 170  0  ] >nadarray [ 255 85   0  ] >nadarray [ 255  0   4  ] ] 
+  ┣━━ >nadarray 
+  ┃       ┣━━━━ >nadarray [    77                        126                       176                    ] 
+  ┃       ┣━━━━ >nadarray [    200                       175                       150                    ] 
+  ┃       ┗━━━━ >nadarray [    129                       79                        29                     ] 
+  ┗━━   None    
+
+------------------------------------------------------------------------------------------------------------
 
 <br>
 
@@ -311,12 +335,12 @@ keep_settings
         from setprint import SetPrint
 
         # Specify the array you want to format
-        #                         ∨
-        list_data = SetPrint(datas)
+        #                     　　 ∨
+        list_data 　　= SetPrint(datas)
         
         # Specify the expansion direction (detailed explanation follows)
-        #                         ∨
-        keep_settings = {1: 'x', 3: 'yf', 4: 'f'}
+        #                    　　  ∨
+        keep_settings = {1:'x', 3:'yf', 4:'f'}
 
         # Execute the formatting
         format_texts = list_data.set_collection(route=True, keep_settings=keep_settings)
@@ -446,7 +470,7 @@ keep_settings
             ==================================================== ~ ----------------------------------------------------
             
              ►list                                               :  ►list 
-               ┣━━ ►list [ ►list [ 1 2 3 ] ►list [ 4 5 6 ] ]   :        ►list [ ►list [ 1 2 3 ] ►list [ 4 5 6 ] ] 
+               ┣━━ ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ]  :        ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ] 
                ┗━━ ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ]  :        ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ] 
             
             ==================================================== ~ ----------------------------------------------------

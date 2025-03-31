@@ -3,7 +3,7 @@
 
 # 実行コード
 # from setprint import SetPrint
-#from development_ver_0_3_1 import SetPrint
+from development_ver_0_3_1 import SetPrint
 
 import numpy as np
 
@@ -52,7 +52,7 @@ elif False:
       > 表示する最低文字数を1と設定することで差分が0となり、解消できる。
       """
 
-elif True:
+elif False:
 
       test_data    = [[[[0,0,0]],[['1--',1,1]],[[2,2,[]]]],[{'one':[0,0,[[0,'',0],[0,0]]]},[[1,1,1]],[[2,2,[]]]],[]]
       keep_settings = {1:'y',2:'x',4:'x',5:'yf'}
@@ -80,8 +80,8 @@ elif True:
       # ルートの表示の際、空配列にアクセスしようとしてインデックスエラーを引き起こしていた
 
 else:
-      test_data = [{'bug':'**'},[['[0][1][0]']]]
-      keep_settings = {1:'yf'}
+      test_data = [[0,['1-0','1-1'],2],[0,[['1-0-0','1-0-1']],2]]
+      keep_settings = {1:'y',2:'x'}
 
 # インスタンスを生成
 list_data = SetPrint(test_data)
