@@ -39,7 +39,7 @@ NumPy配列や2Dデータ（画像データ含む）も適切に整形できる 
     keep_settings = {1:'x',3:'yf',4:'f'}
 
     # 整形の実行
-    format_texts  = list_data.set_collection ( route=True, keep_settings=keep_settings )
+    format_texts  = list_data.set_collection ( route=True, y_axis=False,keep_settings=keep_settings )
 
     # 結果の表示 : テキストファイルへの書き込み 
     # (表示方法は任意 : !!! 最後に 改行'\n' を忘れずに !!! )
@@ -167,6 +167,7 @@ setprint(data)
 ```txt
 keep_settings                                                                                 :  keep_settings
 ['y', 'y', 'x', 'x']                                                                          :  ['y', 'y', 'x', 'x']
+y_axis : False                                                                                :  y_axis : True
 --------------------------------------------------------------------------------------------  :  --------------------------------------------------------------------------------------------
                                                                                               :  
 ►list                                                                                         :  ►list     ┊         ┊         ┊      ┊   ┊   ┊      ┊      ┊   ┊   ┊      ┊      ┊   ┊   ┊  
@@ -207,6 +208,7 @@ keep_settings                                                                   
 ```txt
 keep_settings                                                                                                 :  keep_settings
 ['y', 'yf', 'f', 'f']                                                                                         :  ['y', 'yf', 'f', 'f']
+y_axis : False                                                                                                :  y_axis : True
 ------------------------------------------------------------------------------------------------------------  :  ------------------------------------------------------------------------------------------------------------
                                                                                                               :  
 ►list                                                                                                         :  ►list     ┊         ┊           ┊        ┊   ┊   ┊        ┊        ┊   ┊   ┊        ┊        ┊   ┊   ┊      
@@ -324,7 +326,10 @@ keep_settings                                                                   
         - **`route`** (bool or str): ルート表示を有効にするかどうか。
             - `True`の場合、格納関係を表した線も同時に出力します。
               <br>※`maintenance`(str)の場合、メンテナンス用の表記になり、<br>ルート表示の有効、無効の結果が同時に出力されます。
-
+        
+        - **`y_axis`** (bool or str): y軸表示を有効にするかどうか。
+            - `True`の場合、y軸も同時に出力します。
+            
         - **`keep_setting`** { `dict`_type } ( deep/`int` : direction/`str` ): 次元毎に展開する方向を指定します。
             - { 1:'y', 3:'x', 4:'yf' } 次元指定は昇降順で指定し、指定のない次元は親次元の設定が反映されます。
 
@@ -353,7 +358,7 @@ keep_settings                                                                   
         keep_settings = {1:'x',3:'yf',4:'f'}
 
         # 整形の実行
-        format_texts  = list_data.set_collection ( route=True, keep_settings=keep_settings )
+        format_texts  = list_data.set_collection ( route=True, y_axis=False, keep_settings=keep_settings )
 
         # 結果の非表示、テキストファイルへの書き込み
         with open('output.txt','w') as f:
@@ -564,10 +569,21 @@ keep_settings                                                                   
             keep_settings = {1:'yf',2:'f',3:'f'}
             ```
 
-        <br>
+    
 
+    <br>
+    
+    <br>
 
-    <br><br>
+    ---
+    ## [] y軸の表示/非表示
+    ### 出力の規模の大きい場合に、並行配列との配列の順序の把握を手助けする為に<br>y軸を表示する追加機能で、表示/非表示を 設定可能です。
+    ```python
+    format_texts  = list_data.set_collection ( route=True, y_axis=True/False ,keep_settings=keep_settings )
+    #                                                      ^^^^^^ ====:-----
+    ```
+    
+    <br>
 
     ---
     ## [] 表示スタイルの変更
@@ -608,7 +624,7 @@ keep_settings                                                                   
         keep_settings = {1:'x',3:'yf',4:'f'}
 
         # 整形の実行
-        format_texts = list_data.set_collection ( route=True, keep_settings=keep_settings )
+        format_texts  = list_data.set_collection ( route=True, y_axis=False,keep_settings=keep_settings )
 
         # 結果の非表示、テキストファイルへの書き込み
         with open('output.txt','w') as f:
