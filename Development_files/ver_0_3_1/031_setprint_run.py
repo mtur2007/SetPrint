@@ -123,7 +123,7 @@ else:
 
       ]
 
-      keep_settings = {1:'y',3:'x'}
+      keep_settings = {1:'y',2:'yf'}
 
 # インスタンスを生成
 list_data = SetPrint(test_data)
