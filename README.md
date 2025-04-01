@@ -69,20 +69,20 @@ Setprint extends Python’s built-in pprint so that not only lists and dictionar
     Instead of using brackets like []/()/{} to represent parent-child relationships, setprint uses lines (e.g., ┣, ┃, ┗ and ┳, ━, ┓) to clearly indicate connections.
     
     ```txt
-    Parent Element 
-      ┣━━ Sibling Element
-      ┃     ┣━━ Child Element
-      ┃     ┗━━ Child Element
-      ┗━━ Sibling Element
-            ┣━━ Child Element
-            ┗━━ Child Element
+    Parent 
+      ┣━━━ Sibling
+      ┃       ┣━━━ Child
+      ┃       ┗━━━ Child
+      ┗━━━ Sibling
+              ┣━━━ Child
+              ┗━━━ Child
     ```
 
     ```txt
-    Parent Element ━━┳━━━━━━━━━━━┓
-          Sibling         Sibling
-            ┣━━ Child     ┣━━ Child
-            ┗━━ Child     ┗━━ Child
+    Parent ━━━┳━━━━━━━━━━━━━┓
+           Sibling       Sibling
+              ┣━━━ Child    ┣━━ Child
+              ┗━━━ Child    ┗━━ Child
     ```
 <br>
 
@@ -214,7 +214,8 @@ y_axis : False                                                                  
 
 ## [] Parallel Arrays: Matching Array `Order` and `Dimensions`
 
-As part of the formatting process, setprint represents “storage bugs” and the mixing of data with different dimensions by aligning the array’s `order` and `dimensions` using overlapping axes.
+As part of the formatting process, setprint represents “storage bugs” and the mixing of data with different dimensions
+<br>**by aligning the array’s `order` and `dimensions` using overlapping axes.**
 
 - ### Test Array
     ```

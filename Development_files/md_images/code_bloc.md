@@ -97,6 +97,9 @@ keep_settings
                      0   0       0 0             1   1       1 1 
 -----------------------------------------------------------------
 ```
+
+<img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Axis.png" width="610" alt="サンプル画像">
+
 ```
             .     =   =   =   ⌄ ⌄ = =   .     =   =   =   ⌄ ⌄ = =
                               ┋ ┋                         ┋ ┋
