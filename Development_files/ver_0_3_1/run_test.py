@@ -6,8 +6,8 @@
 
 # 実行コード
 # from test_setprint_0_3_0 import SetPrint
-from development_ver_0_3_1 import SetPrint
-# from setprint import SetPrint
+# from development_ver_0_3_1 import SetPrint
+from setprint import SetPrint
 
 import numpy as np
 import pickle
@@ -21,6 +21,16 @@ if True:
             ("Collections" ,
                   {  'image'   : { 'list'    : '++++++' ,
                               'tuple'   : '---' ,
+                              'ndarray' : '>ndarray' ,
+                              'dict'    : '◆dict' }}),
+
+            )
+      
+      style_settings = (
+
+            ("Collections" ,
+                  {  'image'   : { 'list'    : '▶list' ,
+                              'tuple'   : '▷tuple' ,
                               'ndarray' : '>ndarray' ,
                               'dict'    : '◆dict' }}),
 
@@ -56,7 +66,7 @@ if True:
 
       ]
 
-      keep_settings = {1:'x',2:'yf',5:'x'}
+      keep_settings = {1:'x',3:'x',5:'x'}
 
 '''
 keep_settings
