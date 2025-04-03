@@ -186,7 +186,7 @@ class SetPrint:
     # 表示スタイルの状態を視覚化する関数 
     def set_text_style(self,arguments):
         self.style_settings = convert_tuple_to_list(self.style_settings)
-        self.update_data_with_arguments(arguments, current_index=())
+        self.update_data_with_arguments(arguments, ())
         self.style_settings = convert_list_to_tuple(self.style_settings)
 
         if self.style_settings[4][1]['print']:
@@ -216,7 +216,10 @@ class SetPrint:
                 print(line)
     
     # 表示スタイルの変更を行う関数
-    def update_data_with_arguments(self, arguments, current_index=()):
+    def update_data_with_arguments(self, arguments, current_index=None):
+
+        if current_index == None:
+            current_index = ()
 
         if isinstance(arguments, self.mapping_type):
             # 辞書を探索
@@ -954,7 +957,7 @@ class SetPrint:
         return Kdeep_index
 
 
-    def flat_x_keep_index(self,x_keep_index,index=[],keep_index=[],keep_len=[]):
+    def flat_x_keep_index(self,x_keep_index,index,keep_index,keep_len):
 
         if self.keep_settings[len(index)] in ('x','y','yf'):
             for line,deep_data in enumerate(x_keep_index):
@@ -1004,7 +1007,7 @@ class SetPrint:
     # [→:4] キープデータの整形
     def format_keep_data(self,route,X_keep_index,Y_keep_index):
         
-        x_keep_index,keep_len = self.flat_x_keep_index(X_keep_index)
+        x_keep_index,keep_len = self.flat_x_keep_index(X_keep_index,[],[],[])
         x_keep_index.append(['end'])
         
         # キーを辞書順（インデックス順）でソート
@@ -1428,7 +1431,7 @@ class SetPrint:
                 self.format_texts = format_texts[:]
                 
             if route:
-                self.format_route(self.input_list, total_x_keep_data, [0,image_len])
+                self.format_route(self.input_list, total_x_keep_data, [0,image_len], 0, [])
                 format_texts_with_route = self.format_texts[:]
 
                 # print()
@@ -1465,7 +1468,7 @@ class SetPrint:
                 return format_texts
 
         else:
-            self.format_route(self.input_list, total_x_keep_data, [0,image_len])
+            self.format_route(self.input_list, total_x_keep_data, [0,image_len], 0, [])
             format_texts_with_route = self.format_texts[:]
 
             format_texts_maintenance = []
@@ -1507,7 +1510,7 @@ class SetPrint:
 
 
 
-    def total_x_keep_deata(self,x_keep_data,total_len=0):
+    def total_x_keep_deata(self,x_keep_data,total_len):
 
         x_keep_total_len = []
             
@@ -1534,7 +1537,7 @@ class SetPrint:
         
         return x_keep_total_len,total_len
 
-    def format_route(self,datas,total_x_keep_data,parent_x=[0,0],now_deep=0,now_y_keep_index=[]):
+    def format_route(self,datas,total_x_keep_data,parent_x,now_deep,now_y_keep_index):
 
         if isinstance(datas, self.mapping_type):
             datas = list(datas.values())
