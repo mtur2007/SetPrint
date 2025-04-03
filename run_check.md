@@ -6,6 +6,9 @@
 |◎|◎|△|◎|
 ---
 
+>チェック用 配列 & コード
+>https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_1/run_check.py
+
 > sq = sequence : [index] list, tuple, ndarray<br>
 > mp = mapping : [key] dict
 

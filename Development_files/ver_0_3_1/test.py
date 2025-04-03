@@ -3,7 +3,7 @@ from setprint import SetPrint
 
 #                 整形したい配列を指定
 #                         ∨
-list_data    = SetPrint([0,1,2])
+list_data    = SetPrint([0,[],[]])
 
 #            '''  展開したい方向を指定
 #                 （詳細はgithubより）  '''
