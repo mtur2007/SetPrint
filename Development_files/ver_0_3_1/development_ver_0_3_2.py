@@ -322,6 +322,7 @@ class SetPrint:
 
         self.keep_index = []
         self.y_flat_index = []
+        self.f_last_Kdeep = None
         
         # <t:初期化>
 
@@ -448,7 +449,7 @@ class SetPrint:
                     else:
                         Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
 
-                        # <t:配列の調査結果の受け取り,In_range>
+                    # <t:配列の調査結果の受け取り,In_range>
                                         
                 else:
                     
@@ -527,7 +528,7 @@ class SetPrint:
                     
                     # <t:collection_type,Out_of_range>
 
-                    if len(line) != 0:                        
+                    if self.f_last_Kdeep != self.now_deep:
                         if type(Kdeep_index[direction_index][0]) != list:
                             key_len = max(Kdeep_index[direction_index][0], len(str(key)))
                             value_len = max(Kdeep_index[direction_index][1], self.collections[type(line).__name__][1])
@@ -589,12 +590,13 @@ class SetPrint:
     # [↺:2] シーケンス型を調べる
     def search_sequence(self, datas, Kdeep_index):
 
+        set_keep_type = self.keep_settings[self.now_deep]
+        
         self.now_deep += 1 #deepはインデックスの次元測定
     
         # (P:2)
         # キープ範囲内にある次元の配列から情報を取得する。
         
-        set_keep_type = self.keep_settings[self.now_deep-1]
         if set_keep_type == 'f':
             
             self.keep_index.append(-1)
@@ -634,21 +636,29 @@ class SetPrint:
                 if isinstance(line, self.collection_type):
                     
                     # <t:collection_type,In_range>
+                    if self.f_last_Kdeep != self.now_deep:
 
-                    if type(Kdeep_index[linenum][0]) != list:
-                        Kdeep_index[linenum] = [[Kdeep_index[linenum][0],max(Kdeep_index[linenum][1], self.collections[type(line).__name__][1])],[]]
-                    
-                    else:
-                        if Kdeep_index[linenum][0][1] < self.collections[type(line).__name__][1]:
-                            Kdeep_index[linenum][0][1] = self.collections[type(line).__name__][1]
-                                    
-                    if type(line) == dict:
-                        Kdeep_index[linenum][1] = self.search_mapping(line,Kdeep_index[linenum][1])
-                    else:
-                        Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
-
-                        # <t:配列の調査結果の受け取り,In_range>
+                        if type(Kdeep_index[linenum][0]) != list:
+                            Kdeep_index[linenum] = [[Kdeep_index[linenum][0],max(Kdeep_index[linenum][1], self.collections[type(line).__name__][1])],[]]
+                        
+                        else:
+                            if Kdeep_index[linenum][0][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[linenum][0][1] = self.collections[type(line).__name__][1]
                                         
+                        if type(line) == dict:
+                            Kdeep_index[linenum][1] = self.search_mapping(line,Kdeep_index[linenum][1])
+                        else:
+                            Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
+
+                            # <t:配列の調査結果の受け取り,In_range>
+                    else:
+                        if type(Kdeep_index[linenum][0]) != list:
+                            if Kdeep_index[linenum][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[linenum][1] = self.collections[type(line).__name__][1]
+                        else:
+                            if Kdeep_index[linenum][0][1] < self.collections[type(line).__name__][1]:
+                                Kdeep_index[linenum][0][1] = self.collections[type(line).__name__][1]
+
                 else:
                     
                     if type(Kdeep_index[linenum][0]) != list:
@@ -773,6 +783,8 @@ class SetPrint:
         parent__y_flat_index = self.y_flat_index
         parent__X_keep_index = self.X_keep_index
 
+        parent__f_last_Kdeep = self.f_last_Kdeep
+
         # 親キープインデックス
         parent_y_keep_index = self.transform_keep_index(parent_index)
 
@@ -782,23 +794,12 @@ class SetPrint:
         # <t:キープ初期化>
 
         self.keep_index = []
-
-        """
-        self.MAX_index
-        拡張なし
-
-        self.MAX_indexlen
-        格納する値を [ key_len,   txt_len,   int_len, flot_len, ] に拡張する。
-                     ~~~~~~~    ~~~~~~~    ~~~~~~~--~~~~~~~~
-                   辞書型対応[0] 文字列用[1]    数列整形用[2,3]  
-
-        keep_lies_data
-        格納する値を [ self.keep_index,  collections_txt,  key ]
-                                                         ~~~
-                                                     辞書型対応[2]
-        """
-        
         self.now_index.append('')
+        
+        self.f_last_Kdeep = 0
+        for deep_setting in self.keep_settings[self.now_deep:]:
+            if deep_setting == 'f':
+                self.f_last_Kdeep + 1
 
         # <t:start,In_range>
 
@@ -830,7 +831,8 @@ class SetPrint:
                     
                     # <t:collection_type,In_range>
 
-                    if len(line) != 0:
+                    if self.f_last_Kdeep != self.now_deep:
+                        
                         if type(Kdeep_index[0][0]) != list:
                             key_len = max(Kdeep_index[0][0], len(str(key)))
                             value_len = max(Kdeep_index[0][1], self.collections[type(line).__name__][1])
@@ -904,7 +906,7 @@ class SetPrint:
                     
                     # <t:collection_type,In_range>
 
-                    if len(line) != 0:
+                    if self.f_last_Kdeep != self.now_deep:
                         if type(Kdeep_index[0][0]) != list:
                             Kdeep_index[0] = [[Kdeep_index[0][0],max(Kdeep_index[0][1], self.collections[type(line).__name__][1])],[]]
 
@@ -953,6 +955,7 @@ class SetPrint:
         self.keep_index = parent__keep_index
         self.y_flat_index = parent__y_flat_index
         self.X_keep_index = parent__X_keep_index
+        self.f_last_Kdeep = parent__f_last_Kdeep
 
         return Kdeep_index
 
@@ -1104,12 +1107,12 @@ class SetPrint:
 
             else:
 
-                last_deep = None
+                last_deep = 0
                 for now_deep,keep_setting in enumerate(self.keep_settings[len(y_keep_index):]):
-                    if keep_setting != 'f':
-                        last_deep = now_deep
+                    if keep_setting == 'f':
+                        last_deep += 1
                         break
-                
+
                 for parent,y_x_indexs in y_line_data:
 
                     keep_parent = parent[:]
@@ -1158,21 +1161,20 @@ class SetPrint:
                         axis_len = keep_len[now_line]
 
                         data_type = type(value)
-                        value,image_len = self.collections[type(value).__name__]
+                        value_image,image_len = self.collections[type(value).__name__]
 
                         dif = (axis_len[1] - image_len)
                         v_dif_2 = (dif // 2)
 
                         if axis_len[0] == 0:
-                            line_txt += v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                            line_txt += v_dif_2*' ' + str(value_image) + (v_dif_2 + dif%2)*' ' + ' '
                         else:
                             if dict_key == None:
-                                line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                                line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value_image) + (v_dif_2 + dif%2)*' ' + ' '
                             else:
                                 k_dif = (axis_len[0] - len(str(dict_key)))
                                 k_dif_2 = (k_dif // 2)
-                                line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
-                                
+                                line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value_image) + (v_dif_2 + dif%2)*' ' + ' '
                         
                         if last_deep != 0:
                             before_nest += 1
@@ -1281,23 +1283,24 @@ class SetPrint:
                             axis_len = keep_len[now_line]
 
                             data_type = type(value)
-                            value,image_len = self.collections[type(value).__name__]
+                            value_image,image_len = self.collections[type(value).__name__]
 
                             dif = (axis_len[1] - image_len)
                             v_dif_2 = (dif // 2)
 
                             if axis_len[0] == 0:
-                                line_txt += v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                                line_txt += v_dif_2*' ' + str(value_image) + (v_dif_2 + dif%2)*' ' + ' '
                             else:
                                 if dict_key == None:
-                                    line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                                    line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value_image) + (v_dif_2 + dif%2)*' ' + ' '
                                 else:
                                     k_dif = (axis_len[0] - len(str(dict_key)))
                                     k_dif_2 = (k_dif // 2)
-                                    line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
+                                    line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value_image) + (v_dif_2 + dif%2)*' ' + ' '
                                     
                             
-                            if last_deep != len(y_x_index):
+                            # if last_deep != now_deep:
+                            if last_deep != now_deep:
                                 before_nest += 1
                                 now_line += 1
 
