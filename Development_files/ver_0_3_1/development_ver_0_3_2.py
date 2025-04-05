@@ -847,7 +847,8 @@ class SetPrint:
         parent_y_keep_index = self.transform_keep_index(parent_index)
 
         if parent_y_keep_index not in self.Y_keep_index:
-            self.Y_keep_index[parent_y_keep_index] = []
+            if len(datas) != 0:
+                self.Y_keep_index[parent_y_keep_index] = []
 
         # <t:キープ初期化>
 
@@ -869,7 +870,8 @@ class SetPrint:
         # print(' < tracking',self.keep_tracking)
 
         if len(Kdeep_index) == 0:
-            Kdeep_index = [[0,1]]
+            if len(datas) != 0:
+                Kdeep_index = [[0,1]]
 
         if type(datas) == dict:
             

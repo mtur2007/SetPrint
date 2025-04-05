@@ -20,7 +20,7 @@ def print_set_collection(test_array,style_settings,keep_settings):
             list_data.update_data_with_arguments(style_settings)
 
       # 整形
-      format_texts = list_data.set_collection ( route='SLIM', y_axis=False, keep_settings=keep_settings )
+      format_texts = list_data.set_collection ( route='BOLD', y_axis=False, keep_settings=keep_settings )
       # format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
       for line in format_texts:
            print(line)
@@ -140,7 +140,7 @@ elif False:
       print_set_collection(mp_sq,style_settings,keep_settings)
       print_set_collection(mp_mp,style_settings,keep_settings)
 
-elif False:
+elif True:
       
       '''
       2,
