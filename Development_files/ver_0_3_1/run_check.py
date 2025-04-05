@@ -20,7 +20,7 @@ def print_set_collection(test_array,style_settings,keep_settings):
             list_data.update_data_with_arguments(style_settings)
 
       # 整形
-      format_texts = list_data.set_collection ( route='BOLD', y_axis=True, keep_settings=keep_settings )
+      format_texts = list_data.set_collection ( route='SLIM', y_axis=False, keep_settings=keep_settings )
       # format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
       for line in format_texts:
            print(line)
@@ -42,13 +42,13 @@ yf_F_Y = {1:'yf',2:'f' , 4:'y'}
 style_settings = (
 
       ("Collections" ,
-      {  'image'   : { 'list'    : '►list' ,
+       {  'image'   : { 'list'    : '►list' ,
                         'tuple'   : '▷tuple' ,
                         'ndarray' : '>ndarray' ,
                         'dict'    : '◆dict' }}),
       
       ("route",
-      {  'image'   : { '┣' : '|' ,
+       {  'image'   : { '┣' : '|' ,
                         '┳' : ',' ,
 
                         '┃' : '|' ,
@@ -140,7 +140,7 @@ elif False:
       print_set_collection(mp_sq,style_settings,keep_settings)
       print_set_collection(mp_mp,style_settings,keep_settings)
 
-else:
+elif False:
       
       '''
       2,
@@ -198,7 +198,7 @@ else:
                        {'zero':0,    'one':1,       'two':2,    'three':3,       'four':4,         'five':5,         'six':6,         'seven':7,         'eight':8},
                        {'zero':0,    'one':['1-0'], 'two':2,    'three':['3-0'], 'four':4,         'five':['5-0'],   'six':6,         'seven':['7-0'],   'eight':8})
 
-      keep_settings = {1:'y',2:'x'}
+      keep_settings = {1:'yf',3:'yf',4:'x'}
 
       format_txt = print_set_collection(Match_sq_sq,style_settings,keep_settings)
       format_txt = print_set_collection(Match_mp_mp,style_settings,keep_settings)
@@ -211,3 +211,9 @@ else:
       format_txt = print_set_collection(match_sq_max1,style_settings,keep_settings)
       format_txt = print_set_collection(match_mp_stop,style_settings,keep_settings)
 
+else:
+      test = ['test',[[[]]]]
+
+      keep_settings = {1:'yf',3:'yf',4:'y'}
+
+      format_txt = print_set_collection(test,style_settings,keep_settings)
