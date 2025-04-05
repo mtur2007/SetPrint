@@ -3,7 +3,7 @@
 
 # 実行コード
 # from setprint import SetPrint
-from development_ver_0_3_1 import SetPrint
+from setprint_package.Development_files.ver_0_3_1.development_ver_0_3_2 import SetPrint
 
 import numpy as np
 
@@ -123,7 +123,7 @@ else:
 
       ]
 
-      keep_settings = {1:'y',2:'yf'}
+      keep_settings = {1:'yf',2:'yf'}
 
 # インスタンスを生成
 list_data = SetPrint(test_data)

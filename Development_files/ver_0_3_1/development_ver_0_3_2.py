@@ -172,15 +172,34 @@ class SetPrint:
                              'tuple'   : '▷tuple' ,
                              'ndarray' : '>ndarray' ,
                              'dict'    : '◆dict' }}),
+          
+          ("route",
+            {  'image'   : { '┣' : '-' ,
+                             '┳' : '|' ,
+
+                             '┃' : '|' ,
+                             '━' : '-' ,
+
+                             '┗' : '-' ,
+                             '┓' : '|' }})
 
         )
         
         # 制限('#'の箇所をまとめて管理)
         self.constraints = {
-            ( 0, 1,     'image',    'list'    ) : {'type': str},
-            ( 0, 1,     'image',   'tuple'    ) : {'type': str},
-            ( 0, 1,     'image', 'ndarray'    ) : {'type': str},
-            ( 0, 1,     'image',    'dict'    ) : {'type': str},
+            ( 0, 1,     'image',    'list' ) : {'type': str},
+            ( 0, 1,     'image',   'tuple' ) : {'type': str},
+            ( 0, 1,     'image', 'ndarray' ) : {'type': str},
+            ( 0, 1,     'image',    'dict' ) : {'type': str},
+                        
+            ( 1, 1,     'image',    '┣'    ) : {'max_length': 1, 'min_length':1},
+            ( 1, 1,     'image',    '┳'    ) : {'max_length': 1, 'min_length':1},
+            
+            ( 1, 1,     'image',    '┃'    ) : {'max_length': 1, 'min_length':1},
+            ( 1, 1,     'image',    '━'    ) : {'max_length': 1, 'min_length':1},
+
+            ( 1, 1,     'image',    '┗'    ) : {'max_length': 1, 'min_length':1},
+            ( 1, 1,     'image',    '┓'    ) : {'max_length': 1, 'min_length':1},
         }
    
     # 表示スタイルの状態を視覚化する関数 
@@ -340,7 +359,68 @@ class SetPrint:
         max_keep_deep = max(keep_deeps)
 
         self.y_axis_image = '┊' if y_axis else ' '
+        
+        if route == True:
+            LINE = self.style_settings[1][1]['image']
+            # グループ1: 親要素から途中の子要素へ接続する線
+            self.INTERMEDIATE_LEFT_CONNECTOR = LINE['┣']   # 例: 左側への接続
+            self.INTERMEDIATE_TOP_CONNECTOR  = LINE['┳']   # 例: 上側への接続
 
+            # グループ2: 延長線
+            self.VERTICAL_EXTENSION_LINE     = LINE['┃']   # 縦方向の延長線
+            self.HORIZONTAL_EXTENSION_LINE   = LINE['━']   # 横方向の延長線
+
+            # グループ3: 最後の接続線
+            self.FINAL_BOTTOM_CONNECTOR      = LINE['┗']   # 例: 下側の最終接続線
+            self.FINAL_RIGHT_CONNECTOR       = LINE['┓']   # 例: 右側の最終接続線
+        
+        elif route == 'BOLD':
+            route = True
+            # グループ1: 親要素から途中の子要素へ接続する線
+            self.INTERMEDIATE_LEFT_CONNECTOR = '┣'   # 例: 左側への接続
+            self.INTERMEDIATE_TOP_CONNECTOR  = '┳'   # 例: 上側への接続
+
+            # グループ2: 延長線
+            self.VERTICAL_EXTENSION_LINE     = '┃'   # 縦方向の延長線
+            self.HORIZONTAL_EXTENSION_LINE   = '━'   # 横方向の延長線
+
+            # グループ3: 最後の接続線
+            self.FINAL_BOTTOM_CONNECTOR      = '┗'   # 例: 下側の最終接続線
+            self.FINAL_RIGHT_CONNECTOR       = '┓'   # 例: 右側の最終接続線
+
+        elif route == 'SLIM':
+            route = True
+            # グループ1: 親要素から途中の子要素へ接続する線
+            self.INTERMEDIATE_LEFT_CONNECTOR = '├'   # 例: 左側への接続
+            self.INTERMEDIATE_TOP_CONNECTOR  = '┬'   # 例: 上側への接続
+
+            # グループ2: 延長線
+            self.VERTICAL_EXTENSION_LINE     = '│'   # 縦方向の延長線
+            self.HORIZONTAL_EXTENSION_LINE   = '─'   # 横方向の延長線
+
+            # グループ3: 最後の接続線
+            self.FINAL_BOTTOM_CONNECTOR      = '└'   # 例: 下側の最終接続線
+            self.FINAL_RIGHT_CONNECTOR       = '┐'   # 例: 右側の最終接続線
+        
+        elif route == 'HALF':
+            route = True
+            # グループ1: 親要素から途中の子要素へ接続する線
+            self.INTERMEDIATE_LEFT_CONNECTOR = '|'   # 例: 左側への接続
+            self.INTERMEDIATE_TOP_CONNECTOR  = ','   # 例: 上側への接続
+
+            # グループ2: 延長線
+            self.VERTICAL_EXTENSION_LINE     = '|'   # 縦方向の延長線
+            self.HORIZONTAL_EXTENSION_LINE   = '-'   # 横方向の延長線
+
+            # グループ3: 最後の接続線
+            self.FINAL_BOTTOM_CONNECTOR      = '\\'   # 例: 下側の最終接続線
+            self.FINAL_RIGHT_CONNECTOR       = '\\'   # 例: 右側の最終接続線
+        
+        elif route != False:
+            Err_txt = 'Err ::: True / BOLD / SLIM / HALF / False'
+            print(Err_txt)
+            return [Err_txt]
+        
         keep_settings = []
 
         range_keep_type = 'x'
@@ -1107,7 +1187,7 @@ class SetPrint:
 
             else:
 
-                last_deep = 0
+                last_deep = 1
                 for now_deep,keep_setting in enumerate(self.keep_settings[len(y_keep_index):]):
                     if keep_setting == 'f':
                         last_deep += 1
@@ -1567,15 +1647,17 @@ class SetPrint:
                 # y_line ,parent_x
                 y_line = self.y_keep_line.index(now_y_keep_index+[index])
 
+                # ┃
                 for line_plus in range (y_line - previous):
-                    line_text = self.format_texts[previous+line_plus+1]  
+                    line_text = self.format_texts[previous+line_plus+1]
                     if len(line_text) > parent_x:
-                        self.format_texts[previous+line_plus+1] = line_text[:parent_x] + '┃' + line_text[parent_x+1:]
+                        self.format_texts[previous+line_plus+1] = line_text[:parent_x] + self.VERTICAL_EXTENSION_LINE + line_text[parent_x+1:]
                     else:
-                        self.format_texts[previous+line_plus+1] = line_text[:] + (parent_x - len(line_text))*' ' + '┃' + line_text[parent_x+1:]
+                        self.format_texts[previous+line_plus+1] = line_text[:] + (parent_x - len(line_text))*' ' + self.VERTICAL_EXTENSION_LINE + line_text[parent_x+1:]
 
+                # ┣ + ━ * n
                 line_text = self.format_texts[y_line]
-                self.format_texts[y_line] = line_text[:parent_x] + '┣' + '━'*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
+                self.format_texts[y_line] = line_text[:parent_x] + self.INTERMEDIATE_LEFT_CONNECTOR + self.HORIZONTAL_EXTENSION_LINE*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
 
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
                     if len(line) != 0:
@@ -1583,8 +1665,9 @@ class SetPrint:
 
                 previous = y_line
 
+            # ┗ + ━ * n
             line_text = self.format_texts[y_line]
-            self.format_texts[y_line] = line_text[:parent_x] + '┗' + '━'*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
+            self.format_texts[y_line] = line_text[:parent_x] + self.FINAL_BOTTOM_CONNECTOR + self.HORIZONTAL_EXTENSION_LINE*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
 
         else:
 
@@ -1612,8 +1695,9 @@ class SetPrint:
                     diff_2 = x_line[1]//2
                     x_line = x_line[0] + diff_2 - (1 - x_line[1]%2) # 偶数の場合は、中心より左側を中心とする。: - (1 - x_line[1]%2)
 
+                    # '━'*n + '┳'
                     line_text = self.format_texts[parent_y]
-                    self.format_texts[parent_y] = line_text[:previous] + (x_line - previous) * '━' + '┳' + line_text[x_line+1:]
+                    self.format_texts[parent_y] = line_text[:previous] + (x_line - previous) * self.HORIZONTAL_EXTENSION_LINE + self.INTERMEDIATE_TOP_CONNECTOR + line_text[x_line+1:]
 
                     previous = x_line +1
         
@@ -1623,15 +1707,17 @@ class SetPrint:
                     y_keep = index
                     y_line = self.y_keep_line.index(now_y_keep_index+[index])
 
+                    # ┃
                     for line_plus in range (y_line - previous):
-                        line_text = self.format_texts[previous+line_plus+1]  
+                        line_text = self.format_texts[previous+line_plus+1]
                         if len(line_text) > parent_x:
-                            self.format_texts[previous+line_plus+1] = line_text[:parent_x] + '┃' + line_text[parent_x+1:]
+                            self.format_texts[previous+line_plus+1] = line_text[:parent_x] + self.VERTICAL_EXTENSION_LINE + line_text[parent_x+1:]
                         else:
-                            self.format_texts[previous+line_plus+1] = line_text[:] + (parent_x - len(line_text))*' ' + '┃' + line_text[parent_x+1:]
+                            self.format_texts[previous+line_plus+1] = line_text[:] + (parent_x - len(line_text))*' ' + self.VERTICAL_EXTENSION_LINE + line_text[parent_x+1:]
 
+                    # '┣' + '━'*n
                     line_text = self.format_texts[y_line]
-                    self.format_texts[y_line] = line_text[:parent_x] + '┣' + '━'*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
+                    self.format_texts[y_line] = line_text[:parent_x] + self.INTERMEDIATE_LEFT_CONNECTOR + self.HORIZONTAL_EXTENSION_LINE*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
 
                     previous = y_line
             
@@ -1641,18 +1727,22 @@ class SetPrint:
                         self.format_route(line,total_x_keep_data[x_keep][1],total_x_keep_data[x_keep][0],now_deep+1,now_y_keep_index+[y_keep])
 
             if keep_x:
-                
+
+                # ┓
                 line_text = self.format_texts[parent_y]
-                self.format_texts[parent_y] = line_text[:x_line] + '┓' + line_text[x_line+1:]
+                self.format_texts[parent_y] = line_text[:x_line] + self.FINAL_RIGHT_CONNECTOR + line_text[x_line+1:]
 
                     
             else:
-                for line_plus in range (y_line - previous):
-                    line_text = self.format_texts[previous+line_plus+1]  
-                    if len(line_text) > parent_x:
-                        self.format_texts[previous+line_plus+1] = line_text[:parent_x] + '┃' + line_text[parent_x+1:]
-                    else:
-                        self.format_texts[previous+line_plus+1] = line_text[:] + (parent_x - len(line_text))*' ' + '┃' + line_text[parent_x+1:]
 
+                # ┃
+                for line_plus in range (y_line - previous):
+                    line_text = self.format_texts[previous+line_plus+1]
+                    if len(line_text) > parent_x:
+                        self.format_texts[previous+line_plus+1] = line_text[:parent_x] + self.VERTICAL_EXTENSION_LINE + line_text[parent_x+1:]
+                    else:
+                        self.format_texts[previous+line_plus+1] = line_text[:] + (parent_x - len(line_text))*' ' + self.VERTICAL_EXTENSION_LINE + line_text[parent_x+1:]
+
+                # ┗ + ━*n
                 line_text = self.format_texts[y_line]
-                self.format_texts[y_line] = line_text[:parent_x] + '┗' + '━'*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
+                self.format_texts[y_line] = line_text[:parent_x] + self.FINAL_BOTTOM_CONNECTOR + self.HORIZONTAL_EXTENSION_LINE*parent_x_diff + line_text[parent_x+parent_x_diff+1:]

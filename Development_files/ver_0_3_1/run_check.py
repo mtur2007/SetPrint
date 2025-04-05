@@ -20,7 +20,7 @@ def print_set_collection(test_array,style_settings,keep_settings):
             list_data.update_data_with_arguments(style_settings)
 
       # 整形
-      format_texts = list_data.set_collection ( route=True, y_axis=True, keep_settings=keep_settings )
+      format_texts = list_data.set_collection ( route='BOLD', y_axis=True, keep_settings=keep_settings )
       # format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
       for line in format_texts:
            print(line)
@@ -38,6 +38,26 @@ yf_F = {1:'yf',2:'f'}
 #                ^^^
 yf_F_Y = {1:'yf',2:'f' , 4:'y'}
 #                  ^^^   *****
+
+style_settings = (
+
+      ("Collections" ,
+      {  'image'   : { 'list'    : '►list' ,
+                        'tuple'   : '▷tuple' ,
+                        'ndarray' : '>ndarray' ,
+                        'dict'    : '◆dict' }}),
+      
+      ("route",
+      {  'image'   : { '┣' : '|' ,
+                        '┳' : ',' ,
+
+                        '┃' : '|' ,
+                        '━' : '-' ,
+
+                        '┗' : '\\' ,
+                        '┓' : '\\' }})
+
+      )
 
 if False:
       
@@ -114,7 +134,6 @@ elif False:
       mp_mp = (({'one':'++++'},{'two':'--'},{'len_0':''}),
                ({'two':'--'},{'two':'++++'},{'len_0':''}))
       
-      style_settings = None
       keep_settings = {1:'yf'}
       print_set_collection(sq_sq,style_settings,keep_settings)
       print_set_collection(sq_mp,style_settings,keep_settings)
@@ -128,31 +147,67 @@ else:
          次元の合致 & 空配列へのアクセス防止機能(stop) & 空文字の1文字化 確認
          順序の合致 & 空配列へのアクセス防止機能(stop) & 空文字の1文字化 確認
       '''
+
+      # 合致            
+      # ネストの深さ sq : sq 
+      Match_sq_sq = (( ['0-0'], ['1-0'],2,       3,       4),
+                     (0,       1,        ['2-0'], ['3-0'],4),
+                     (0,       1,       2,       3,       4),
+                     (0,        ['1-0'],2,        ['3-0'],4))
+
+      # 合致            
+      # ネストの深さ mp : mp 
+      Match_mp_mp = ({'zero':{'+1':'0-0'}, 'one':{'+1':'1-0'}, 'two':2,            'three':3,            'four':4},
+                     {'zero':0,            'one':1,            'two':{'+1':'2-0'}, 'three':{'+1':'3-0'}, 'four':4},
+                     {'zero':0,            'one':1,            'two':2,            'three':3,            'four':4},
+                     {'zero':0,            'one':{'+1':'1-0'}, 'two':2,            'three':{'+1':'3-0'}, 'four':4})
+
+
+      # 合致            
+      # ネストの深さ mp > sq 
+      Match_mp_sq = (( {'+1':'0-0'}, {'+1':'1-0'},2,            3,            4),
+                     (0,            1,             {'+1':'2-0'}, {'+1':'3-0'},4),
+                     (0,            1,            2,            3,            4),
+                     (0,                  ['1-0'],2,                  ['3-0'],4))
       
       # 合致            
-      # ネストの深さ    |     mp > sq     |  　 sq > m p    |
-      Match =      ((0,{'nest+1':'1-0'},'2',('3-0',),'4',  5),
-                    (0,'1',{'nest+1':'2-0'},'3',  ('4-0',),5),
-                    (0,1,       2,       3,       4,       5),
-                    (0,('1-0',),('2-0',),('3-0',),('4-0',),5))
-    
+      # ネストの深さ mp : mp 
+      Match_sq_mp = ({'zero':['0-0'], 'one':['1-0'], 'two':2,       'three':3,       'four':4},
+                     {'zero':0,       'one':1,       'two':['2-0'], 'three':['3-0'], 'four':4},
+                     {'zero':0,       'one':1,       'two':2,       'three':3,       'four':4},
+                     {'zero':0,       'one':['1-0'], 'two':2,       'three':['3-0'], 'four':4})
+
+
       # 合致 & 空配列へのアクセス防止機能(stop)
-      match_stop = ((0,    {},  '2',         (),  '4',     5),
-                    (0,'1',         {},  '3',        (),   5),
-                    (0,1,       2,       3,       4,       5),
-                  #   (0,('1-0',),('2-0',),('3-0',),('4-0',),5))
-                    (0,('1-0',),2,('3-0',),4,5))
-    
-      # 合致 & 空文字の1文字化
-      match_max1 = ((0,  {'+1':''},'2',  ('',),   '4',      5),
-                    (0,'1',      {'+1':''},'3',     ('',),  5),
-                    (0,1,        2,       3,       4,       5),
-                    (0, ('1-0',),('2-0',),('3-0',),('4-0',),5))
+      match_sq_stop = (( [], [],     2,  3,         {},{},     6,  7,        8),
+                       (0,  1,         [], [],     4, 5,         {}, {},     8),
+                       (0,   ['1-0'],2,    ['3-0'],4,  ['5-0'],6,    ['7-0'],8))
+      
+      match_mp_stop = ({'zero':[], 'one':[],      'two':2,  'three':3,       'four':{}, 'five':{},      'six':6,  'seven':7,       'eight':8},
+                       {'zero':0,  'one':1,       'two':[], 'three':[],      'four':4,  'five':5,       'six':{}, 'seven':{},      'eight':8},
+                       {'zero':0,  'one':1,       'two':2,  'three':3,       'four':4,  'five':5,       'six':6,  'seven':7,       'eight':8},
+                       {'zero':0,  'one':['1-0'], 'two':2,  'three':['3-0'], 'four':4,  'five':['5-0'], 'six':6,  'seven':['7-0'], 'eight':8})
 
-      style_settings = None
-      keep_settings = yf_F
+      # 合致 & 空配列へのアクセス防止機能(stop)
+      match_sq_max1 = (( [''], [''],   2,     3,        {'+1':''},  {'+1':''},6,        7,          8),
+                       (0,    1,         [''], [''],   4,          5,          {'+1':''}, {'+1':''},8),
+                       (0,     ['1-0'],2,      ['3-0'],4,           ['5-0'],  6,          ['7-0'],  8))
+      
+      match_mp_max1 = ({'zero':[''], 'one':[''],    'two':2,    'three':3,       'four':{'+1':''}, 'five':{'+1':''}, 'six':6,         'seven':7,         'eight':8},
+                       {'zero':0,    'one':1,       'two':[''], 'three':[''],    'four':4,         'five':5,         'six':{'+1':''}, 'seven':{'+1':''}, 'eight':8},
+                       {'zero':0,    'one':1,       'two':2,    'three':3,       'four':4,         'five':5,         'six':6,         'seven':7,         'eight':8},
+                       {'zero':0,    'one':['1-0'], 'two':2,    'three':['3-0'], 'four':4,         'five':['5-0'],   'six':6,         'seven':['7-0'],   'eight':8})
 
-      format_txt = print_set_collection(Match,style_settings,keep_settings)
-      format_txt = print_set_collection(match_stop,style_settings,keep_settings)
-      format_txt = print_set_collection(match_max1,style_settings,keep_settings)
+      keep_settings = {1:'y',2:'x'}
+
+      format_txt = print_set_collection(Match_sq_sq,style_settings,keep_settings)
+      format_txt = print_set_collection(Match_mp_mp,style_settings,keep_settings)
+      format_txt = print_set_collection(Match_mp_sq,style_settings,keep_settings)
+      format_txt = print_set_collection(Match_sq_mp,style_settings,keep_settings)
+
+      format_txt = print_set_collection(match_sq_stop,style_settings,keep_settings)
+      format_txt = print_set_collection(match_mp_stop,style_settings,keep_settings)
+
+      format_txt = print_set_collection(match_sq_max1,style_settings,keep_settings)
+      format_txt = print_set_collection(match_mp_stop,style_settings,keep_settings)
 
