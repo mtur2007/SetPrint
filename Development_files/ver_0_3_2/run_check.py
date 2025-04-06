@@ -17,10 +17,10 @@ def print_set_collection(test_array,style_settings,keep_settings):
             list_data.update_data_with_arguments(style_settings)
 
       # 整形
-      format_texts = list_data.set_collection ( route='HALF', y_axis=False, keep_settings=keep_settings )
+      format_texts = list_data.set_collection ( route='SLIM', y_axis=True, keep_settings=keep_settings )
       # format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
-      # for line in format_texts:
-      #      print(line)
+      for line in format_texts:
+           print(line)
       
       return format_texts
 
@@ -45,14 +45,14 @@ style_settings = (
                         'dict'    : '◆dict' }}),
       
       ("route",
-       {  'image'   : { '┣' : '|' ,
-                        '┳' : ',' ,
+       {  'image'   : { '┣' : '├' ,
+                        '┳' : '┬' ,
 
-                        '┃' : '|' ,
-                        '━' : '-' ,
+                        '┃' : '│' ,
+                        '━' : '─' ,
 
-                        '┗' : '\\' ,
-                        '┓' : '\\' }})
+                        '┗' : '└' ,
+                        '┓' : '┐' }})
 
       )
 
@@ -287,8 +287,47 @@ else:
       else:
             test_array = test_array[1]
 
-      test_array = np.zeros((10,5,3),dtype=int)
-      keep_settings = {1:'y',2:'x'}
+    #   test_array = np.zeros((10,5,3),dtype=int)
+
+      test_array = [
+      
+      # RGB画像 (3x3x3) # サンプルの配列 
+      np.array([[[255,   0,   4],
+                  [255,  85,   0],
+                  [255, 170,   0]],
+
+                  [[170, 255,   0],
+                  [ 85, 255,   0],
+                  [  0, 255,   4]],
+
+                  [[  0, 170, 255],
+                  [  0,  85, 255],
+                  [  4,   0, 255]]]),
+      
+      # サンプルの形式違い BGR画像
+      np.array([[[  4,   0, 255],
+                  [  0,  85, 255],
+                  [  0, 170, 255]],
+
+                  [[  0, 255, 170],
+                  [  0, 255,  85],
+                  [  4, 255,   0]],
+
+                  [[255, 170,   0],
+                  [255,  85,   0],
+                  [255,   0,   4]]]),
+
+      # グレースケール画像 (3x3) → ここだけ次元が異なる
+      np.array([[ 77, 126, 176],
+                  [200, 175, 150],
+                  [129,  79,  29]]),
+
+      None
+
+      ]
+
+
+      keep_settings = {1:'yf',3:'yf'}
       
       # print(test_array)
       # print(keep_settings)
