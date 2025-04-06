@@ -3,7 +3,7 @@
 
 # 実行コード
 # from setprint import SetPrint
-from setprint_package.Development_files.ver_0_3_1.development_ver_0_3_2 import SetPrint
+from setprint import SetPrint
 
 import numpy as np
 

@@ -4,6 +4,7 @@
 # setpirnt (ver 0.3.0) [ demo ]
 
 import numpy as np
+import sys
 
 # 数値の int部分を見た目的に表示させる様にする自作関数
 def Myint(num):
@@ -352,13 +353,22 @@ class SetPrint:
         self.collections = {key: (value, len(value)) for key, value in self.collections.items()}
         
         self.brackets = {'list': (('[', ']'), [1, 1]), 'tuple': (('(', ')'), [1, 1]), 'ndarray': (('[', ']'), [1, 1]), 'dict': (('{', '}'), [1, 1])}
-        
+
         updated_data, max_depth = update_numpy_scalars_and_get_depth(self.input_list)
-       
+
+        obj = updated_data   
+
+        if max_depth == 0 or (isinstance(obj, np.ndarray) and obj.ndim == 1 and obj.size == 0) or (isinstance(obj, (list, tuple)) and len(obj) == 0):
+            Err_txt = 'Err ::: value -> / ' + str(self.input_list) + ' / ??????'
+            print(Err_txt)
+            return [Err_txt]
+
         keep_deeps = list(keep_settings.keys())
         max_keep_deep = max(keep_deeps)
 
         self.y_axis_image = '┊' if y_axis else ' '
+
+        self.Process = 2
         
         if route == True:
             LINE = self.style_settings[1][1]['image']
@@ -373,6 +383,8 @@ class SetPrint:
             # グループ3: 最後の接続線
             self.FINAL_BOTTOM_CONNECTOR      = LINE['┗']   # 例: 下側の最終接続線
             self.FINAL_RIGHT_CONNECTOR       = LINE['┓']   # 例: 右側の最終接続線
+
+            self.Process += 1
         
         elif route == 'BOLD':
             route = True
@@ -388,6 +400,8 @@ class SetPrint:
             self.FINAL_BOTTOM_CONNECTOR      = '┗'   # 例: 下側の最終接続線
             self.FINAL_RIGHT_CONNECTOR       = '┓'   # 例: 右側の最終接続線
 
+            self.Process += 1
+
         elif route == 'SLIM':
             route = True
             # グループ1: 親要素から途中の子要素へ接続する線
@@ -401,7 +415,9 @@ class SetPrint:
             # グループ3: 最後の接続線
             self.FINAL_BOTTOM_CONNECTOR      = '└'   # 例: 下側の最終接続線
             self.FINAL_RIGHT_CONNECTOR       = '┐'   # 例: 右側の最終接続線
-        
+            
+            self.Process += 1
+
         elif route == 'HALF':
             route = True
             # グループ1: 親要素から途中の子要素へ接続する線
@@ -415,7 +431,9 @@ class SetPrint:
             # グループ3: 最後の接続線
             self.FINAL_BOTTOM_CONNECTOR      = '\\'   # 例: 下側の最終接続線
             self.FINAL_RIGHT_CONNECTOR       = '\\'   # 例: 右側の最終接続線
-        
+
+            self.Process += 1
+
         elif route != False:
             Err_txt = 'Err ::: True / BOLD / SLIM / HALF / False'
             print(Err_txt)
@@ -441,7 +459,10 @@ class SetPrint:
             keep_settings.append(range_keep_type)
         
         print()
-        print('all_deep_settings\n',keep_settings)
+        print('all_deep_settings')
+        print(keep_settings)
+        sys.stdout.write(f'\rsearch_collection... 1/{self.Process}')
+        sys.stdout.flush()
 
         self.keep_settings = keep_settings
         
@@ -454,9 +475,14 @@ class SetPrint:
         
         # <t:print>
 
-        print()
+        self.all_line = len(self.Y_keep_index)
+        sys.stdout.write(f'\rformat_value... 2/{self.Process}')
+        sys.stdout.flush()
 
         format_texts = self.format_keep_data(route,x_keep_index,self.Y_keep_index)
+        sys.stdout.write('\rProcess completed!' + ((( len(str(self.all_line)) + 1 ) *2 ) + 3) * ' ' + '\n')
+
+        print()
 
         # <t:return>
 
@@ -1054,6 +1080,8 @@ class SetPrint:
         Y_keep_index = {k: Y_keep_index[k] for k in sorted(Y_keep_index)}
         format_texts = []
 
+        processing_line = 0
+
         for y_keep_index,y_line_data in Y_keep_index.items():
             # print(y_keep_index)
             now_line = 0
@@ -1429,6 +1457,9 @@ class SetPrint:
 
             format_texts.append(line_txt)
 
+            processing_line += 1
+            sys.stdout.write(f'\rformat_datas... {processing_line}/{self.all_line} : 2/{self.Process}')
+            sys.stdout.flush()
 
         self.format_texts=format_texts[:]
         collection_image,image_len = self.collections[type(self.input_list).__name__]
@@ -1471,6 +1502,15 @@ class SetPrint:
                 self.format_texts = format_texts[:]
                 
             if route:
+                sys.stdout.write('\r'+( (16 + (( len( str(self.all_line)) + 1 ) *2 ) + 2 + 3) * ' '))
+                sys.stdout.flush()
+               
+                sys.stdout.write(f'\rformat_route... 3/{self.Process}{((len(str(self.all_line))* 2) + 1 + 3 ) * " "}')
+                sys.stdout.flush()
+
+                self.all_line = len(self.input_list)
+                self.processing_line = 0
+                
                 self.format_route(self.input_list, total_x_keep_data, [0,image_len], 0, [])
                 format_texts_with_route = self.format_texts[:]
 
@@ -1625,7 +1665,7 @@ class SetPrint:
             # ┗ + ━ * n
             line_text = self.format_texts[y_line]
             self.format_texts[y_line] = line_text[:parent_x] + self.FINAL_BOTTOM_CONNECTOR + self.HORIZONTAL_EXTENSION_LINE*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
-
+            
         else:
 
             keep_x = set_keep_type == 'x'
@@ -1703,3 +1743,8 @@ class SetPrint:
                 # ┗ + ━*n
                 line_text = self.format_texts[y_line]
                 self.format_texts[y_line] = line_text[:parent_x] + self.FINAL_BOTTOM_CONNECTOR + self.HORIZONTAL_EXTENSION_LINE*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
+
+        if now_deep == 1:            
+            self.processing_line += 1
+            sys.stdout.write(f'\rformat_route... {self.processing_line}/{self.all_line} : 2/{self.Process}')
+            sys.stdout.flush()

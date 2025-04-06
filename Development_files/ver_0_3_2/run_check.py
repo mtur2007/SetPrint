@@ -5,15 +5,9 @@
 #print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
 # 実行コード
-# from test_setprint_0_3_0 import SetPrint
-from setprint import SetPrint
-# from development_ver_0_3_2 import SetPrint
-
-import importlib
-
+# from setprint import SetPrint
+from development_ver_0_3_2 import SetPrint
 import numpy as np
-
-import copy
 
 def print_set_collection(test_array,style_settings,keep_settings):
       # インスタンスを生成
