@@ -1,27 +1,3 @@
-Metadata-Version: 2.1
-Name: setprint
-Version: 0.3.1
-Summary: A Python package for organizing and visualizing list hierarchies.
-Home-page: https://github.com/mtur2007/SetPrint
-Author: mtur
-Author-email: 2007helloworld@gmail.com
-Project-URL: Bug Reports, https://github.com/mtur2007/SetPrint/issues
-Project-URL: Source, https://github.com/mtur2007/SetPrint
-Keywords: list,nested list,hierarchy,tree structure,data visualization,data organization,Python utilities,list visualization,nested data,structured data
-Classifier: Development Status :: 3 - Alpha
-Classifier: Intended Audience :: Developers
-Classifier: License :: OSI Approved :: MIT License
-Classifier: Programming Language :: Python :: 3
-Classifier: Programming Language :: Python :: 3.6
-Classifier: Programming Language :: Python :: 3.7
-Classifier: Programming Language :: Python :: 3.8
-Classifier: Programming Language :: Python :: 3.9
-Classifier: Programming Language :: Python :: 3.10
-Classifier: Operating System :: OS Independent
-Requires-Python: >=3.6
-Description-Content-Type: text/markdown
-Requires-Dist: numpy
-
 # SetPrint(ver, 0.3.1) – Easily Format and Display High-Dimensional Data!
 
 ## <> A Data Visualization Tool Capable of Properly Formatting 2D/NumPy Arrays and Image Data <>

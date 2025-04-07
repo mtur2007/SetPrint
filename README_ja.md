@@ -2,7 +2,7 @@
 
 ---
 
-# SetPrint(ver, 0.3.2) - 高次元データを簡単に整形・表示！
+# SetPrint(ver, 0.3.1) - 高次元データを簡単に整形・表示！
 
 ## <> 2D/NumPy配列や画像データも適切に整形可能なデータ可視化ツール <>
 
@@ -322,13 +322,11 @@ y_axis : False                                                                  
    - #### 引数
 
         - **`route`** (bool or str): ルート表示を有効にするかどうか。
-            - `BOLD`:(str)の場合、線を太く表示します。
-            - `SLIM`:(str)の場合、線を細く表示します。
-            - `True`:(bool)の場合、設定によりカスタマイズされた文字を使用し、表示します。
-            - `HlFE`:(str)の場合、半角文字を使用し、表示します。
-
-        - **`y_axis`** (bool): y軸表示を有効にするかどうか。
-            - `True`：(bool)の場合、y軸も同時に出力します。
+            - `True`の場合、格納関係を表した線も同時に出力します。
+              <br>※`maintenance`(str)の場合、メンテナンス用の表記になり、<br>ルート表示の有効、無効の結果が同時に出力されます。
+        
+        - **`y_axis`** (bool or str): y軸表示を有効にするかどうか。
+            - `True`の場合、y軸も同時に出力します。
             
         - **`keep_setting`** { `dict`_type } ( deep/`int` : direction/`str` ): 次元毎に展開する方向を指定します。
             - { 1:'y', 3:'x', 4:'yf' } 次元指定は昇降順で指定し、指定のない次元は親次元の設定が反映されます。
@@ -605,25 +603,13 @@ y_axis : False                                                                  
 
         style_settings = (
 
-            # 配列型のイメージ　　　　　　　　　　⌄⌄⌄⌄⌄⌄⌄⌄⌄
-            ("Collections" , 
-               {  'image'   : { 'list'    : '►list'    ,
-                                'tuple'   : '▷tuple'   ,
-                                'ndarray' : '>ndarray' ,
-                                'dict'    : '◆dict'    }}),
-            
-            # 接続線のイメージ　　       ⌄⌄⌄
-            ("route",
-               {  'image'   : { '┣' : '├' ,
-                                '┳' : '┬' ,
+          ("Collections" ,
+            {  'image'   : { 'list'    : '►list' ,
+                             'tuple'   : '▷tuple' ,
+                             'ndarray' : '>nadarray' ,
+                             'dict'    : '◆dict' }}),
 
-                                '┃' : '│' ,
-                                '━' : '─' ,
-
-                                '┗' : '└' ,
-                                '┓' : '┐' }})
-
-            )
+        )
 
         list_data.update_data_with_arguments(style_settings)
 

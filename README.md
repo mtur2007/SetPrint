@@ -1,4 +1,4 @@
-# SetPrint(ver, 0.3.2) – Easily Format and Display High-Dimensional Data!
+# SetPrint(ver, 0.3.1) – Easily Format and Display High-Dimensional Data!
 
 ## <> A Data Visualization Tool Capable of Properly Formatting 2D/NumPy Arrays and Image Data <>
 
@@ -66,11 +66,24 @@ Setprint extends Python’s built-in pprint so that not only lists and dictionar
 
  - ### Compact Representation of Data Relationships
 
-    Instead of using brackets like []/()/{} to represent parent-child relationships, 
-    <br>setprint uses lines (e.g., ┣, ┃, ┗ and ┳, ━, ┓) to clearly indicate connections.
+    Instead of using brackets like []/()/{} to represent parent-child relationships, setprint uses lines (e.g., ┣, ┃, ┗ and ┳, ━, ┓) to clearly indicate connections.
+    
+    ```txt
+    Parent 
+      ┣━━━ Sibling
+      ┃       ┣━━━ Child
+      ┃       ┗━━━ Child
+      ┗━━━ Sibling
+              ┣━━━ Child
+              ┗━━━ Child
+    ```
 
-    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/root.png" width="310" alt="サンプル画像">
-
+    ```txt
+    Parent ━━━┳━━━━━━━━━━━━━┓
+           Sibling       Sibling
+              ┣━━━ Child    ┣━━ Child
+              ┗━━━ Child    ┗━━ Child
+    ```
 <br>
 
 - [Upcoming Updates]
@@ -135,31 +148,118 @@ setprint(data)
 <br>
 
 🔹 Output from setprint
+```txt
+keep_settings                                                                            :  keep_settings
+['y', 'y', 'x', 'x']                                                                     :  ['y', 'y', 'x', 'x']
+y_axis : False                                                                           :  y_axis : True
+---------------------------------------------------------------------------------------  :  ---------------------------------------------------------------------------------------
+                                                                                         :  
+►list                                                                                    :  ►list    ┊        ┊        ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊  
+  ┣━━ >ndarray                                                                           :    ┣━━ >ndarray    ┊        ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊  
+  ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃      ┃              >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓    :    ┃      ┃        ┊     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  
+  ┃      ┃                       255  0   4           255 85   0           255 170  0    :    ┃      ┃        ┊        ┊     255  0   4     ┊     255 85   0     ┊     255 170  0  
+  ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃      ┃              >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓    :    ┃      ┃        ┊     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  
+  ┃      ┃                       170 255  0           85  255  0            0  255  4    :    ┃      ┃        ┊        ┊     170 255  0     ┊     85  255  0     ┊      0  255  4  
+  ┃      ┗━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┗━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃                     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓    :    ┃      ┊        ┊     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  
+  ┃                               0  170 255           0  85  255           4   0  255   :    ┃      ┊        ┊        ┊      0  170 255    ┊      0  85  255    ┊      4   0  255 
+  ┣━━ >ndarray                                                                           :    ┣━━ >ndarray    ┊        ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊  
+  ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃      ┃              >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓    :    ┃      ┃        ┊     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  
+  ┃      ┃                        4   0  255           0  85  255           0  170 255   :    ┃      ┃        ┊        ┊      4   0  255    ┊      0  85  255    ┊      0  170 255 
+  ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃      ┃              >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓    :    ┃      ┃        ┊     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  
+  ┃      ┃                        0  255 170           0  255 85            4  255  0    :    ┃      ┃        ┊        ┊      0  255 170    ┊      0  255 85     ┊      4  255  0  
+  ┃      ┗━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┗━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃                     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓    :    ┃      ┊        ┊     >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  >ndarray ━┳━━━┳━━━┓  
+  ┃                              255 170  0           255 85   0           255  0   4    :    ┃      ┊        ┊        ┊     255 170  0     ┊     255 85   0     ┊     255  0   4  
+  ┣━━ >ndarray                                                                           :    ┣━━ >ndarray    ┊        ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊  
+  ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃      ┃                 77                  126                  176                  :    ┃      ┃        ┊        77     ┊   ┊   ┊    126     ┊   ┊   ┊    176     ┊   ┊   ┊  
+  ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┣━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃      ┃                200                  175                  150                  :    ┃      ┃        ┊       200     ┊   ┊   ┊    175     ┊   ┊   ┊    150     ┊   ┊   ┊  
+  ┃      ┗━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓                   :    ┃      ┗━━━━ >ndarray ━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓      ┊   ┊   ┊  
+  ┃                       129                   79                   29                  :    ┃      ┊        ┊       129     ┊   ┊   ┊     79     ┊   ┊   ┊     29     ┊   ┊   ┊  
+  ┗━━   None                                                                             :    ┗━━   None      ┊        ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊  
+                                                                                         :  
+---------------------------------------------------------------------------------------  :  ---------------------------------------------------------------------------------------
+```
 
-<img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_y_x.png" width="900" alt="サンプル画像">
 
 #### Version with Root Omission Settings
-
-<img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_yf.png" width="900" alt="サンプル画像">
+```txt
+['y', 'yf', 'f', 'f']                                                                                    :  ['y', 'yf', 'f', 'f']
+y_axis : False                                                                                           :  y_axis : True
+-------------------------------------------------------------------------------------------------------  :  -------------------------------------------------------------------------------------------------------
+                                                                                                         :  
+►list                                                                                                    :  ►list    ┊        ┊          ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊      
+  ┣━━ >ndarray                                                                                           :    ┣━━ >ndarray    ┊          ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊      
+  ┃      ┣━━━━ >ndarray [ >ndarray [ 255  0   4  ] >ndarray [ 255 85   0  ] >ndarray [ 255 170  0  ] ]   :    ┃      ┣━━━━ >ndarray [ >ndarray [ 255  0   4  ] >ndarray [ 255 85   0  ] >ndarray [ 255 170  0  ] ] 
+  ┃      ┣━━━━ >ndarray [ >ndarray [ 170 255  0  ] >ndarray [ 85  255  0  ] >ndarray [  0  255  4  ] ]   :    ┃      ┣━━━━ >ndarray [ >ndarray [ 170 255  0  ] >ndarray [ 85  255  0  ] >ndarray [  0  255  4  ] ] 
+  ┃      ┗━━━━ >ndarray [ >ndarray [  0  170 255 ] >ndarray [  0  85  255 ] >ndarray [  4   0  255 ] ]   :    ┃      ┗━━━━ >ndarray [ >ndarray [  0  170 255 ] >ndarray [  0  85  255 ] >ndarray [  4   0  255 ] ] 
+  ┣━━ >ndarray                                                                                           :    ┣━━ >ndarray    ┊          ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊      
+  ┃      ┣━━━━ >ndarray [ >ndarray [  4   0  255 ] >ndarray [  0  85  255 ] >ndarray [  0  170 255 ] ]   :    ┃      ┣━━━━ >ndarray [ >ndarray [  4   0  255 ] >ndarray [  0  85  255 ] >ndarray [  0  170 255 ] ] 
+  ┃      ┣━━━━ >ndarray [ >ndarray [  0  255 170 ] >ndarray [  0  255 85  ] >ndarray [  4  255  0  ] ]   :    ┃      ┣━━━━ >ndarray [ >ndarray [  0  255 170 ] >ndarray [  0  255 85  ] >ndarray [  4  255  0  ] ] 
+  ┃      ┗━━━━ >ndarray [ >ndarray [ 255 170  0  ] >ndarray [ 255 85   0  ] >ndarray [ 255  0   4  ] ]   :    ┃      ┗━━━━ >ndarray [ >ndarray [ 255 170  0  ] >ndarray [ 255 85   0  ] >ndarray [ 255  0   4  ] ] 
+  ┣━━ >ndarray                                                                                           :    ┣━━ >ndarray    ┊          ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊      
+  ┃      ┣━━━━ >ndarray [    77                      126                      176                    ]   :    ┃      ┣━━━━ >ndarray [    77       ┊   ┊   ┊      126       ┊   ┊   ┊      176       ┊   ┊   ┊    ] 
+  ┃      ┣━━━━ >ndarray [   200                      175                      150                    ]   :    ┃      ┣━━━━ >ndarray [   200       ┊   ┊   ┊      175       ┊   ┊   ┊      150       ┊   ┊   ┊    ] 
+  ┃      ┗━━━━ >ndarray [   129                       79                       29                    ]   :    ┃      ┗━━━━ >ndarray [   129       ┊   ┊   ┊       79       ┊   ┊   ┊       29       ┊   ┊   ┊    ] 
+  ┗━━   None                                                                                             :    ┗━━   None      ┊          ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊      
+                                                                                                         :  
+-------------------------------------------------------------------------------------------------------  :  -------------------------------------------------------------------------------------------------------
+```
 
 ## [] Parallel Arrays: Matching Array `Order` and `Dimensions`
 
-As part of the formatting process, setprint represents “storage bugs” and the mixing of data with different dimensions by aligning the array’s `order` and `dimensions` using overlapping axes.
+As part of the formatting process, setprint represents “storage bugs” and the mixing of data with different dimensions
+<br>**by aligning the array’s `order` and `dimensions` using overlapping axes.**
 
 - ### Test Array
-    
-    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Axis.png" width="610" alt="サンプル画像">
+    ```
+    keep_settings
+    ['x', 'y', 'x', 'x']
+    -----------------------------------------------------------------
+
+       ►list ━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+             ►list                       ►list 
+               ┣━━ ►list ┳━━━┳━━━━━━━┓     ┣━━ ►list ┳━━━┳━━━━━━━┓
+               ┃         0 ►list ┳━┓ 0     ┃         1 ►list ┳━┓ 1 
+               ┃                 0 0       ┃                 1 1 
+               ┗━━ ►list ┳━━━┳━━━━━━━┳━┓   ┗━━ ►list ┳━━━┳━━━━━━━┳━┓
+                         0   0       0 0             1   1       1 1 
+
+    -----------------------------------------------------------------
+    ```
 
 - ## y-Axis – Alignment with the Order of the Parallel Array Expanded in the x Direction
-    
-    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/Y_Axis.png" width="610" alt="サンプル画像">
-
+    ```
+               .     =   =   =   ⌄ ⌄ = =   .     =   =   =   ⌄ ⌄ = =
+                                 ┋ ┋                         ┋ ┋
+       ►list ──┬─────────────────┋─┋───────┐                 ┋ ┋
+             ►list               ┋ ┋     ►list               ┋ ┋
+               ├── ►list ┬───┬───┋─┋─┐     ├── ►list ┬───┬───┋─┋─┐
+               │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
+               │                 0 0       │                 1 1 
+               └── ►list ┬───┬───┋─┋─┬─┐   └── ►list ┬───┬───┋─┋─┬─┐
+                         0   0   ┋ ┋ 0 0             1   1   ┋ ┋ 1 1 
+                                 X X                         X X
+                                 ^ ^                         ^ ^
+    ```
     This axis maintains the order alignment with the parallel array expanded in the x direction.
 
 - ## x-Axis – Alignment with the Dimensions of the Parallel Array Expanded in the y Direction
-    
-    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/X_Axis.png" width="610" alt="サンプル画像">
-
+    ```
+       ►list ──┬───────────────────────────┐
+    =        ►list                       ►list 
+    =          ├── ►list ┬───┬───────┐     ├── ►list ┬───┬───────┐
+    =          │         0 ►list ┬─┐ 0     │         1 ►list ┬─┐ 1 
+    > ┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 0 0 X ┉┉┉┉┉┉┉┉┉┉┉┉┉ X ┉┉┉┉┉ 1 1 X ┉┉┉ <
+    =          └── ►list ┬───┬───────┬─┐   └── ►list ┬───┬───────┬─┐
+    =                    0   0       0 0             1   1       1 1 
+    ```
     This axis maintains the dimensional alignment with the parallel array expanded in the y direction.
     
     ※ In the case of the 'f' setting, even if dimensions differ, as long as they are within range, they are displayed on one line—so differences may not be noticeable.
@@ -189,18 +289,16 @@ Because the meaning of each axis may differ, note the following in exceptional c
 The `set_collection` class method executes the formatting as demonstrated in the example above. It arranges multidimensional lists and complex data structures into a visually understandable format, enabling optimal formatting according to your data’s dimensions.
 
    - #### Parameters
-     - **`route`** (bool or str): Whether to enable route display.
-        - If set to `'BOLD'` (str), the route line is displayed in bold.
-        - If set to `'SLIM'` (str), the route line is displayed in a slim style.
-        - If set to `True` (bool), the route is displayed using customized characters based on the settings.
-        - If set to `'HlFE'` (str), the route is displayed using half-width characters.
-
-     - **`y_axis`** (bool): Whether to enable the display of the y-axis.
-        - If set to `True` (bool), the y-axis will also be displayed.
-
-     - **`keep_setting`** { dict_type } (deep/int : direction/str): Specifies the expansion direction for each dimension.
-        - For example, {1:'y', 3:'x', 4:'yf'} — dimensions are specified in descending order, and unspecified dimensions inherit the parent setting.
-        - ※ The default setting is 'x'.
+        - **`route`** (bool or str): Whether to enable root display.
+            - If set to True, lines representing the storage relationships are also output.
+              <br>※ If set to 'maintenance' (str), both enabled and disabled root displays are output for maintenance purposes.
+        
+        - **`y_axis`** (bool or str): Whether to enable y-axis display.
+            - If set to True, the y-axis is output as well.
+            
+        - **`keep_setting`** { dict_type } (deep/int : direction/str): Specifies the expansion direction for each dimension.
+            - For example, {1:'y', 3:'x', 4:'yf'} — dimensions are specified in descending order, and unspecified dimensions inherit the parent setting.
+            - ※ The default setting is 'x'.
 
    - #### Return Value
         - `format_texts`: A list in which each element is a line of the formatted text.
@@ -254,8 +352,17 @@ The `keep_setting` parameter allows you to specify the display direction for eac
       ```
   
   - **Formatted Result**
-    
-    <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y.png" width="950" alt="サンプル画像">
+      ```plaintext
+      with_route  / out_put
+      =========== ~ -----------
+
+       ►list      :  ►list 
+         ┣━━ a    :        a 
+         ┣━━ b    :        b 
+         ┗━━ c    :        c 
+
+      =========== ~ -----------
+      ```
   
   - **Setting Example**
       ```python
@@ -294,8 +401,15 @@ The `keep_setting` parameter allows you to specify the display direction for eac
           ```
       
       - **Formatted Result**
-            
-          <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/x.png" width="950" alt="サンプル画像">
+          ```plaintext
+          with_route    / out_put
+          ============= ~ -------------
+
+          ***** ┳━┳━┓  :  ***** 
+                a b c  :        a b c 
+
+          ============= ~ -------------
+          ```
       
       - **Setting Example**
           ```python
@@ -315,8 +429,20 @@ The `keep_setting` parameter allows you to specify the display direction for eac
           ```
       
       - **Formatted Result**
+          ```plaintext
+          keep_settings
+          ['y', 'x', 'x']
+          ---------------------------------------
 
-          <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/y_x_x.png" width="940" alt="サンプル画像">
+          ◆dict 
+            ┣━━ template:►list ┳━━━┳━━━━━━━━━━━┓
+            ┃                  0   1           2 
+            ┗━━ Generate:►list ┳━━━┳━━━━━━━━━━━┓
+                               0 ►list ━┳━━━┓  2 
+                                       1-0 1-1 
+
+          ---------------------------------------
+          ```
       
       - **Setting Example**
           ```python
@@ -336,8 +462,18 @@ The `keep_setting` parameter allows you to specify the display direction for eac
           ```
       
       - **Formatted Result**
-          
-          <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/x_3.png" width="940" alt="サンプル画像">
+          ```plaintext
+          keep_settings
+          ['x', 'x', 'x']
+          ------------------------------------------------------------
+
+          ◆dict ━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓
+                template:►list ┳━┳━┓ Generate:►list ┳━━━┳━━━━━━━━━━━┓
+                               0 1 2                0 ►list ━┳━━━┓  2 
+                                                            1-0 1-1 
+
+          ------------------------------------------------------------
+          ```
       
       - **Setting Example**
           ```python
@@ -371,8 +507,16 @@ The `keep_setting` parameter allows you to specify the display direction for eac
       ```
   
   - **Formatted Result**
-      
-      <img src="https://raw.githubusercontent.com/mtur2007/SetPrint/main/Development_files/md_images/yf.png" width="950" alt="サンプル画像">
+      ```plaintext
+      with_route                                           / out_put
+      ==================================================== ~ ----------------------------------------------------
+
+       ►list                                               :  ►list 
+         ┣━━ ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ]  :        ►list [ ►list [ 1 2 3 ] ►list [ 4  5  6  ] ] 
+         ┗━━ ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ]  :        ►list [ ►list [ 7 8 9 ] ►list [ 10 11 12 ] ] 
+
+      ==================================================== ~ ----------------------------------------------------
+      ```
   
   - **Setting Example**
       ```python
@@ -411,26 +555,16 @@ format_texts = list_data.set_collection(route=True, y_axis=True/False, keep_sett
     #----------------------------------------------------
 
     style_settings = (
-        
-        # Image of array types          ⌄⌄⌄⌄⌄⌄⌄⌄⌄
-        ("Collections" , 
-           {  'image'   : { 'list'    : '►list'    ,
-                            'tuple'   : '▷tuple'   ,
-                            'ndarray' : '>ndarray' ,
-                            'dict'    : '◆dict'    }}),
-        
-        # Line style map     　   ⌄⌄⌄
-        ("route",
-           {  'image'   : { '┣' : '├' ,
-                            '┳' : '┬' ,
-
-                            '┃' : '│' ,
-                            '━' : '─' ,
-
-                            '┗' : '└' ,
-                            '┓' : '┐' }})
-
-        )
+        ("Collections",
+        { 'image': {
+            'list': '►list',
+            'tuple': '▷tuple',
+            'ndarray': '>nadarray',
+            'dict': '◆dict'
+            }
+        }
+        ),
+    )
 
     list_data.update_data_with_arguments(style_settings)
 

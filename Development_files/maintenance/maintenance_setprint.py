@@ -1,5 +1,5 @@
-# / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict /
-#print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
+# / maintenance / maintenance / maintenance / maintenance / maintenance / maintenance / maintenance / maintenance / maintenance / maintenance /
+# print('\n'+'/ \033[38;2;255;165;0m\033[1mmaintenance\033[0m / \033[38;5;27mmaintenance\033[0m '*5+'/\n')
 
 # setpirnt (ver 0.3.0) [ demo ]
 
@@ -170,7 +170,7 @@ class SetPrint:
           ("Collections" ,
             {  'image'   : { 'list'    : '►list' ,
                              'tuple'   : '▷tuple' ,
-                             'ndarray' : '>ndarray' ,
+                             'ndarray' : '>nadarray' ,
                              'dict'    : '◆dict' }}),
 
         )
@@ -292,6 +292,81 @@ class SetPrint:
 
     # <t:maintenance_run>
     
+    def maintenance_run(self,*run_datas):
+        
+        run_title = run_datas[0]
+
+        if run_title == '初期化':
+            self.parent_len = 0
+            self.run_tracking = []
+            self.tracking_data = []
+            self.keep_tracking = []
+        
+        elif run_title == 'キープ初期化':
+            parent__parent_len = self.parent_len
+            self.parent_len = self.now_deep-1
+            
+            parent__keep_tracking = self.keep_tracking[:]
+            self.keep_tracking = []
+            return parent__parent_len,parent__keep_tracking
+        
+
+        elif run_title in ('start','int/str_type','collection_type','配列の調査結果の受け取り','配列の調査完了'):
+
+            range_type = run_datas[1]
+
+            if run_title == 'start':
+                self.run_tracking.append(0 if range_type == 'In_range' else 5)
+                run_point = self.run_tracking
+
+            elif run_title == 'int/str_type':
+                self.run_tracking[-1] = 1 if range_type == 'In_range' else 7
+                run_point = self.run_tracking
+
+            elif run_title == 'collection_type':
+                self.run_tracking[-1] = 2 if range_type == 'In_range' else 6
+                run_point = self.run_tracking
+            
+            elif run_title == '配列の調査結果の受け取り':
+                self.run_tracking[-1] = 4 if range_type == 'In_range' else 9
+                run_point = self.run_tracking
+                
+            elif run_title == '配列の調査完了':
+                del self.run_tracking[-1]
+                run_point = self.run_tracking + [3] if range_type == 'In_range' else [8]
+
+            if range_type == 'In_range':    
+                self.keep_tracking.append(run_point[self.parent_len:])
+            
+            if range_type == 'Out_of_range':
+                if run_title == 'start':
+                    parent__keep_tracking = self.keep_tracking[:]
+                    self.keep_tracking = []
+
+                    self.keep_tracking.append([run_point[-1]])
+
+                    return parent__keep_tracking
+
+                self.keep_tracking.append([run_point[-1]])
+
+                if run_title == '配列の調査完了':
+                    parent__keep_tracking = run_datas[2]
+                    self.keep_tracking = parent__keep_tracking + [ self.keep_tracking ]
+        
+        elif run_title == 'キープ範囲調査完了':
+
+            if self.min_keep_deep != self.now_deep:
+                self.parent_len = run_datas[1]
+            
+            del self.run_tracking[-1]
+
+            parent__keep_tracking = run_datas[2]
+            
+            self.keep_tracking = parent__keep_tracking + [ self.keep_tracking ]
+
+    
+
+    
     def transform_keep_index(self,index):
 
         y_keep_index = index[:]
@@ -305,7 +380,7 @@ class SetPrint:
     
     # リストを整型する際の条件を整理 / １次元目の格納情報を整形 [→:#0]
     # [→:0] 中身は search_mapping / search_sequence とほぼ同じ
-    def set_collection(self, route, y_axis, keep_settings):        
+    def set_collection(self, route, keep_settings):        
             
         dict_keep_settings = keep_settings
 
@@ -321,6 +396,8 @@ class SetPrint:
         self.y_flat_index = []
         
         # <t:初期化>
+        self.maintenance_run('初期化')
+
 
         #表示スタイルの更新
         self.collections = self.style_settings[0][1]['image']
@@ -334,8 +411,6 @@ class SetPrint:
        
         keep_deeps = list(keep_settings.keys())
         max_keep_deep = max(keep_deeps)
-
-        self.y_axis_image = '┊' if y_axis else ' '
 
         keep_settings = []
 
@@ -368,13 +443,30 @@ class SetPrint:
 
         # <a:keep_index>
         
+        print()
+        print('X_keep_index(flat)')
+        print(x_keep_index)
+
+        print()
+        print('Y_keep_index')
+        for key,value in self.Y_keep_index.items():
+            print(key,value)
+        
+
+        
         # <t:print>
+        print()
+        print('run_tracking')
+        print(self.keep_tracking[0])
+
 
         print()
 
         format_texts = self.format_keep_data(route,x_keep_index,self.Y_keep_index)
 
         # <t:return>
+        return [ format_texts, self.keep_tracking[0] ]
+
 
         return format_texts
 
@@ -395,12 +487,14 @@ class SetPrint:
             self.now_index.append('')
        
             # <t:start,In_range>
+            self.maintenance_run('start','In_range')
+
             
             len_Kdeep_index = len(Kdeep_index)
 
             if len_Kdeep_index == 0:
-                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][0],'a'])
-                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][1],'b'])
+                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][0]])
+                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][1]])
                 len_Kdeep_index = 0
             else:
                 if Kdeep_index[0][1] < self.brackets[type(datas).__name__][1][0]:
@@ -422,11 +516,13 @@ class SetPrint:
                 linenum += 1
 
                 if len_Kdeep_index < linenum:
-                    Kdeep_index.insert(-1,[0,1])
+                    Kdeep_index.insert(-1,[0,0])
                
                 if isinstance(line, self.collection_type):
                     
                     # <t:collection_type,In_range>
+                    self.maintenance_run('collection_type','In_range')
+
 
                     if type(Kdeep_index[linenum][0]) != list:
                         key_len = max(Kdeep_index[linenum][0], len(str(key)))
@@ -446,6 +542,8 @@ class SetPrint:
                         Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
 
                         # <t:配列の調査結果の受け取り,In_range>
+                        self.maintenance_run('配列の調査結果の受け取り','In_range')
+
                                         
                 else:
                     
@@ -463,10 +561,14 @@ class SetPrint:
                             Kdeep_index[linenum][0][1] =  len(str(line))
                     
                     # <t:int/str_type,In_range>
+                    self.maintenance_run('int/str_type','In_range')
+
             
             del self.keep_index[-1]
 
             # <t:配列の調査完了,In_range>
+            self.maintenance_run('配列の調査完了','In_range')
+
 
         
         # (P:1)
@@ -483,6 +585,8 @@ class SetPrint:
         else:
 
             # <t:start,Out_of_range>
+            parent__keep_tracking = self.maintenance_run('start','Out_of_range')
+
 
             txt_index = ''
             for i in self.now_index:
@@ -499,7 +603,7 @@ class SetPrint:
             
             if not keep_x:
                 if len(Kdeep_index) == 0:
-                    Kdeep_index = [[0,1]]
+                    Kdeep_index = [[0,0]]
                     #Kdeep_index = ['y']
                     
             len_Kdeep_index = len(Kdeep_index)-1
@@ -509,7 +613,7 @@ class SetPrint:
                 
                 if keep_x:    
                     if len_Kdeep_index < linenum:
-                        Kdeep_index.append([0,1])
+                        Kdeep_index.append([0,0])
                     direction_index = linenum                
 
                 # インデックスのキープ化
@@ -523,6 +627,8 @@ class SetPrint:
                 if isinstance(line, self.collection_type):
                     
                     # <t:collection_type,Out_of_range>
+                    self.maintenance_run('collection_type','Out_of_range')
+
 
                     if len(line) != 0:                        
                         if type(Kdeep_index[direction_index][0]) != list:
@@ -543,6 +649,8 @@ class SetPrint:
                             Kdeep_index[direction_index][1] = self.search_sequence(line,Kdeep_index[direction_index][1])
 
                         # <t:配列の調査結果の受け取り,Out_of_range>
+                        self.maintenance_run('配列の調査結果の受け取り','Out_of_range')
+
                     
                     else:
                         if type(Kdeep_index[direction_index][0]) != list:
@@ -574,8 +682,12 @@ class SetPrint:
                 
                     
                     # <t:int/str_type,Out_of_range>
+                    self.maintenance_run('int/str_type','Out_of_range')
+
             
             # <t:配列の調査完了,Out_of_range>
+            self.maintenance_run('配列の調査完了','Out_of_range',parent__keep_tracking)
+
 
 
         del self.now_index[-1] #インデックスの調査が終わったら戻す
@@ -598,12 +710,14 @@ class SetPrint:
             self.now_index.append('')
 
             # <t:start,In_range>
+            self.maintenance_run('start','In_range')
+
             
             len_Kdeep_index = len(Kdeep_index)
 
             if len_Kdeep_index == 0:
-                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][0],'a'])
-                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][1],'b'])
+                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][0]])
+                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][1]])
                 len_Kdeep_index = 0
             else:
                 if Kdeep_index[0][1] < self.brackets[type(datas).__name__][1][0]:
@@ -626,11 +740,13 @@ class SetPrint:
                 linenum += 1
 
                 if len_Kdeep_index < linenum:
-                    Kdeep_index.insert(-1,[0,1])
+                    Kdeep_index.insert(-1,[0,0])
                
                 if isinstance(line, self.collection_type):
                     
                     # <t:collection_type,In_range>
+                    self.maintenance_run('collection_type','In_range')
+
 
                     if type(Kdeep_index[linenum][0]) != list:
                         Kdeep_index[linenum] = [[Kdeep_index[linenum][0],max(Kdeep_index[linenum][1], self.collections[type(line).__name__][1])],[]]
@@ -645,6 +761,8 @@ class SetPrint:
                         Kdeep_index[linenum][1] = self.search_sequence(line,Kdeep_index[linenum][1])
 
                         # <t:配列の調査結果の受け取り,In_range>
+                        self.maintenance_run('配列の調査結果の受け取り','In_range')
+
                                         
                 else:
                     
@@ -656,10 +774,14 @@ class SetPrint:
                             Kdeep_index[linenum][0][1] =  len(str(line))
                     
                     # <t:int/str_type,In_range>
+                    self.maintenance_run('int/str_type','In_range')
+
             
             del self.keep_index[-1]
 
             # <t:配列の調査完了,In_range>
+            self.maintenance_run('配列の調査完了','In_range')
+
 
         
         # (P:1)
@@ -675,6 +797,8 @@ class SetPrint:
         else:
 
             # <t:start,Out_of_range>
+            parent__keep_tracking = self.maintenance_run('start','Out_of_range')
+
 
             txt_index = ''
             for i in self.now_index:
@@ -691,7 +815,7 @@ class SetPrint:
             
             if not keep_x:
                 if len(Kdeep_index) == 0:
-                    Kdeep_index = [[0,1]]
+                    Kdeep_index = [[0,0]]
                     #Kdeep_index = ['y']
 
             len_Kdeep_index = len(Kdeep_index)-1
@@ -703,7 +827,7 @@ class SetPrint:
                 
                 if keep_x:    
                     if len_Kdeep_index < linenum:
-                        Kdeep_index.append([0,1])
+                        Kdeep_index.append([0,0])
                     direction_index = linenum
                 
                 # インデックスのキープ化
@@ -717,6 +841,8 @@ class SetPrint:
                 if isinstance(line, self.collection_type):
                     
                     # <t:collection_type,Out_of_range>
+                    self.maintenance_run('collection_type','Out_of_range')
+
 
                     if len(line) != 0:                        
                         if type(Kdeep_index[direction_index][0]) != list:
@@ -732,6 +858,8 @@ class SetPrint:
                             Kdeep_index[direction_index][1] = self.search_sequence(line,Kdeep_index[direction_index][1])
 
                         # <t:配列の調査結果の受け取り,Out_of_range>
+                        self.maintenance_run('配列の調査結果の受け取り','Out_of_range')
+
                     
                     else:
                         if type(Kdeep_index[direction_index][0]) != list:
@@ -750,8 +878,12 @@ class SetPrint:
                             Kdeep_index[direction_index][0][1] = len(str(line))
                     
                     # <t:int/str_type,Out_of_range>
+                    self.maintenance_run('int/str_type','Out_of_range')
+
             
             # <t:配列の調査完了,Out_of_range>
+            self.maintenance_run('配列の調査完了','Out_of_range',parent__keep_tracking)
+
 
 
         del self.now_index[-1] #インデックスの調査が終わったら戻す
@@ -777,6 +909,8 @@ class SetPrint:
             self.Y_keep_index[parent_y_keep_index] = []
 
         # <t:キープ初期化>
+        parent__parent_len,parent__keep_tracking = self.maintenance_run('キープ初期化')
+
 
         self.keep_index = []
 
@@ -798,6 +932,8 @@ class SetPrint:
         self.now_index.append('')
 
         # <t:start,In_range>
+        self.maintenance_run('start','In_range')
+
 
         # print('start')
         # print(' < X.      ',self.range_idx)
@@ -805,7 +941,7 @@ class SetPrint:
         # print(' < tracking',self.keep_tracking)
 
         if len(Kdeep_index) == 0:
-            Kdeep_index = [[0,1]]
+            Kdeep_index = [[0,0]]
 
         if type(datas) == dict:
             
@@ -826,6 +962,8 @@ class SetPrint:
                 if isinstance(line, self.collection_type):
                     
                     # <t:collection_type,In_range>
+                    self.maintenance_run('collection_type','In_range')
+
 
                     if len(line) != 0:
                         if type(Kdeep_index[0][0]) != list:
@@ -847,6 +985,8 @@ class SetPrint:
                             Kdeep_index[0][1] = self.search_sequence(line,Kdeep_index[0][1])
 
                         # <t:配列の調査結果の受け取り,In_range>
+                        self.maintenance_run('配列の調査結果の受け取り','In_range')
+
                     
                     else:
                         if type(Kdeep_index[0][0]) != list:
@@ -865,6 +1005,8 @@ class SetPrint:
                 else:
                     
                     # <t:int/str_type,In_range>
+                    self.maintenance_run('int/str_type','In_range')
+
 
                     if type(Kdeep_index[0][0]) != list:
                         if Kdeep_index[0][0] < len(str(key)):
@@ -900,6 +1042,8 @@ class SetPrint:
                 if isinstance(line, self.collection_type):
                     
                     # <t:collection_type,In_range>
+                    self.maintenance_run('collection_type','In_range')
+
 
                     if len(line) != 0:
                         if type(Kdeep_index[0][0]) != list:
@@ -916,6 +1060,8 @@ class SetPrint:
                             Kdeep_index[0][1] = self.search_sequence(line,Kdeep_index[0][1])
 
                         # <t:配列の調査結果の受け取り,In_range>
+                        self.maintenance_run('配列の調査結果の受け取り','In_range')
+
                     
                     else:
                         if type(Kdeep_index[0][0]) != list:
@@ -928,6 +1074,8 @@ class SetPrint:
                 else:
                     
                     # <t:int/str_type,In_range>
+                    self.maintenance_run('int/str_type','In_range')
+
 
                     if type(Kdeep_index[0][0]) != list:
                         if Kdeep_index[0][1] < len(str(line)):
@@ -945,6 +1093,8 @@ class SetPrint:
         # print()
 
         # <t:キープ範囲調査完了>
+        self.maintenance_run('キープ範囲調査完了', parent__parent_len,parent__keep_tracking)
+
         
         # 情報復元
         self.keep_index = parent__keep_index
@@ -1049,24 +1199,11 @@ class SetPrint:
                         while x_keep_index[now_line] != keep_parent + keep_y_x_index:
                             # print('False ',x_keep_index[now_line],keep_parent + y_x_index)
                             axis_len = keep_len[now_line]
-
                             if axis_len[0] == 0:
-                                axis_len = axis_len[1]
-                                a_2 = axis_len//2
-                                if len(keep_len[now_line]) != 3:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                else:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-
+                                line_txt += axis_len[1]*' ' + ' '
                             else:
-                                axis_len = axis_len[0] + axis_len[1] + 1
-                                a_2 = axis_len//2
-                                if len(keep_len[now_line]) != 3:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                else:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
+                                line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                             
-                            line_txt += v_air + ' '
                             now_line += 1
 
                         # print('True  ',x_keep_index[now_line],keep_parent + keep_y_x_index)
@@ -1130,26 +1267,12 @@ class SetPrint:
                     while x_keep_index[now_line] != keep_parent:
 
                         axis_len = keep_len[now_line]
-
                         if axis_len[0] == 0:
-                            axis_len = axis_len[1]
-                            a_2 = axis_len//2
-                            if len(keep_len[now_line]) != 3:
-                                v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                            else:
-                                v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-
+                            line_txt += axis_len[1]*' ' + ' '
                         else:
-                            axis_len = axis_len[0] + axis_len[1] + 1
-                            a_2 = axis_len//2
-                            if len(keep_len[now_line]) != 3:
-                                v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                            else:
-                                v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-                        
-                        line_txt += v_air + ' '
+                            line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                         now_line += 1
-                        
+
                     if isinstance(value, self.collection_type):
                         
                         axis_len = keep_len[now_line]
@@ -1219,26 +1342,12 @@ class SetPrint:
                             for i in range(before_nest - now_deep):
                                 
                                 while len(x_keep_index[now_line+1]) != before_nest -1:
-                                   
+                                            
                                     axis_len = keep_len[now_line]
-
                                     if axis_len[0] == 0:
-                                        axis_len = axis_len[1]
-                                        a_2 = axis_len//2
-                                        if len(keep_len[now_line]) != 3:
-                                            v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                        else:
-                                            v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-
+                                        line_txt += axis_len[1]*' ' + ' '
                                     else:
-                                        axis_len = axis_len[0] + axis_len[1] + 1
-                                        a_2 = axis_len//2
-                                        if len(keep_len[now_line]) != 3:
-                                            v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                        else:
-                                            v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-                                    
-                                    line_txt += v_air + ' '
+                                        line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                                     now_line += 1
 
                                 bracket = self.brackets[deep_types[-1].__name__]
@@ -1251,24 +1360,10 @@ class SetPrint:
                         while x_keep_index[now_line] != keep_parent + keep_y_x_index:
 
                             axis_len = keep_len[now_line]
-
                             if axis_len[0] == 0:
-                                axis_len = axis_len[1]
-                                a_2 = axis_len//2
-                                if len(keep_len[now_line]) != 3:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                else:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-
+                                line_txt += axis_len[1]*' ' + ' '
                             else:
-                                axis_len = axis_len[0] + axis_len[1] + 1
-                                a_2 = axis_len//2
-                                if len(keep_len[now_line]) != 3:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                else:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-                            
-                            line_txt += v_air + ' '
+                                line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                             now_line += 1
                         
                         value,dict_key = self.map_sequence_indices(parent_list,y_x_index)
@@ -1329,26 +1424,12 @@ class SetPrint:
                             while len(x_keep_index[now_line+1]) != before_nest -1:
 
                                 axis_len = keep_len[now_line]
-
                                 if axis_len[0] == 0:
-                                    axis_len = axis_len[1]
-                                    a_2 = axis_len//2
-                                    if len(keep_len[now_line]) != 3:
-                                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                    else:
-                                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-
+                                    line_txt += axis_len[1]*' ' + ' '
                                 else:
-                                    axis_len = axis_len[0] + axis_len[1] + 1
-                                    a_2 = axis_len//2
-                                    if len(keep_len[now_line]) != 3:
-                                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                    else:
-                                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-                                
-                                line_txt += v_air + ' '
+                                    line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                                 now_line += 1
-
+                        
                             bracket = self.brackets[deep_types[-1].__name__]
                             line_txt += (keep_len[now_line][1] - bracket[1][1])*' ' + bracket[0][1] + ' '
                             
@@ -1359,41 +1440,28 @@ class SetPrint:
                         # print(x_keep_index)
 
                         while len(x_keep_index[now_line]) > len(y_keep_index):
-                            
                             axis_len = keep_len[now_line]
-
                             if axis_len[0] == 0:
-                                axis_len = axis_len[1]
-                                a_2 = axis_len//2
-                                if len(keep_len[now_line]) != 3:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                else:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-
+                                line_txt += axis_len[1]*' ' + ' '
                             else:
-                                axis_len = axis_len[0] + axis_len[1] + 1
-                                a_2 = axis_len//2
-                                if len(keep_len[now_line]) != 3:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                else:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-                            
-                            line_txt += v_air + ' '
+                                line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                             now_line += 1
 
                         bracket = self.brackets[deep_types[-1].__name__]
                         line_txt = line_txt[:-(keep_len[now_line-1][1]+1)] + (keep_len[now_line-1][1] - bracket[1][1])*' ' + bracket[0][1] + ' '
-
+                               
             format_texts.append(line_txt)
+        
 
 
-        self.format_texts=format_texts[:]
         collection_image,image_len = self.collections[type(self.input_list).__name__]
+        
+        self.format_texts=format_texts[:]
         total_x_keep_data,map_width = self.total_x_keep_deata(X_keep_index,image_len+1)
-
+        
         for line_num,line in enumerate(self.format_texts):
             self.format_texts[line_num] = image_len*' '+' ' + line
-        
+       
         self.format_texts.insert(0,collection_image+' ')
         self.y_keep_line = [list(t) for t in Y_keep_index.keys()]
         self.y_keep_line.insert(0,'')
@@ -1401,32 +1469,6 @@ class SetPrint:
         format_texts = self.format_texts[:]
 
         if route != 'maintenance':
-
-            if self.y_axis_image != ' ':
-                
-                now_line = 0
-                x_axis_txt = ''
-                for nouse in range(len(x_keep_index) -1):
-                    axis_len = keep_len[now_line]
-                    axis_len = axis_len[1] if axis_len[0] == 0 else axis_len[0] + axis_len[1] +1
-                    now_deep = len(x_keep_index[now_line])-1
-                
-                    a_2 = axis_len//2    
-
-                    if len(keep_len[now_line]) != 3:
-                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                    else:
-                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-                            
-                    x_axis_txt += v_air + ' '
-                    
-                    now_line += 1
-
-                for line_num,line in enumerate(format_texts):
-                    format_texts[line_num] += x_axis_txt[len(line)-(image_len+1):]
-                
-                self.format_texts = format_texts[:]
-                
             if route:
                 self.format_route(self.input_list, total_x_keep_data, [0,image_len])
                 format_texts_with_route = self.format_texts[:]
@@ -1460,7 +1502,7 @@ class SetPrint:
                 # print('-'*map_width)
                 # print()
 
-                format_texts = ['keep_settings',str(self.keep_settings),'-'*map_width+'\n'] + format_texts + ['\n'+'-'*map_width]
+                format_texts = ['keep_settings',str(self.keep_settings),'-'*map_width+'\n'] + format_texts + ['-'*map_width]
 
                 return format_texts
 
@@ -1547,8 +1589,7 @@ class SetPrint:
                 index += 1
                     
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
-                    if len(line) != 0:
-                        self.format_route(line,total_x_keep_data[index][1],total_x_keep_data[index][0],now_deep+1,now_y_keep_index+[0])
+                    self.format_route(line,total_x_keep_data[index][1],total_x_keep_data[index][0],now_deep+1,now_y_keep_index+[0])
 
         elif set_keep_type == 'yf':
             

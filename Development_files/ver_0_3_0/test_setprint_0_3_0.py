@@ -93,6 +93,7 @@ def update_numpy_scalars_and_get_depth(obj):
     # その他の型はコンテナではないとみなし、更新せず深度は 0
     return obj, 0
 
+
 #------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # 配列の型変換を行う関数
@@ -167,12 +168,26 @@ class SetPrint:
         # 入力データ('#'は引数の受け取り箇所)
         self.style_settings = (
 
-          ("Collections" ,
+          (("Collections" ,
             {  'image'   : { 'list'    : '►list' ,
                              'tuple'   : '▷tuple' ,
-                             'ndarray' : '>ndarray' ,
+                             'ndarray' : '>nadarray' ,
                              'dict'    : '◆dict' }}),
 
+           ("bracket"     ,
+            { 'partially': { 'list'    : ( '{' , ')' ),
+                             'tuple'   : ( '<' , '>' ),
+                             'ndarray' : ( '(' , '}' ),
+                             'dict'    : ( '{' , ')' ),
+                             'None'    : ( '`' , '`' )}}),
+
+           ("padding"    ,  {  'key'   : (' ', ':') , 'value'  : ' ' }),
+           ("empty"      ,  {  'key'   : ('*', ' ') , 'value'  : '-' }),
+
+
+           ("settings"   ,  { 'print'  : True }),
+           ("progress"   ,  { 'print'  : False  ,
+                              'len'    : 20  }))
         )
         
         # 制限('#'の箇所をまとめて管理)
@@ -181,6 +196,26 @@ class SetPrint:
             ( 0, 1,     'image',   'tuple'    ) : {'type': str},
             ( 0, 1,     'image', 'ndarray'    ) : {'type': str},
             ( 0, 1,     'image',    'dict'    ) : {'type': str},
+            ( 1, 1, 'partially',    'list', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',    'list', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',   'tuple', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',   'tuple', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially', 'ndarray', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially', 'ndarray', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',    'dict', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',    'dict', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',    'None', 0 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 1, 1, 'partially',    'None', 1 ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 2, 1,       'key',        0     ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 2, 1,       'key',        1     ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 2, 1,     'value'               ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,       'key',        0     ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,       'key',        1     ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 3, 1,     'value'               ) : {'type': str, 'min_length':1, 'max_length':1},
+            ( 4, 1,     'print'               ) : {'type': bool,},
+            ( 5, 1,     'print'               ) : {'type': bool,},
+            ( 5, 1,       'len'               ) : {'type': int, 'min':0}
+        
         }
    
     # 表示スタイルの状態を視覚化する関数 
@@ -204,12 +239,26 @@ class SetPrint:
             list_settings = [
                 'style_settings = (',
                 '',
-                f'   ({g}"Collections"{R} ,',
+                f'   (({g}"Collections"{R} ,',
                 "     {  'image'   : { "+f"'list'    {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['list']}{quote} ,",
                 f"                      'tuple'   {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['tuple']}{quote} ,",
                 f"                      'ndarray' {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['ndarray']}{quote} ,",
                 f"                      'dict'    {g}:{R} {quote}{c}{self.style_settings[0][1]['image']['dict']}{quote} }}}}),",
                 '',
+                f'    ({g}"bracket"{R}     ,',
+                "     { 'partially': { "+f"'list'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['list'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['list'][1]}{quote} ),",
+                f"                      'tuple'   {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['tuple'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['tuple'][1]}{quote} ),",
+                f"                      'ndarray' {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['ndarray'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['ndarray'][1]}{quote} ),",
+                f"                      'dict'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['dict'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['dict'][1]}{quote} ),",
+                f"                      'None'    {g}:{R} ( {quote}{y}{self.style_settings[1][1]['partially']['None'][0]}{quote}{b} , {R}{quote}{y}{self.style_settings[1][1]['partially']['None'][1]}{quote} )}}}}),",
+                '',                                       
+                f'    ({g}"padding"{R}     ,'+" {  'key'  "+f" {g}:{R} {l}{self.style_settings[2][1]['key']}{R} ,  'value' "+f"{g}:{R} {quote}{l}{self.style_settings[2][1]['value']}{quote} }}),",
+                f'    ({g}"empty"{R}       ,'+" {  'key'  "+f" {g}:{R} {l}{self.style_settings[3][1]['key']}{R} ,  'value' "+f"{g}:{R} {quote}{l}{self.style_settings[3][1]['value']}{quote} }}),",  
+                '',
+                '',
+                f'    ({g2}"settings"{R}    ,'+" { 'print'  "+g2+":"+R+" \033[34m" + str(self.style_settings[4][1]['print']) + "\033[0m }),",
+                f'    ({g2}"progress"{R}    ,'+" { 'print'  "+g2+":"+R+" \033[34m" + str(self.style_settings[5][1]['print']) + "\033[0m  ,",
+                       '                    '+"   'len'    "+g2+":"+R+" \033[34m" + str(self.style_settings[5][1]['len'])   + "\033[0m  }))",
                 ')',
             ]
             for line in list_settings:
@@ -305,7 +354,35 @@ class SetPrint:
     
     # リストを整型する際の条件を整理 / １次元目の格納情報を整形 [→:#0]
     # [→:0] 中身は search_mapping / search_sequence とほぼ同じ
-    def set_collection(self, route, y_axis, keep_settings):        
+    def set_collection(self, route, keep_settings):
+
+        datas = self.input_list
+        
+
+        # if keep_start == False:
+        #     self.keep_start = 0
+        #     self.keep_finish = 0
+        #     self.show_all = False
+        
+        # else:
+        #     if type(keep_start) != int:
+        #         if keep_start == 'auto':
+        #             max_count, max_depth = find_max_elements_and_level(datas)  # 次元数を取得
+        #             self.keep_start = max_depth
+        #             self.show_all = True
+
+        #         else:
+        #             return
+        #     else:
+        #         self.keep_start = keep_start
+        #     # if type(keep_range) != int:
+        #     #     if keep_range == 'all':
+        #     #         self.show_all = True
+        #     #     else:
+        #     #         return
+        #     # else:
+        #     #     self.show_all = False
+        #     #     self.keep_finish = self.keep_start + keep_range
             
         dict_keep_settings = keep_settings
 
@@ -328,44 +405,67 @@ class SetPrint:
         # 値を (値, 値の文字数) に変更
         self.collections = {key: (value, len(value)) for key, value in self.collections.items()}
         
-        self.brackets = {'list': (('[', ']'), [1, 1]), 'tuple': (('(', ')'), [1, 1]), 'ndarray': (('[', ']'), [1, 1]), 'dict': (('{', '}'), [1, 1])}
-        
-        updated_data, max_depth = update_numpy_scalars_and_get_depth(self.input_list)
-       
-        keep_deeps = list(keep_settings.keys())
-        max_keep_deep = max(keep_deeps)
+        self.brackets = self.style_settings[1][1]['partially']
 
-        self.y_axis_image = '┊' if y_axis else ' '
+        self.brackets = {key: (value, [len(value[0]),len(value[1])]) for key, value in self.brackets.items()}
+        self.brackets = {'list': (('[', ']'), [1, 1]), 'tuple': (('(', ')'), [1, 1]), 'ndarray': (('[', ']'), [1, 1]), 'dict': (('{', '}'), [1, 1])}
+
+
+        self.padding_key = self.style_settings[2][1]['key'][0]
+        self.padding_colon = ' '+self.style_settings[2][1]['key'][1]+' '
+        self.padding_value = self.style_settings[2][1]['value']
+
+        self.empty_key = self.style_settings[3][1]['key'][0]
+        self.empty_colon = ' '+self.style_settings[3][1]['key'][1]+' '
+        self.empty_value = self.style_settings[3][1]['value']
+        
+        # self.bracket_e = self.style_settings['bracket']['exists']
+        self.ber_print = self.style_settings[5][1]['print']
+        # ber_print(1)
+        if self.ber_print:
+            self.ber_len = self.style_settings[5][1]['len']
+            self.line_ber_len = self.ber_len/len(datas)
+            print()
+            print('seach_collection...')
+            print('{ '+' '*self.ber_len+' }')
+        
+
+        keep_deeps = list(keep_settings.keys())
+        self.min_keep_deep = min(keep_deeps)
+        self.max_keep_deep = max(keep_deeps)
 
         keep_settings = []
 
-        range_keep_type = 'x'
-        for deep in range(max_keep_deep):
+        range_keep_type = None
+        for deep in range(self.max_keep_deep):
             deep+=1
             if deep in dict_keep_settings.keys():
                 range_keep_type = dict_keep_settings[deep]
                 if range_keep_type == 'yf':
-                    keep_settings.append(range_keep_type)
-                    range_keep_type = 'f'
+                    keep_settings.append('yf')
                 else:
                     keep_settings.append(range_keep_type)
 
             else:
-                keep_settings.append(range_keep_type)
-        
-        for deep in range(max_depth-len(keep_settings)):
-            keep_settings.append(range_keep_type)
+                if range_keep_type == 'yf':
+                    keep_settings.append('f')
+                else:
+                    keep_settings.append(range_keep_type)
         
         print()
         print('all_deep_settings\n',keep_settings)
 
         self.keep_settings = keep_settings
         
-        if isinstance(updated_data, self.mapping_type):
-            x_keep_index = self.search_mapping(updated_data,[])
+        if isinstance(datas, self.mapping_type):
+            self.search_mapping(datas)
         else:
-            x_keep_index = self.search_sequence(updated_data,[])
+            x_keep_index = self.search_sequence(datas,[])
 
+        # ber_print(3)
+        if self.ber_print:
+            print('\033[F\033[F\033[KThe search_collection process has been successfully completed.\n' + '{ '+'='*self.ber_len+' }')
+        
         # <a:keep_index>
         
         # <t:print>
@@ -399,8 +499,8 @@ class SetPrint:
             len_Kdeep_index = len(Kdeep_index)
 
             if len_Kdeep_index == 0:
-                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][0],'a'])
-                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][1],'b'])
+                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][0]])
+                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][1]])
                 len_Kdeep_index = 0
             else:
                 if Kdeep_index[0][1] < self.brackets[type(datas).__name__][1][0]:
@@ -422,7 +522,7 @@ class SetPrint:
                 linenum += 1
 
                 if len_Kdeep_index < linenum:
-                    Kdeep_index.insert(-1,[0,1])
+                    Kdeep_index.insert(-1,[0,0])
                
                 if isinstance(line, self.collection_type):
                     
@@ -499,7 +599,7 @@ class SetPrint:
             
             if not keep_x:
                 if len(Kdeep_index) == 0:
-                    Kdeep_index = [[0,1]]
+                    Kdeep_index = [[0,0]]
                     #Kdeep_index = ['y']
                     
             len_Kdeep_index = len(Kdeep_index)-1
@@ -509,16 +609,18 @@ class SetPrint:
                 
                 if keep_x:    
                     if len_Kdeep_index < linenum:
-                        Kdeep_index.append([0,1])
-                    direction_index = linenum                
+                        Kdeep_index.append([0,0])
+                    direction_index = linenum
+                
+                if self.min_keep_deep <= self.now_deep <= self.max_keep_deep:
 
-                # インデックスのキープ化
-                y_keep_index = self.transform_keep_index(self.now_index.copy())
+                    # インデックスのキープ化
+                    y_keep_index = self.transform_keep_index(self.now_index.copy())
 
-                if y_keep_index not in self.Y_keep_index:
-                    self.Y_keep_index[y_keep_index] = []
+                    if y_keep_index not in self.Y_keep_index:
+                        self.Y_keep_index[y_keep_index] = []
 
-                self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
+                    self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
                 
                 if isinstance(line, self.collection_type):
                     
@@ -547,6 +649,7 @@ class SetPrint:
                     else:
                         if type(Kdeep_index[direction_index][0]) != list:
                             if Kdeep_index[direction_index][0] < len(str(key)):
+                                print('+')
                                 Kdeep_index[direction_index][0] = len(str(key))
 
                             if Kdeep_index[direction_index][1] < self.collections[type(line).__name__][1]:
@@ -561,12 +664,14 @@ class SetPrint:
                 else:
                     if type(Kdeep_index[direction_index][0]) != list:
                         if Kdeep_index[direction_index][0] < len(str(key)):
+                            print('+')
                             Kdeep_index[direction_index][0] = len(str(key))
 
                         if Kdeep_index[direction_index][1] < len(str(line)):
                             Kdeep_index[direction_index][1] = len(str(line))
                     else:
                         if Kdeep_index[direction_index][0][0] < len(str(key)):
+                            print('+')
                             Kdeep_index[direction_index][0][0] = len(str(key))
 
                         if Kdeep_index[direction_index][0][1] < len(str(line)):
@@ -602,8 +707,8 @@ class SetPrint:
             len_Kdeep_index = len(Kdeep_index)
 
             if len_Kdeep_index == 0:
-                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][0],'a'])
-                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][1],'b'])
+                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][0]])
+                Kdeep_index.append([0,self.brackets[type(datas).__name__][1][1]])
                 len_Kdeep_index = 0
             else:
                 if Kdeep_index[0][1] < self.brackets[type(datas).__name__][1][0]:
@@ -626,7 +731,7 @@ class SetPrint:
                 linenum += 1
 
                 if len_Kdeep_index < linenum:
-                    Kdeep_index.insert(-1,[0,1])
+                    Kdeep_index.insert(-1,[0,0])
                
                 if isinstance(line, self.collection_type):
                     
@@ -691,7 +796,7 @@ class SetPrint:
             
             if not keep_x:
                 if len(Kdeep_index) == 0:
-                    Kdeep_index = [[0,1]]
+                    Kdeep_index = [[0,0]]
                     #Kdeep_index = ['y']
 
             len_Kdeep_index = len(Kdeep_index)-1
@@ -703,16 +808,18 @@ class SetPrint:
                 
                 if keep_x:    
                     if len_Kdeep_index < linenum:
-                        Kdeep_index.append([0,1])
+                        Kdeep_index.append([0,0])
                     direction_index = linenum
                 
-                # インデックスのキープ化
-                y_keep_index = self.transform_keep_index(self.now_index.copy())
+                if self.min_keep_deep <= self.now_deep <= self.max_keep_deep:
 
-                if y_keep_index not in self.Y_keep_index:
-                    self.Y_keep_index[y_keep_index] = []
+                    # インデックスのキープ化
+                    y_keep_index = self.transform_keep_index(self.now_index.copy())
 
-                self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
+                    if y_keep_index not in self.Y_keep_index:
+                        self.Y_keep_index[y_keep_index] = []
+
+                    self.Y_keep_index[y_keep_index].append([self.now_index[:-1],[[linenum]]])
                 
                 if isinstance(line, self.collection_type):
                     
@@ -805,7 +912,7 @@ class SetPrint:
         # print(' < tracking',self.keep_tracking)
 
         if len(Kdeep_index) == 0:
-            Kdeep_index = [[0,1]]
+            Kdeep_index = [[0,0]]
 
         if type(datas) == dict:
             
@@ -881,6 +988,12 @@ class SetPrint:
 
                 self.Y_keep_index[y_keep_index].append([self.now_index[:],self.y_flat_index[:]])
 
+                # ber_print(2)
+                if self.ber_print:
+                    if self.keep_start == 1:
+                        now_len = int(self.line_ber_len*(linenum+1))
+                        print('\033[F\033[K{ '+'-'*now_len+' '*(self.ber_len-now_len)+' }')
+
         else:
             for linenum in range(len(datas)):
                 self.keep_line = [linenum]
@@ -938,6 +1051,12 @@ class SetPrint:
 
                 self.Y_keep_index[y_keep_index].append([self.now_index[:],self.y_flat_index[:]])
 
+                # ber_print(2)
+                if self.ber_print:
+                    if self.keep_start == 1:
+                        now_len = int(self.line_ber_len*(linenum+1))
+                        print('\033[F\033[K{ '+'-'*now_len+' '*(self.ber_len-now_len)+' }')
+
         # print('return')
         # print(' > X.      ',self.range_idx)
         # print(' > Y.      ',self.Y_keep_index[parent_y_keep_index])
@@ -945,6 +1064,11 @@ class SetPrint:
         # print()
 
         # <t:キープ範囲調査完了>
+
+        # ber_print(2)
+        if self.ber_print:
+            if self.keep_start == 1:
+                print('\033[F\033[F\033[Kformat_keep_data...\n' + '{ '+'-'*self.ber_len+' }')
         
         # 情報復元
         self.keep_index = parent__keep_index
@@ -1049,24 +1173,11 @@ class SetPrint:
                         while x_keep_index[now_line] != keep_parent + keep_y_x_index:
                             # print('False ',x_keep_index[now_line],keep_parent + y_x_index)
                             axis_len = keep_len[now_line]
-
                             if axis_len[0] == 0:
-                                axis_len = axis_len[1]
-                                a_2 = axis_len//2
-                                if len(keep_len[now_line]) != 3:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                else:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-
+                                line_txt += axis_len[1]*' ' + ' '
                             else:
-                                axis_len = axis_len[0] + axis_len[1] + 1
-                                a_2 = axis_len//2
-                                if len(keep_len[now_line]) != 3:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                else:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
+                                line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                             
-                            line_txt += v_air + ' '
                             now_line += 1
 
                         # print('True  ',x_keep_index[now_line],keep_parent + keep_y_x_index)
@@ -1094,7 +1205,7 @@ class SetPrint:
                                 line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                             else:
                                 k_dif = (axis_len[0] - len(str(dict_key)))
-                                k_dif_2 = (k_dif // 2)
+                                k_dif_2 = (dif // 2)
                                 line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                     
                         now_line += 1
@@ -1121,84 +1232,12 @@ class SetPrint:
                     # print(parent,y_x_indexs,now_line)
                     
                     #print(search_index)
-                    parent_list,dict_key = self.map_sequence_indices(self.input_list,parent)
-                    value = parent_list
-                    
+                    parent_list,in_dect = self.map_sequence_indices(self.input_list,parent)
+
                     before_nest = parent_deep
                     deep_types = []
 
-                    while x_keep_index[now_line] != keep_parent:
-
-                        axis_len = keep_len[now_line]
-
-                        if axis_len[0] == 0:
-                            axis_len = axis_len[1]
-                            a_2 = axis_len//2
-                            if len(keep_len[now_line]) != 3:
-                                v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                            else:
-                                v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-
-                        else:
-                            axis_len = axis_len[0] + axis_len[1] + 1
-                            a_2 = axis_len//2
-                            if len(keep_len[now_line]) != 3:
-                                v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                            else:
-                                v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-                        
-                        line_txt += v_air + ' '
-                        now_line += 1
-                        
-                    if isinstance(value, self.collection_type):
-                        
-                        axis_len = keep_len[now_line]
-
-                        data_type = type(value)
-                        value,image_len = self.collections[type(value).__name__]
-
-                        dif = (axis_len[1] - image_len)
-                        v_dif_2 = (dif // 2)
-
-                        if axis_len[0] == 0:
-                            line_txt += v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
-                        else:
-                            if dict_key == None:
-                                line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
-                            else:
-                                k_dif = (axis_len[0] - len(str(dict_key)))
-                                k_dif_2 = (k_dif // 2)
-                                line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
-                                
-                        
-                        if last_deep != 0:
-                            before_nest += 1
-                            now_line += 1
-
-                            deep_types.append(data_type)
-                            bracket = self.brackets[data_type.__name__]
-                            line_txt += (keep_len[now_line][1] - bracket[1][0])*' ' + bracket[0][0] + ' '
-                        
-                    else:
-
-                        axis_len = keep_len[now_line]
-                        
-                        dif = (axis_len[1] - len(str(value)))
-                        v_dif_2 = (dif // 2)
-                        
-                        if axis_len[0] == 0:
-                            line_txt += v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
-                        else:
-                            if dict_key == None:
-                                line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
-                            else:
-                                k_dif = (axis_len[0] - len(str(dict_key)))
-                                k_dif_2 = (k_dif // 2)
-                                line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
-                                
-                    now_line += 1
-
-                    for y_x_index in y_x_indexs[1:]:
+                    for y_x_index in y_x_indexs:
 
                         value,in_dect = self.map_sequence_indices(parent_list,y_x_index)
 
@@ -1219,26 +1258,12 @@ class SetPrint:
                             for i in range(before_nest - now_deep):
                                 
                                 while len(x_keep_index[now_line+1]) != before_nest -1:
-                                   
+                                            
                                     axis_len = keep_len[now_line]
-
                                     if axis_len[0] == 0:
-                                        axis_len = axis_len[1]
-                                        a_2 = axis_len//2
-                                        if len(keep_len[now_line]) != 3:
-                                            v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                        else:
-                                            v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-
+                                        line_txt += axis_len[1]*' ' + ' '
                                     else:
-                                        axis_len = axis_len[0] + axis_len[1] + 1
-                                        a_2 = axis_len//2
-                                        if len(keep_len[now_line]) != 3:
-                                            v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                        else:
-                                            v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-                                    
-                                    line_txt += v_air + ' '
+                                        line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                                     now_line += 1
 
                                 bracket = self.brackets[deep_types[-1].__name__]
@@ -1251,26 +1276,12 @@ class SetPrint:
                         while x_keep_index[now_line] != keep_parent + keep_y_x_index:
 
                             axis_len = keep_len[now_line]
-
                             if axis_len[0] == 0:
-                                axis_len = axis_len[1]
-                                a_2 = axis_len//2
-                                if len(keep_len[now_line]) != 3:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                else:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-
+                                line_txt += axis_len[1]*' ' + ' '
                             else:
-                                axis_len = axis_len[0] + axis_len[1] + 1
-                                a_2 = axis_len//2
-                                if len(keep_len[now_line]) != 3:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                else:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-                            
-                            line_txt += v_air + ' '
+                                line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                             now_line += 1
-                        
+
                         value,dict_key = self.map_sequence_indices(parent_list,y_x_index)
 
                         if isinstance(value, self.collection_type):
@@ -1290,7 +1301,7 @@ class SetPrint:
                                     line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                 else:
                                     k_dif = (axis_len[0] - len(str(dict_key)))
-                                    k_dif_2 = (k_dif // 2)
+                                    k_dif_2 = (dif // 2)
                                     line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                     
                             
@@ -1316,7 +1327,7 @@ class SetPrint:
                                     line_txt += axis_len[0]*'-' + '.' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                 else:
                                     k_dif = (axis_len[0] - len(str(dict_key)))
-                                    k_dif_2 = (k_dif // 2)
+                                    k_dif_2 = (dif // 2)
                                     line_txt += k_dif_2*' ' + str(dict_key) + (k_dif_2 + k_dif%2)*' ' + ':' + v_dif_2*' ' + str(value) + (v_dif_2 + dif%2)*' ' + ' '
                                     
                         now_line += 1
@@ -1329,26 +1340,12 @@ class SetPrint:
                             while len(x_keep_index[now_line+1]) != before_nest -1:
 
                                 axis_len = keep_len[now_line]
-
                                 if axis_len[0] == 0:
-                                    axis_len = axis_len[1]
-                                    a_2 = axis_len//2
-                                    if len(keep_len[now_line]) != 3:
-                                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                    else:
-                                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-
+                                    line_txt += axis_len[1]*' ' + ' '
                                 else:
-                                    axis_len = axis_len[0] + axis_len[1] + 1
-                                    a_2 = axis_len//2
-                                    if len(keep_len[now_line]) != 3:
-                                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                    else:
-                                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-                                
-                                line_txt += v_air + ' '
+                                    line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                                 now_line += 1
-
+                        
                             bracket = self.brackets[deep_types[-1].__name__]
                             line_txt += (keep_len[now_line][1] - bracket[1][1])*' ' + bracket[0][1] + ' '
                             
@@ -1359,41 +1356,28 @@ class SetPrint:
                         # print(x_keep_index)
 
                         while len(x_keep_index[now_line]) > len(y_keep_index):
-                            
                             axis_len = keep_len[now_line]
-
                             if axis_len[0] == 0:
-                                axis_len = axis_len[1]
-                                a_2 = axis_len//2
-                                if len(keep_len[now_line]) != 3:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                else:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-
+                                line_txt += axis_len[1]*' ' + ' '
                             else:
-                                axis_len = axis_len[0] + axis_len[1] + 1
-                                a_2 = axis_len//2
-                                if len(keep_len[now_line]) != 3:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                                else:
-                                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-                            
-                            line_txt += v_air + ' '
+                                line_txt += axis_len[0]*' ' + axis_len[1]*' ' + '  '
                             now_line += 1
 
                         bracket = self.brackets[deep_types[-1].__name__]
                         line_txt = line_txt[:-(keep_len[now_line-1][1]+1)] + (keep_len[now_line-1][1] - bracket[1][1])*' ' + bracket[0][1] + ' '
-
+                               
             format_texts.append(line_txt)
+        
 
 
-        self.format_texts=format_texts[:]
         collection_image,image_len = self.collections[type(self.input_list).__name__]
+        
+        self.format_texts=format_texts[:]
         total_x_keep_data,map_width = self.total_x_keep_deata(X_keep_index,image_len+1)
-
+        
         for line_num,line in enumerate(self.format_texts):
             self.format_texts[line_num] = image_len*' '+' ' + line
-        
+       
         self.format_texts.insert(0,collection_image+' ')
         self.y_keep_line = [list(t) for t in Y_keep_index.keys()]
         self.y_keep_line.insert(0,'')
@@ -1401,32 +1385,6 @@ class SetPrint:
         format_texts = self.format_texts[:]
 
         if route != 'maintenance':
-
-            if self.y_axis_image != ' ':
-                
-                now_line = 0
-                x_axis_txt = ''
-                for nouse in range(len(x_keep_index) -1):
-                    axis_len = keep_len[now_line]
-                    axis_len = axis_len[1] if axis_len[0] == 0 else axis_len[0] + axis_len[1] +1
-                    now_deep = len(x_keep_index[now_line])-1
-                
-                    a_2 = axis_len//2    
-
-                    if len(keep_len[now_line]) != 3:
-                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                    else:
-                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-                            
-                    x_axis_txt += v_air + ' '
-                    
-                    now_line += 1
-
-                for line_num,line in enumerate(format_texts):
-                    format_texts[line_num] += x_axis_txt[len(line)-(image_len+1):]
-                
-                self.format_texts = format_texts[:]
-                
             if route:
                 self.format_route(self.input_list, total_x_keep_data, [0,image_len])
                 format_texts_with_route = self.format_texts[:]
@@ -1460,7 +1418,7 @@ class SetPrint:
                 # print('-'*map_width)
                 # print()
 
-                format_texts = ['keep_settings',str(self.keep_settings),'-'*map_width+'\n'] + format_texts + ['\n'+'-'*map_width]
+                format_texts = ['keep_settings',str(self.keep_settings),'-'*map_width+'\n'] + format_texts + ['-'*map_width]
 
                 return format_texts
 
@@ -1547,8 +1505,7 @@ class SetPrint:
                 index += 1
                     
                 if isinstance(line, (list, tuple, np.ndarray, dict)):
-                    if len(line) != 0:
-                        self.format_route(line,total_x_keep_data[index][1],total_x_keep_data[index][0],now_deep+1,now_y_keep_index+[0])
+                    self.format_route(line,total_x_keep_data[index][1],total_x_keep_data[index][0],now_deep+1,now_y_keep_index+[0])
 
         elif set_keep_type == 'yf':
             
