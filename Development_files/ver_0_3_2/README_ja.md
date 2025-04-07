@@ -8,8 +8,7 @@
 
 ---
 
-*Read this in [English](https://github.com/mtur2007/SetPrint/blob/main/README.md) or [日本語](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)*
-
+*Read this in [English](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README.md) or [日本語](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README_ja.md)*
 
 ---
 setprint は、Python標準の pprint を拡張し、リストや辞書だけでなく、<br>
@@ -322,10 +321,10 @@ y_axis : False                                                                  
    - #### 引数
 
         - **`route`** (bool or str): ルート表示を有効にするかどうか。
-            - `BOLD`:(str)の場合、線を太く表示します。
-            - `SLIM`:(str)の場合、線を細く表示します。
+            - `'BOLD'`:(str)の場合、線を太く表示します。
+            - `'SLIM'`:(str)の場合、線を細く表示します。
             - `True`:(bool)の場合、設定によりカスタマイズされた文字を使用し、表示します。
-            - `HlFE`:(str)の場合、半角文字を使用し、表示します。
+            - `'HALF'`:(str)の場合、半角文字を使用し、表示します。
 
         - **`y_axis`** (bool): y軸表示を有効にするかどうか。
             - `True`：(bool)の場合、y軸も同時に出力します。

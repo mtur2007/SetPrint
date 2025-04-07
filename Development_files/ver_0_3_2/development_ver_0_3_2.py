@@ -356,13 +356,6 @@ class SetPrint:
 
         updated_data, max_depth = update_numpy_scalars_and_get_depth(self.input_list)
 
-        obj = updated_data   
-
-        if max_depth == 0 or (isinstance(obj, np.ndarray) and obj.ndim == 1 and obj.size == 0) or (isinstance(obj, (list, tuple)) and len(obj) == 0):
-            Err_txt = 'Err ::: value -> / ' + str(self.input_list) + ' / ??????'
-            print(Err_txt)
-            return [Err_txt]
-
         keep_deeps = list(keep_settings.keys())
         max_keep_deep = max(keep_deeps)
 
@@ -435,10 +428,11 @@ class SetPrint:
             self.Process += 1
 
         elif route != False:
-            Err_txt = 'Err ::: True / BOLD / SLIM / HALF / False'
-            print(Err_txt)
-            return [Err_txt]
-        
+            raise ValueError(
+                f"Invalid value for 'mode': {route!r}. "
+                f"Allowed values are: [ 'BOLD', 'SLIM', 'HALF', False ]"
+            )
+            
         keep_settings = []
 
         range_keep_type = 'x'
@@ -466,21 +460,35 @@ class SetPrint:
 
         self.keep_settings = keep_settings
         
-        if isinstance(updated_data, self.mapping_type):
-            x_keep_index = self.search_mapping(updated_data,[])
-        else:
-            x_keep_index = self.search_sequence(updated_data,[])
-
-        # <a:keep_index>
+        obj = updated_data   
+        if max_depth == 0 or ((isinstance(obj, np.ndarray) and obj.ndim == 1 and obj.size == 0) or (isinstance(obj, (list, tuple)) and len(obj) == 0)):
+            if max_depth == 0:
+                map_width = len(str(self.input_list))
+                format_texts = ['keep_settings',str(keep_settings),'-'*map_width,'',str(self.input_list),'','-'*map_width]
+    
+            else:      
+                map_width = self.collections[type(self.input_list).__name__][1]
+                format_texts = ['keep_settings',str(keep_settings),'-'*map_width,'',self.collections[type(self.input_list).__name__][0],'','-'*map_width]
         
-        # <t:print>
+            sys.stdout.write('\rProcess completed!      \n')
+    
+        else:    
+            if isinstance(updated_data, self.mapping_type):
+                x_keep_index = self.search_mapping(updated_data,[])
+            else:
+                x_keep_index = self.search_sequence(updated_data,[])
 
-        self.all_line = len(self.Y_keep_index)
-        sys.stdout.write(f'\rformat_value... 2/{self.Process}')
-        sys.stdout.flush()
+            # <a:keep_index>
+            
+            # <t:print>
 
-        format_texts = self.format_keep_data(route,x_keep_index,self.Y_keep_index)
-        sys.stdout.write('\rProcess completed!' + ((( len(str(self.all_line)) + 1 ) *2 ) + 3) * ' ' + '\n')
+            self.all_line = len(self.Y_keep_index)
+            sys.stdout.write(f'\rformat_value... 2/{self.Process}')
+            sys.stdout.flush()
+
+            format_texts = self.format_keep_data(route,x_keep_index,self.Y_keep_index)
+
+            sys.stdout.write('\rProcess completed!' + ((( len(str(self.all_line)) + 1 ) *2 ) + 3) * ' ' + '\n')
 
         print()
 

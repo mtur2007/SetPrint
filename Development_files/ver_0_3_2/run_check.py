@@ -69,7 +69,7 @@ style_settings = (
 
       )
 
-if True:
+if False:
       
       '''
       1, 配列型の可変表示 & 空配列へのアクセス防止機能確認
@@ -288,49 +288,49 @@ elif False:
       ]
 
 else:
-      # test = ['test',[[[]]]]
+    # test = ['test',[[[]]]]
 
-      # keep_settings = {1:'yf',3:'yf',4:'f'}
+    # keep_settings = {1:'yf',3:'yf',4:'f'}
 
-      # format_txt = print_set_collection(test,style_settings,keep_settings)
+    # format_txt = print_set_collection(test,style_settings,keep_settings)
 
-      nest_num = 0
-      
-      test_array = [[],[]]
+    nest_num = 0
+    
+    test_array = [[],[]]
 
-      flat = False
+    flat = False
 
-      if flat:
-            keep_settings = {1:'yf'}
-      elif flat == False:
-            keep_settings = {1:'y',2:'x'}
-      else:
-            keep_settings = {1:'y',2:'x',3:'y'}
-            keep_settings = {1:'x',2:'y',3:'x'}
+    if flat:
+        keep_settings = {1:'yf'}
+    elif flat == False:
+        keep_settings = {1:'y',2:'x'}
+    else:
+        keep_settings = {1:'y',2:'x',3:'y'}
+        keep_settings = {1:'x',2:'y',3:'x'}
 
-      for num in range(0):
-            access_array = test_array
-            for i in range(((num) * 2)):
-                  access_array = access_array[1]
-            else:
-                  nest_num += 1
-                  test_2d = [[nest_num,nest_num,nest_num],
-                              [nest_num,nest_num,nest_num],
-                              [nest_num,nest_num,nest_num]]
-                  
-                  access_array[1] = test_2d # copy.deepcopy(test_2d)
+    for num in range(0):
+        access_array = test_array
+        for i in range(((num) * 2)):
+                access_array = access_array[1]
+        else:
+                nest_num += 1
+                test_2d = [[nest_num,nest_num,nest_num],
+                            [nest_num,nest_num,nest_num],
+                            [nest_num,nest_num,nest_num]]
+                
+                access_array[1] = test_2d # copy.deepcopy(test_2d)
 
-                  if flat:
-                        keep_settings[(num+1)*2+1] = 'yf'
-                  elif flat == False:
-                        keep_settings[(num+1)*2+1] = 'y'
-                        keep_settings[(num+1)*2+2] = 'x'
-      else:
-            test_array = test_array[1]
+                if flat:
+                    keep_settings[(num+1)*2+1] = 'yf'
+                elif flat == False:
+                    keep_settings[(num+1)*2+1] = 'y'
+                    keep_settings[(num+1)*2+2] = 'x'
+    else:
+        test_array = test_array[1]
 
     #   test_array = np.zeros((10,5,3),dtype=int)
 
-      test_array = [
+    test_array = [
       
       # RGB画像 (3x3x3) # サンプルの配列 
       np.array([[[255,   0,   4],
@@ -368,13 +368,15 @@ else:
       ]
 
 
-      keep_settings = {1:'yf',3:'yf'}
+    test_array = [0,(5,)]
+
+    keep_settings = {1:'yf',3:'yf'}
       
-      # print(test_array)
-      # print(keep_settings)
+    # print(test_array)
+    # print(keep_settings)
 
-      format_txt = print_set_collection(test_array,style_settings,keep_settings)
+    format_txt = print_set_collection(test_array,style_settings,keep_settings)
 
-cut_format_txt = cut_blocks_from_index(format_txt, start=1)
-# ✅ 使用例（3ブロック）
-print(combine_blocks_with_block_titles(*cut_format_txt))
+# cut_format_txt = cut_blocks_from_index(format_txt, start=1)
+# # ✅ 使用例（3ブロック）
+# print(combine_blocks_with_block_titles(*cut_format_txt))

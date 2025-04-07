@@ -193,7 +193,7 @@ The `set_collection` class method executes the formatting as demonstrated in the
         - If set to `'BOLD'` (str), the route line is displayed in bold.
         - If set to `'SLIM'` (str), the route line is displayed in a slim style.
         - If set to `True` (bool), the route is displayed using customized characters based on the settings.
-        - If set to `'HlFE'` (str), the route is displayed using half-width characters.
+        - If set to `'HALF'` (str), the route is displayed using half-width characters.
 
      - **`y_axis`** (bool): Whether to enable the display of the y-axis.
         - If set to `True` (bool), the y-axis will also be displayed.
