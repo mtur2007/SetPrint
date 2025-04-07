@@ -354,8 +354,6 @@ class SetPrint:
         
         self.brackets = {'list': (('[', ']'), [1, 1]), 'tuple': (('(', ')'), [1, 1]), 'ndarray': (('[', ']'), [1, 1]), 'dict': (('{', '}'), [1, 1])}
 
-        updated_data, max_depth = update_numpy_scalars_and_get_depth(self.input_list)
-
         keep_deeps = list(keep_settings.keys())
         max_keep_deep = max(keep_deeps)
 
@@ -432,7 +430,9 @@ class SetPrint:
                 f"Invalid value for 'mode': {route!r}. "
                 f"Allowed values are: [ 'BOLD', 'SLIM', 'HALF', False ]"
             )
-            
+        
+        self.input_list, max_depth = update_numpy_scalars_and_get_depth(self.input_list)
+        
         keep_settings = []
 
         range_keep_type = 'x'
@@ -460,7 +460,7 @@ class SetPrint:
 
         self.keep_settings = keep_settings
         
-        obj = updated_data   
+        obj = self.input_list 
         if max_depth == 0 or ((isinstance(obj, np.ndarray) and obj.ndim == 1 and obj.size == 0) or (isinstance(obj, (list, tuple)) and len(obj) == 0)):
             if max_depth == 0:
                 map_width = len(str(self.input_list))
@@ -473,10 +473,10 @@ class SetPrint:
             sys.stdout.write('\rProcess completed!      \n')
     
         else:    
-            if isinstance(updated_data, self.mapping_type):
-                x_keep_index = self.search_mapping(updated_data,[])
+            if isinstance(self.input_list, self.mapping_type):
+                x_keep_index = self.search_mapping(self.input_list,[])
             else:
-                x_keep_index = self.search_sequence(updated_data,[])
+                x_keep_index = self.search_sequence(self.input_list,[])
 
             # <a:keep_index>
             
@@ -489,8 +489,6 @@ class SetPrint:
             format_texts = self.format_keep_data(route,x_keep_index,self.Y_keep_index)
 
             sys.stdout.write('\rProcess completed!' + ((( len(str(self.all_line)) + 1 ) *2 ) + 3) * ' ' + '\n')
-
-        print()
 
         # <t:return>
 
@@ -873,7 +871,6 @@ class SetPrint:
         # 格納情報の保存
         parent__keep_index = self.keep_index
         parent__y_flat_index = self.y_flat_index
-        parent__X_keep_index = self.X_keep_index
 
         parent__f_last_Kdeep = self.f_last_Kdeep
 
@@ -1025,7 +1022,6 @@ class SetPrint:
         # 情報復元
         self.keep_index = parent__keep_index
         self.y_flat_index = parent__y_flat_index
-        self.X_keep_index = parent__X_keep_index
         self.f_last_Kdeep = parent__f_last_Kdeep
 
         return Kdeep_index

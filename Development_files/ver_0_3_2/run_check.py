@@ -30,10 +30,10 @@ def print_set_collection(test_array,style_settings,keep_settings):
             list_data.update_data_with_arguments(style_settings)
 
       # 整形
-      format_texts = list_data.set_collection ( route='SLIM', y_axis=True, keep_settings=keep_settings )
+      format_texts = list_data.set_collection ( route=False, y_axis=True, keep_settings=keep_settings )
       # format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
-      for line in format_texts:
-           print(line)
+    #   for line in format_texts:
+    #        print(line)
       
       return format_texts
 
@@ -328,8 +328,6 @@ else:
     else:
         test_array = test_array[1]
 
-    #   test_array = np.zeros((10,5,3),dtype=int)
-
     test_array = [
       
       # RGB画像 (3x3x3) # サンプルの配列 
@@ -367,14 +365,18 @@ else:
 
       ]
 
+    test_array = np.zeros((500,50,3),dtype=int)
+    # test_array = [0,np.array(5)]
+    # test_array = [0,5]
 
-    test_array = [0,(5,)]
-
-    keep_settings = {1:'yf',3:'yf'}
+    keep_settings = {1:'y',3:'yf'}
       
     # print(test_array)
     # print(keep_settings)
 
+    format_txt = print_set_collection(test_array,style_settings,keep_settings)
+    format_txt = print_set_collection(test_array,style_settings,keep_settings)
+    format_txt = print_set_collection(test_array,style_settings,keep_settings)
     format_txt = print_set_collection(test_array,style_settings,keep_settings)
 
 # cut_format_txt = cut_blocks_from_index(format_txt, start=1)
