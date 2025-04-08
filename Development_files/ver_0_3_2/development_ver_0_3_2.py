@@ -1,7 +1,7 @@
 # / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict /
 #print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
-# setpirnt (ver 0.3.0) [ demo ]
+# setpirnt (ver 0.3.2) [ demo ]
 
 import numpy as np
 import sys
@@ -1478,120 +1478,51 @@ class SetPrint:
 
         format_texts = self.format_texts[:]
 
-        if route != 'maintenance':
-
-            if self.y_axis_image != ' ':
-                
-                now_line = 0
-                x_axis_txt = ''
-                for nouse in range(len(x_keep_index) -1):
-                    axis_len = keep_len[now_line]
-                    axis_len = axis_len[1] if axis_len[0] == 0 else axis_len[0] + axis_len[1] +1
-                    now_deep = len(x_keep_index[now_line])-1
-                
-                    a_2 = axis_len//2    
-
-                    if len(keep_len[now_line]) != 3:
-                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
-                    else:
-                        v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
-                            
-                    x_axis_txt += v_air + ' '
-                    
-                    now_line += 1
-
-                for line_num,line in enumerate(format_texts):
-                    format_texts[line_num] += x_axis_txt[len(line)-(image_len+1):]
-                
-                self.format_texts = format_texts[:]
-                
-            if route:
-                sys.stdout.write('\r'+( (16 + (( len( str(self.all_line)) + 1 ) *2 ) + 2 + 3) * ' '))
-                sys.stdout.flush()
-               
-                sys.stdout.write(f'\rformat_route... 3/{self.Process}{((len(str(self.all_line))* 2) + 1 + 3 ) * " "}')
-                sys.stdout.flush()
-
-                self.all_line = len(self.input_list)
-                self.processing_line = 0
-                
-                self.format_route(self.input_list, total_x_keep_data, [0,image_len], 0, [])
-                format_texts_with_route = self.format_texts[:]
-
-                # print()
-                # print('with_route')
-                # print('-'*map_width)
-                # print()
-
-                # for line in format_texts_with_route:
-                #     print(line)
-                
-                # print()
-                # print('-'*map_width)
-                # print()
-
-                format_texts_with_route = ['keep_settings',str(self.keep_settings),'-'*map_width,''] + format_texts_with_route + ['','-'*map_width]
-
-                return format_texts_with_route
+        if self.y_axis_image != ' ':
             
-            else:
-                # print()
-                # print('out_put')
-                # print('-'*map_width)
-                # print()
+            now_line = 0
+            x_axis_txt = ''
+            for nouse in range(len(x_keep_index) -1):
+                axis_len = keep_len[now_line]
+                axis_len = axis_len[1] if axis_len[0] == 0 else axis_len[0] + axis_len[1] +1
+                now_deep = len(x_keep_index[now_line])-1
+            
+                a_2 = axis_len//2    
 
-                # for line in format_texts:
-                #     print(line)
+                if len(keep_len[now_line]) != 3:
+                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + self.y_axis_image + a_2*' '
+                else:
+                    v_air = (a_2 - (1 - axis_len % 2)) * ' ' + ' ' + a_2*' '
+                        
+                x_axis_txt += v_air + ' '
+                
+                now_line += 1
 
-                # print()
-                # print('-'*map_width)
-                # print()
+            for line_num,line in enumerate(format_texts):
+                format_texts[line_num] += x_axis_txt[len(line)-(image_len+1):]
+            
+            self.format_texts = format_texts[:]
+            
+        if route:
+            sys.stdout.write('\r'+( (16 + (( len( str(self.all_line)) + 1 ) *2 ) + 2 + 3) * ' '))
+            sys.stdout.flush()
+            
+            sys.stdout.write(f'\rformat_route... 3/{self.Process}{((len(str(self.all_line))* 2) + 1 + 3 ) * " "}')
+            sys.stdout.flush()
 
-                format_texts = ['keep_settings',str(self.keep_settings),'-'*map_width+'\n'] + format_texts + ['\n'+'-'*map_width]
-
-                return format_texts
-
-        else:
+            self.all_line = len(self.input_list)
+            self.processing_line = 0
+            
             self.format_route(self.input_list, total_x_keep_data, [0,image_len], 0, [])
             format_texts_with_route = self.format_texts[:]
+            format_texts_with_route = ['keep_settings',str(self.keep_settings),'-'*map_width,''] + format_texts_with_route + ['','-'*map_width]
 
-            format_texts_maintenance = []
-            
-            # print()
-            
-            format_texts_maintenance += ['with_route'+(map_width-10)*' '+'  / '+'out_put']
-            format_texts_maintenance += ['='+'='*map_width+' ~ '+'-'+'-'*map_width,'']
+            return format_texts_with_route
+        
+        else:
+            format_texts = ['keep_settings',str(self.keep_settings),'-'*map_width+'\n'] + format_texts + ['\n'+'-'*map_width]
 
-            # print('with_route'+(map_width-10)*' '+'  / '+'out_put')
-            # print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
-            # print()
-
-            for line_with_route,line in zip(format_texts_with_route,format_texts):
-                diff_air = (map_width - len(line_with_route))*' '
-                # print(' '+line_with_route+diff_air+' :  '+line)
-                format_texts_maintenance += [' '+line_with_route+diff_air+' :  '+line]
-            
-            # print()
-            # print('='+'='*map_width+' ~ '+'-'+'-'*map_width)
-            format_texts_maintenance += ['','='+'='*map_width+' ~ '+'-'+'-'*map_width]
-
-            # print()
-            
-            # print()
-            # print('with_route'+(map_width-10)*' '+' / '+'out_put')
-            # print('┏━'+'━'*map_width+'━┱─'+'─'*map_width + '┐')
-            # print('┃ '+' '*map_width+' ┃ '+' '*map_width + '│')
-            
-            # for line_with_route,line in zip(format_texts_with_route,format_texts):
-            #     diff_air = (map_width - len(line_with_route))*' '
-            #     print('┃ '+ line_with_route+diff_air +' ┃ '+ line+diff_air +'│')
-
-            # print('┃ '+' '*map_width+' ┃ '+' '*map_width + '│')
-            # print('┗━'+'━'*map_width+'━┹─'+'─'*map_width + '┘')
-            # print()
-
-            return format_texts_maintenance
-
+            return format_texts
 
 
     def total_x_keep_deata(self,x_keep_data,total_len):

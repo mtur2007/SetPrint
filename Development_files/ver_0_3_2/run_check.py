@@ -32,8 +32,8 @@ def print_set_collection(test_array,style_settings,keep_settings):
       # 整形
       format_texts = list_data.set_collection ( route=False, y_axis=True, keep_settings=keep_settings )
       # format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
-    #   for line in format_texts:
-    #        print(line)
+      for line in format_texts:
+           print(line)
       
       return format_texts
 
@@ -298,87 +298,41 @@ else:
     
     test_array = [[],[]]
 
-    flat = False
+    y_nomal = {1: 'y', 2: 'x', 3: 'y', 4: 'x', 5: 'y', 6: 'x'}
+    y_flat = {1: 'yf', 2: 'f', 3: 'yf', 4: 'f', 5: 'yf', 6: 'f'}
+    y_nomal_flat = {1: 'y', 2: 'x', 3: 'yf', 4: 'f', 5: 'y', 6: 'x'}
+    y_flat_nomal = {1: 'yf', 2: 'f', 3: 'y', 4: 'x', 5: 'yf', 6: 'f'}
+    
+    x_nomal = {1: 'x', 2: 'y', 3: 'x', 4: 'y', 5: 'x', 6: 'y'}
+    x_flat = {1: 'x', 2: 'yf', 3: 'f', 4: 'yf', 5: 'f', 6: 'yf'}
+    x_nomal_flat = {1: 'x', 2: 'y', 3: 'x', 4: 'yf', 5: 'f', 6: 'y'}
+    x_flat_nomal = {1: 'x', 2: 'yf', 3: 'f', 4: 'y', 5: 'x', 6: 'yf'}
 
-    if flat:
-        keep_settings = {1:'yf'}
-    elif flat == False:
-        keep_settings = {1:'y',2:'x'}
-    else:
-        keep_settings = {1:'y',2:'x',3:'y'}
-        keep_settings = {1:'x',2:'y',3:'x'}
-
-    for num in range(0):
+    for num in range(3):
         access_array = test_array
         for i in range(((num) * 2)):
                 access_array = access_array[1]
         else:
-                nest_num += 1
-                test_2d = [[nest_num,nest_num,nest_num],
-                            [nest_num,nest_num,nest_num],
-                            [nest_num,nest_num,nest_num]]
-                
-                access_array[1] = test_2d # copy.deepcopy(test_2d)
-
-                if flat:
-                    keep_settings[(num+1)*2+1] = 'yf'
-                elif flat == False:
-                    keep_settings[(num+1)*2+1] = 'y'
-                    keep_settings[(num+1)*2+2] = 'x'
+            nest_num += 1
+            test_2d = [[nest_num,nest_num,nest_num],
+                        [nest_num,nest_num,nest_num],
+                        [nest_num,nest_num,nest_num]]
+            
+            access_array[1] = test_2d # copy.deepcopy(test_2d)
+                 
     else:
         test_array = test_array[1]
 
-    test_array = [
-      
-      # RGB画像 (3x3x3) # サンプルの配列 
-      np.array([[[255,   0,   4],
-                  [255,  85,   0],
-                  [255, 170,   0]],
+    # インスタンスを生成
+    list_data = SetPrint(test_array)
+    # 整形
+    format_txt = [
+        list_data.set_collection ( route='SLIM', y_axis=False, keep_settings=x_nomal ),
+        list_data.set_collection ( route='SLIM', y_axis=False, keep_settings=x_flat ),
+        list_data.set_collection ( route='SLIM', y_axis=False, keep_settings=x_nomal_flat ),
+        list_data.set_collection ( route='SLIM', y_axis=False, keep_settings=x_flat_nomal )
+    ]
 
-                  [[170, 255,   0],
-                  [ 85, 255,   0],
-                  [  0, 255,   4]],
-
-                  [[  0, 170, 255],
-                  [  0,  85, 255],
-                  [  4,   0, 255]]]),
-      
-      # サンプルの形式違い BGR画像
-      np.array([[[  4,   0, 255],
-                  [  0,  85, 255],
-                  [  0, 170, 255]],
-
-                  [[  0, 255, 170],
-                  [  0, 255,  85],
-                  [  4, 255,   0]],
-
-                  [[255, 170,   0],
-                  [255,  85,   0],
-                  [255,   0,   4]]]),
-
-      # グレースケール画像 (3x3) → ここだけ次元が異なる
-      np.array([[ 77, 126, 176],
-                  [200, 175, 150],
-                  [129,  79,  29]]),
-
-      None
-
-      ]
-
-    test_array = np.zeros((500,50,3),dtype=int)
-    # test_array = [0,np.array(5)]
-    # test_array = [0,5]
-
-    keep_settings = {1:'y',3:'yf'}
-      
-    # print(test_array)
-    # print(keep_settings)
-
-    format_txt = print_set_collection(test_array,style_settings,keep_settings)
-    format_txt = print_set_collection(test_array,style_settings,keep_settings)
-    format_txt = print_set_collection(test_array,style_settings,keep_settings)
-    format_txt = print_set_collection(test_array,style_settings,keep_settings)
-
-# cut_format_txt = cut_blocks_from_index(format_txt, start=1)
+cut_format_txt = cut_blocks_from_index(format_txt, start=1)
 # # ✅ 使用例（3ブロック）
-# print(combine_blocks_with_block_titles(*cut_format_txt))
+print(combine_blocks_with_block_titles(*cut_format_txt))

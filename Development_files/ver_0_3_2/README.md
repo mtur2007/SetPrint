@@ -28,7 +28,7 @@ Setprint extends Python’s built-in pprint so that not only lists and dictionar
     keep_settings = {1:'x', 3:'yf', 4:'f'}
 
     # Execute the formatting
-    format_texts = list_data.set_collection(route=True, y_axis=False, keep_settings=keep_settings)
+    format_texts = list_data.set_collection(route='SLIM', y_axis=False, keep_settings=keep_settings)
 
     # Display the result: Writing to a text file 
     # (You can display it as desired; just don’t forget to include a newline '\n' at the end!)
@@ -319,7 +319,7 @@ The `set_collection` class method executes the formatting as demonstrated in the
         keep_settings = {1:'x', 3:'yf', 4:'f'}
 
         # Execute the formatting
-        format_texts = list_data.set_collection(route=True, y_axis=False, keep_settings=keep_settings)
+        format_texts = list_data.set_collection(route='SLIM', y_axis=False, keep_settings=keep_settings)
 
         # Do not display the result; instead, write it to a text file
         with open('output.txt','w') as f:
