@@ -1,10 +1,10 @@
-# SetPrint(ver, 0.3.1) – Easily Format and Display High-Dimensional Data!
+# SetPrint(ver, 0.3.2) – Easily Format and Display High-Dimensional Data!
 
 ## <> A Data Visualization Tool Capable of Properly Formatting 2D/NumPy Arrays and Image Data <>
 
 ---
 
-*Read this in [English](https://github.com/mtur2007/SetPrint/blob/main/README.md) or [日本語](https://github.com/mtur2007/SetPrint/blob/main/README_ja.md)*
+*Read this in [English](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README.md) or [日本語](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README_ja.md)*
 
 ---
 
@@ -28,7 +28,7 @@ Setprint extends Python’s built-in pprint so that not only lists and dictionar
     keep_settings = {1:'x', 3:'yf', 4:'f'}
 
     # Execute the formatting
-    format_texts = list_data.set_collection(route=True, y_axis=False, keep_settings=keep_settings)
+    format_texts = list_data.set_collection(route='SLIM', y_axis=False, keep_settings=keep_settings)
 
     # Display the result: Writing to a text file 
     # (You can display it as desired; just don’t forget to include a newline '\n' at the end!)
@@ -289,16 +289,19 @@ Because the meaning of each axis may differ, note the following in exceptional c
 The `set_collection` class method executes the formatting as demonstrated in the example above. It arranges multidimensional lists and complex data structures into a visually understandable format, enabling optimal formatting according to your data’s dimensions.
 
    - #### Parameters
-        - **`route`** (bool or str): Whether to enable root display.
-            - If set to True, lines representing the storage relationships are also output.
-              <br>※ If set to 'maintenance' (str), both enabled and disabled root displays are output for maintenance purposes.
-        
-        - **`y_axis`** (bool or str): Whether to enable y-axis display.
-            - If set to True, the y-axis is output as well.
-            
-        - **`keep_setting`** { dict_type } (deep/int : direction/str): Specifies the expansion direction for each dimension.
-            - For example, {1:'y', 3:'x', 4:'yf'} — dimensions are specified in descending order, and unspecified dimensions inherit the parent setting.
-            - ※ The default setting is 'x'.
+
+     - **`route`** (bool or str): Whether to enable route display.
+        - If set to `'BOLD'` (str), the route line is displayed in bold.
+        - If set to `'SLIM'` (str), the route line is displayed in a slim style.
+        - If set to `True` (bool), the route is displayed using customized characters based on the settings.
+        - If set to `'HALF'` (str), the route is displayed using half-width characters.
+
+     - **`y_axis`** (bool): Whether to enable the display of the y-axis.
+         - If set to `True` (bool), the y-axis will also be displayed.
+
+     - **`keep_setting`** { dict_type } (deep/int : direction/str): Specifies the expansion direction for each dimension.
+         - For example, {1:'y', 3:'x', 4:'yf'} — dimensions are specified in descending order, and unspecified dimensions inherit the parent setting.
+         - ※ The default setting is 'x'.
 
    - #### Return Value
         - `format_texts`: A list in which each element is a line of the formatted text.
@@ -316,7 +319,7 @@ The `set_collection` class method executes the formatting as demonstrated in the
         keep_settings = {1:'x', 3:'yf', 4:'f'}
 
         # Execute the formatting
-        format_texts = list_data.set_collection(route=True, y_axis=False, keep_settings=keep_settings)
+        format_texts = list_data.set_collection(route='SLIM', y_axis=False, keep_settings=keep_settings)
 
         # Do not display the result; instead, write it to a text file
         with open('output.txt','w') as f:
@@ -555,16 +558,26 @@ format_texts = list_data.set_collection(route=True, y_axis=True/False, keep_sett
     #----------------------------------------------------
 
     style_settings = (
-        ("Collections",
-        { 'image': {
-            'list': '►list',
-            'tuple': '▷tuple',
-            'ndarray': '>nadarray',
-            'dict': '◆dict'
-            }
-        }
-        ),
-    )
+        
+        # Image of array types          ⌄⌄⌄⌄⌄⌄⌄⌄⌄
+        ("Collections" , 
+           {  'image'   : { 'list'    : '►list'    ,
+                            'tuple'   : '▷tuple'   ,
+                            'ndarray' : '>ndarray' ,
+                            'dict'    : '◆dict'    }}),
+        
+        # Line style map     　   ⌄⌄⌄
+        ("route",
+           {  'image'   : { '┣' : '├' ,
+                            '┳' : '┬' ,
+
+                            '┃' : '│' ,
+                            '━' : '─' ,
+
+                            '┗' : '└' ,
+                            '┓' : '┐' }})
+
+        )
 
     list_data.update_data_with_arguments(style_settings)
 
