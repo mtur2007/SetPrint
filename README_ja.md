@@ -1,7 +1,3 @@
-## [ demo ]
-
----
-
 # SetPrint(ver, 0.3.2) - 高次元データを簡単に整形・表示！
 
 ## <> 2D/NumPy配列や画像データも適切に整形可能なデータ可視化ツール <>
@@ -38,7 +34,7 @@ NumPy配列や2Dデータ（画像データ含む）も適切に整形できる 
     keep_settings = {1:'x',3:'yf',4:'f'}
 
     # 整形の実行
-    format_texts  = list_data.set_collection ( route='SLIM', y_axis=False, keep_settings=keep_settings )
+    format_texts = list_data.set_collection( route='SLIM', y_axis=False, keep_settings=keep_settings, verbose=False )
 
     # 結果の表示 : テキストファイルへの書き込み 
     # (表示方法は任意 : !!! 最後に 改行'\n' を忘れずに !!! )
@@ -334,6 +330,11 @@ y_axis : False                                                                  
 
               ※ 初期の設定値は`x`
 
+        - **`verbose`** (bool): 処理状況の表示を有効にするかどうか。
+            - `True`：(bool)の場合、処理状況を、各処理の進捗 全体的な進捗 の情報にて表示します。<br>
+              **処理内容... _ 現在の処理の進捗 / 現在の処理のおおよその量 __ 進捗 / 全体的な処理の量**<br>
+              で表示されます。
+
    - #### 戻り値
         
         - `format_texts` : 整形後のテキスト情報が各行毎に格納されたリスト。
@@ -357,7 +358,7 @@ y_axis : False                                                                  
         keep_settings = {1:'x',3:'yf',4:'f'}
 
         # 整形の実行
-        format_texts  = list_data.set_collection ( route='SLIM', y_axis=False, keep_settings=keep_settings )
+        format_texts = list_data.set_collection( route='SLIM', y_axis=False, keep_settings=keep_settings, verbose=False )
 
         # 結果の非表示、テキストファイルへの書き込み
         with open('output.txt','w') as f:

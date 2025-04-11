@@ -1,7 +1,5 @@
-# / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict / demo / dict /
-#print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
-# setpirnt (ver 0.3.2) [ demo ]
+# setpirnt (ver 0.3.2)
 
 import numpy as np
 import sys
@@ -328,10 +326,10 @@ class SetPrint:
     
     # リストを整型する際の条件を整理 / １次元目の格納情報を整形 [→:#0]
     # [→:0] 中身は search_mapping / search_sequence とほぼ同じ
-    def set_collection(self, route, y_axis, keep_settings):        
+    def set_collection(self, route, y_axis, keep_settings, verbose = False ):        
             
         dict_keep_settings = keep_settings
-
+        self.verbose = verbose
         #初期化
         self.now_deep = 0 #now_deepはインデックスの次元測定
         self.now_index = [] # 調べている場所のインデックスを格納する。
@@ -452,11 +450,12 @@ class SetPrint:
         for deep in range(max_depth-len(keep_settings)):
             keep_settings.append(range_keep_type)
         
-        print()
-        print('all_deep_settings')
-        print(keep_settings)
-        sys.stdout.write(f'\rsearch_collection... 1/{self.Process}')
-        sys.stdout.flush()
+        if self.verbose:
+            print()
+            print('all_deep_settings')
+            print(keep_settings)
+            sys.stdout.write(f'\rsearch_collection... 1/{self.Process}')
+            sys.stdout.flush()
 
         self.keep_settings = keep_settings
         
@@ -469,8 +468,9 @@ class SetPrint:
             else:      
                 map_width = self.collections[type(self.input_list).__name__][1]
                 format_texts = ['keep_settings',str(keep_settings),'-'*map_width,'',self.collections[type(self.input_list).__name__][0],'','-'*map_width]
-        
-            sys.stdout.write('\rProcess completed!      \n')
+
+            if self.verbose:
+                sys.stdout.write('\rProcess completed!      \n')
     
         else:    
             if isinstance(self.input_list, self.mapping_type):
@@ -482,13 +482,15 @@ class SetPrint:
             
             # <t:print>
 
-            self.all_line = len(self.Y_keep_index)
-            sys.stdout.write(f'\rformat_value... 2/{self.Process}')
-            sys.stdout.flush()
+            if self.verbose:
+                self.all_line = len(self.Y_keep_index)
+                sys.stdout.write(f'\rformat_value... 2/{self.Process}')
+                sys.stdout.flush()
 
             format_texts = self.format_keep_data(route,x_keep_index,self.Y_keep_index)
 
-            sys.stdout.write('\rProcess completed!' + ((( len(str(self.all_line)) + 1 ) *2 ) + 3) * ' ' + '\n')
+            if self.verbose:
+                sys.stdout.write('\rProcess completed!' + ((( len(str(self.all_line)) + 1 ) *2 ) + 3) * ' ' + '\n')
 
         # <t:return>
 
@@ -1461,9 +1463,10 @@ class SetPrint:
 
             format_texts.append(line_txt)
 
-            processing_line += 1
-            sys.stdout.write(f'\rformat_datas... {processing_line}/{self.all_line} : 2/{self.Process}')
-            sys.stdout.flush()
+            if self.verbose:
+                processing_line += 1
+                sys.stdout.write(f'\rformat_datas... {processing_line}/{self.all_line} : 2/{self.Process}')
+                sys.stdout.flush()
 
         self.format_texts=format_texts[:]
         collection_image,image_len = self.collections[type(self.input_list).__name__]
@@ -1504,14 +1507,16 @@ class SetPrint:
             self.format_texts = format_texts[:]
             
         if route:
-            sys.stdout.write('\r'+( (16 + (( len( str(self.all_line)) + 1 ) *2 ) + 2 + 3) * ' '))
-            sys.stdout.flush()
             
-            sys.stdout.write(f'\rformat_route... 3/{self.Process}{((len(str(self.all_line))* 2) + 1 + 3 ) * " "}')
-            sys.stdout.flush()
+            if self.verbose:
+                sys.stdout.write('\r'+( (16 + (( len( str(self.all_line)) + 1 ) *2 ) + 2 + 3) * ' '))
+                sys.stdout.flush()
+                
+                sys.stdout.write(f'\rformat_route... 3/{self.Process}{((len(str(self.all_line))* 2) + 1 + 3 ) * " "}')
+                sys.stdout.flush()
 
-            self.all_line = len(self.input_list)
-            self.processing_line = 0
+                self.all_line = len(self.input_list)
+                self.processing_line = 0
             
             self.format_route(self.input_list, total_x_keep_data, [0,image_len], 0, [])
             format_texts_with_route = self.format_texts[:]
@@ -1679,7 +1684,8 @@ class SetPrint:
                 line_text = self.format_texts[y_line]
                 self.format_texts[y_line] = line_text[:parent_x] + self.FINAL_BOTTOM_CONNECTOR + self.HORIZONTAL_EXTENSION_LINE*parent_x_diff + line_text[parent_x+parent_x_diff+1:]
 
-        if now_deep == 1:            
-            self.processing_line += 1
-            sys.stdout.write(f'\rformat_route... {self.processing_line}/{self.all_line} : 2/{self.Process}')
-            sys.stdout.flush()
+        if self.verbose:
+            if now_deep == 1:            
+                self.processing_line += 1
+                sys.stdout.write(f'\rformat_route... {self.processing_line}/{self.all_line} : 2/{self.Process}')
+                sys.stdout.flush()

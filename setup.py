@@ -8,7 +8,7 @@ except FileNotFoundError:
 
 setup(
     name='setprint',
-    version='0.3.2.1',
+    version='0.3.2',
     packages=find_packages(),
     install_requires=[
         'numpy',
