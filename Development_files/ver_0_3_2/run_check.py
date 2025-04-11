@@ -5,8 +5,8 @@
 #print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
 # 実行コード
-# from setprint import SetPrint
-from development_ver_0_3_2 import SetPrint
+from setprint import SetPrint
+# from development_ver_0_3_2 import SetPrint
 import numpy as np
 
 import sys
@@ -30,10 +30,10 @@ def print_set_collection(test_array,style_settings,keep_settings):
             list_data.update_data_with_arguments(style_settings)
 
       # 整形
-      format_texts = list_data.set_collection ( route=False, y_axis=True, keep_settings=keep_settings )
+      format_texts = list_data.set_collection ( route='SLIM', y_axis=True, keep_settings=keep_settings )
       # format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
-      for line in format_texts:
-           print(line)
+    #   for line in format_texts:
+    #        print(line)
       
       return format_texts
 
@@ -135,16 +135,18 @@ if False:
             print_set_collection(mp_mp,style_settings,keep_settings)
       ]
 
-elif True:
+elif False:
 
     '''
     2, スカラー型の可変表示 & 空文字の1文字化確認(max_1)
     '''
     # < sq : sq >
 
-    # sq > sq [ str > str ]
-    sq_sq = (('++++','--',''),
-            ('--','++++',''))
+    # sq : sq
+    sq_sq_str = (
+                  (('++++','--',''),
+                   ('--','++++',''))
+                )
     
     # # [ str : str ]
     # MAX = '++++'
@@ -155,77 +157,197 @@ elif True:
     #                          (MAX,min,'')))
 
 
-    #         [ int > int ]
-    sq_sq = ((1000, 10,''),
-              (10 , 1000,''))
+    # int : int
+    sq_sq_int = (
+                  ((1000, 10,''),
+                   (10 , 1000,''))
+                 )
     
-    #         [ flot > flot ]
-    sq_sq = ((1000.0, 10.0,''),
-             (10.0 , 1000.0,''))
+    # flot : flot
+    sq_sq_flot = (
+                   ((1000.0, 10.0,''),
+                    (10.0 , 1000.0,''))
+                  )
 
-    #         [ int > flot ] [ flot > int ]
-    sq_sq = ((1000, 10.0, 1000.0, 10),
-              (10.0 , 1000, 10, 1000.0))
+    # int : flot
+    sq_sq_int_flot = ( # [ > ]
+                       (( 1000, 1.0,  ''),
+                        ( 1.0,  1000, '')),
+                       # [ < ]
+                       (( 1000.0, 10, ''),
+                        ( 10, 1000.0, ''))
+                      )
     
-    #         [ int > str ]
-    sq_sq = ((1000,'--',''),
-            ('--',1000,''))
+    # str : int
+    sq_sq_str_int = ( # [ > ]
+                      (( '++++', 10,  ''),
+                       ( 10 , '++++', '')),
+                      # [ < ]
+                      (( 1000, '--', ''),
+                       ( '--', 1000, ''))
+                     )
+    
+    # str : int
+    sq_sq_str_flot = ( # [ > ]
+                       (( '++++', 1.0,  ''),
+                        ( 1.0 , '++++', '')),
+                       # [ < ]
+                       (( 1000.0, '--', ''),
+                        ( '--', 1000.0, ''))
+                      )
         
     #=======================================================
     # < sq : mp > 
 
-    # sq > mp [ str > str ]
-    sq_mp = ((('++++',),{'one':'--'},{'len_0':''}),
-            ({'two':'--'},('++++',),('',)))
-    
-    #         [ int > int ]
-    sq_mp = (((1000,),{'one':10},{'len_0':''}),
-            ({'two':10},(1000,),('',)))
-    
-    #         [ flot > flot ]
-    sq_mp = (((1000.0,),{'one':10.0},{'len_0':''}),
-            ({'two':10.0},(1000.0,),('',)))
-    
-    #         [ str > int ]
-    sq_mp = ((('++++',),{'one':10},{'len_0':''}),
-            ({'two':10},('++++',),('',)))
-    #         [ int > str ]
-    sq_mp = (((1000,),{'one':'--'},{'len_0':''}),
-            ({'two':'--'},(1000,),('',)))
-    
-    #         [ str > flot ]
-    sq_mp = ((('++++',),{'one':10.0},{'len_0':''}),
-            ({'two':10.0},('++++',),('',)))
-    #         [ flot > str ]
-    sq_mp = (((1000.0,),{'one':'--'},{'len_0':''}),
-            ({'two':'--'},(1000.0,),('',)))
-    
-    #         [ int > flot ]
-    sq_mp = (((1000,),{'one':10.0},{'len_0':''}),
-            ({'two':10.0},(1000,),('',)))
-    #         [ flot > int ]
-    sq_mp = (((1000.0,),{'one':10},{'len_0':''}),
-            ({'two':10},(1000.0,),('',)))
-    
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # / sq > mp /
 
-    # mp > sq [ str > str ]
-    mp_sq = (({'one':'++++'},('--',),('',)),
-            (('--',),{'two':'++++'},{'len_0':''}))
+    # str : str
+    sq_mp_str = (
+                  (( ('++++',),{'two':'--'},{'len_0':''}),
+                   ( {'one':'--'},('++++',),('',)))
+                 )
     
-    #         [ int > int ]
-    mp_sq = (({'one':1000},(10,),('',)),
-            ((10,),{'two':1000},{'len_0':''}))
+    # int : int
+    sq_mp_int = (
+                  (( (1000,),{'two':10},{'len_0':''}),
+                   ( {'one':10},(1000,),('',)))
+                 )
     
-    #         [ flot > flot ]
-    mp_sq = (({'one':1000.0},(10.0,),('',)),
-            ((10.0,),{'two':1000.0},{'len_0':''}))
+    # flot : flot
+    sq_mp_flot = (
+                   (((1000.0,),{'two':10.0},{'len_0':''}),
+                    ({'one':10.0},(1000.0,),('',)))
+                  )
     
+    # int : flot
+    sq_mp_int_flot = ( # >
+                       (( (1000,),{'two':1.0}, {'len_0':''}),
+                        ( {'one':1.0},(1000,), ('',))),
+
+                       # <
+                       (( (1000.0,),{'two':10} ),
+                        ( {'one':10},(1000.0,) ))
+                      )
+    
+    # str : int
+    sq_mp_str_int = ( # >
+                      (( ('++++',),{'two':10}, {'len_0':''}),
+                       ( {'one':10},('++++',), ('',)  )),
+
+                      # <
+                      (( (1000,),{'one':'--'}),
+                       ( {'one':'--'},(1000,)))
+                     )
+    
+    # str : flot
+    sq_mp_str_flot = ( # >
+                       (( ('++++',),{'two':10.0}, {'len_0':''} ),
+                        ( {'one':10.0},('++++',), ('',)        )),
+
+                       # < 
+                       (( (1000.0,),{'twe':'--'}),
+                        ( {'one':'--'},(1000.0,)))
+                      )
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    
+    # \ mp > sq \
+
+    # str : str
+    mp_sq_str = (
+                  (({'one':'++++'},('--',),('',)),
+                   (('--',),{'two':'++++'},{'len_0':''}))
+                 )
+    
+    # int : int
+    mp_sq_int = (
+                  (({'one':1000},(10,),('',)),
+                   ((10,),{'two':1000},{'len_0':''}))
+                 )
+    
+    # flot : flot
+    mp_sq_flot = (
+                   (({'one':1000.0},(10.0,),('',)),
+                    ((10.0,),{'two':1000.0},{'len_0':''}))
+                  )
+    
+    # int : flot
+    mp_sq_int_flot = ( # >
+                       (( {'one':1000},(1.0,), ('',)),
+                        ( (1.0,),{'two':1000}, {'len_0':''})),
+
+                       # <
+                       (( {'one':1000.0},(10,)),
+                        ( (10,),{'two':1000.0}))
+                      )
+    
+    # str : int
+    mp_sq_str_int = ( # >   
+                      (( {'one':'++++'},(10,), ('',)),
+                       ( (10,),{'two':'++++'}, {'len_0':''})),
+
+                      # <
+                      (( {'one':1000},('--',), ('',)),
+                       ( ('--',),{'two':1000}, {'len_0':''}))
+                     )
+    
+    # str : flot
+    mp_sq_str_flot = ( # >    
+                       (( {'one':'++++'},(1.0,), ('',)),
+                        ( (1.0,),{'two':'++++'}, {'len_0':''})),
+
+                       # <
+                       (( {'one':1000.0},('--',), ('',)),
+                        ( ('--',),{'two':1000.0}, {'len_0':''}))
+                     )
+
     #=======================================================
     # < mp : mp >
 
-    mp_mp = (({'one':'++++'},{'two':'--'},{'len_0':''}),
-            ({'two':'--'},{'two':'++++'},{'len_0':''}))
+    # str : str
+    mp_mp_str = (
+                  (({'one':'++++'},{'two':'--'},{'len_0':''}),
+                   ({'two':'--'},{'two':'++++'},{'len_0':''}))
+                 )
+    
+     # int : int
+    mp_mp_int = (
+                  (({'one':1000},{'two':10},{'len_0':''}),
+                   ({'two':10},{'two':1000},{'len_0':''}))
+                 )
+    
+    # flot: flot
+    mp_mp_flot = (
+                   (({'one':1000.0},{'two':10.0},{'len_0':''}),
+                    ({'two':10.0},{'two':1000.0},{'len_0':''}))
+                  )
+    
+    # int : flot
+    mp_mp_int_flot = ( # [ > ]
+                       (( {'one':1000},{'two':1.0},{'len_0':''}),
+                        ( {'two':1.0},{'two':1000},{'len_0':''})),
+                       # [ < ]
+                       (( {'one':10},{'two':1000.0},{'len_0':''}),
+                        ( {'two':1000.0},{'two':10},{'len_0':''}))
+                      )
+    
+    # str : int
+    mp_mp_str_int = ( # [ > ]
+                      (( {'one':'++++'},{'two':10},{'len_0':''}),
+                       ( {'two':10},{'two':'++++'},{'len_0':''})),
+                      # [ < ]
+                      (( {'one':1000},{'two':'--'},{'len_0':''}),
+                       ( {'two':'--'},{'two':1000},{'len_0':''}))
+                     )
+    
+    # str : flot
+    mp_mp_str_flot = ( # [ > ]
+                       (( {'one':'++++'},{'two':1.0},{'len_0':''}),
+                        ( {'two':1.0},{'two':'++++'},{'len_0':''})),
+                       # [ < ]
+                       (( {'one':1000.0},{'two':'--'},{'len_0':''}),
+                        ( {'two':'--'},{'two':1000.0},{'len_0':''}))
+                      )
     
 
     x_Y = {1:'x',2:'y'}              # yでの正常動作テスト
@@ -241,29 +363,93 @@ elif True:
     yf_F_Y = {1:'yf',2:'f' , 3:'y'}  # fでの正常動作テスト, 末端指定
     #                  ^^^   *****
 
-    keep_settings = y_X
+    # x
+    # original = {1:'y',2:'x'}
+    # original_1 = {1:'x',2:'y',3:'x'}
     
-    format_txt = [
+    # f
+    # original = {1:'yf'}
+    # original_1 = {1:'x',2:'yf'}
 
-            print_set_collection(sq_sq,style_settings,keep_settings),
-            print_set_collection(sq_mp,style_settings,keep_settings),
-            print_set_collection(mp_sq,style_settings,keep_settings),
-            print_set_collection(mp_mp,style_settings,keep_settings)
+    # y
+    # original = {1:'x',2:'y'}
+    # original_1 = {1:'x',2:'x',3:'y'}
+    
+    # yf
+    original = {1:'x',2:'yf',3:'yf'}
+    original_1 = {1:'x',2:'x',3:'yf',4:'yf'}
+
+    keep_settings = original
+    keep_settings_1 = original_1
+
+    sq_sq_format_txt = [
+
+            print_set_collection(sq_sq_str,style_settings,keep_settings),
+            print_set_collection(sq_sq_int,style_settings,keep_settings),
+            print_set_collection(sq_sq_flot,style_settings,keep_settings),
+            print_set_collection(sq_sq_int_flot,style_settings,keep_settings_1),
+            print_set_collection(sq_sq_str_int,style_settings,keep_settings_1),
+            print_set_collection(sq_sq_str_flot,style_settings,keep_settings_1)
       ]
+    
+    sq_mp_format_txt = [
 
+            print_set_collection(sq_mp_str,style_settings,keep_settings),
+            print_set_collection(sq_mp_int,style_settings,keep_settings),
+            print_set_collection(sq_mp_flot,style_settings,keep_settings),
+            print_set_collection(sq_mp_int_flot,style_settings,keep_settings_1),
+            print_set_collection(sq_mp_str_int,style_settings,keep_settings_1),
+            print_set_collection(sq_mp_str_flot,style_settings,keep_settings_1)
+      ]
+    
+    mp_sq_format_txt = [
+
+            print_set_collection(mp_sq_str,style_settings,keep_settings),
+            print_set_collection(mp_sq_int,style_settings,keep_settings),
+            print_set_collection(mp_sq_flot,style_settings,keep_settings),
+            print_set_collection(mp_sq_int_flot,style_settings,keep_settings_1),
+            print_set_collection(mp_sq_str_int,style_settings,keep_settings_1),
+            print_set_collection(mp_sq_str_flot,style_settings,keep_settings_1)
+      ]
+    
+    mp_mp_format_txt = [
+
+            print_set_collection(mp_mp_str,style_settings,keep_settings),
+            print_set_collection(mp_mp_int,style_settings,keep_settings),
+            print_set_collection(mp_mp_flot,style_settings,keep_settings),
+            print_set_collection(mp_mp_int_flot,style_settings,keep_settings_1),
+            print_set_collection(mp_mp_str_int,style_settings,keep_settings_1),
+            print_set_collection(mp_mp_str_flot,style_settings,keep_settings_1)
+      ]
+    
     '''
     keep_settings
     ['x', 'yf']
     -------------------------------
 
     ▷tuple ──┬───────────┐     ┊   
-            ▷tuple  ┊   ▷tuple  ┊   
-            ├─── ++++   ├───  --  
-            ├───  --    ├─── ++++ 
-            └───        └───      
+           ▷tuple  ┊   ▷tuple  ┊   
+             ├─── ++++   ├───  --  
+             ├───  --    ├─── ++++ 
+             └───        └───      
 
     -------------------------------
     '''
+
+
+    sq_sq = cut_blocks_from_index(sq_sq_format_txt, start=1)
+    sq_mp = cut_blocks_from_index(sq_mp_format_txt, start=1)
+    mp_sq = cut_blocks_from_index(mp_sq_format_txt, start=1)
+    mp_mp = cut_blocks_from_index(mp_mp_format_txt, start=1)
+
+
+    with open ('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/ver_0_3_2/output.txt','w') as f:
+
+        line = '-' * 300
+        f.write(combine_blocks_with_block_titles(*sq_sq) + '\n\n'+line+'\n\n')        
+        f.write(combine_blocks_with_block_titles(*sq_mp) + '\n\n'+line+'\n\n')
+        f.write(combine_blocks_with_block_titles(*mp_sq) + '\n\n'+line+'\n\n')        
+        f.write(combine_blocks_with_block_titles(*mp_mp) + '\n\n'+line+'\n\n')
 
 elif False:
       
@@ -374,15 +560,28 @@ else:
     x_nomal_flat = {1: 'x', 2: 'y', 3: 'x', 4: 'yf', 5: 'f', 6: 'y'}
     x_flat_nomal = {1: 'x', 2: 'yf', 3: 'f', 4: 'y', 5: 'x', 6: 'yf'}
 
+    # 辞書型で置き換える入れ子数目
+    dict_type = [0,2]
+
     for num in range(3):
         access_array = test_array
         for i in range(((num) * 2)):
+            if type(access_array) == dict:
+                access_array = access_array['two']
+            else:
                 access_array = access_array[1]
         else:
             nest_num += 1
-            test_2d = [[nest_num,nest_num,nest_num],
-                        [nest_num,nest_num,nest_num],
-                        [nest_num,nest_num,nest_num]]
+
+            if num in dict_type:
+                
+                test_2d = { 'one':[nest_num,nest_num,nest_num],
+                            'two':[nest_num,nest_num,nest_num],
+                            'three':[nest_num,nest_num,nest_num]}
+            else:
+                test_2d = [[nest_num,nest_num,nest_num],
+                           [nest_num,nest_num,nest_num],
+                           [nest_num,nest_num,nest_num]]
             
             access_array[1] = test_2d # copy.deepcopy(test_2d)
                  
