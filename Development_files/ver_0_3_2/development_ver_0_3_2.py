@@ -1527,7 +1527,7 @@ class SetPrint:
             return format_texts_with_route
         
         else:
-            format_texts = ['keep_settings',str(self.keep_settings),'-'*map_width+'\n'] + format_texts + ['\n'+'-'*map_width]
+            format_texts = ['keep_settings',str(self.keep_settings),'-'*map_width,''] + format_texts + ['','-'*map_width]
 
             return format_texts
 

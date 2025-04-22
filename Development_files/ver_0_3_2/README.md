@@ -21,7 +21,7 @@ Setprint extends Python’s built-in pprint so that not only lists and dictionar
 
     # Specify the array to be formatted
     #                         ∨
-    list_data = SetPrint(datas)
+    list_data  =  SetPrint( datas )
     
     # Specify the expansion direction (explained in detail below)
     #                         ∨

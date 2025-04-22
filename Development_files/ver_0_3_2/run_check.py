@@ -5,8 +5,8 @@
 #print('\n'+'/ \033[38;5;27mdemo\033[0m / \033[38;2;255;165;0m\033[1mdict\033[0m '*10+'/\n')
 
 # 実行コード
-from setprint import SetPrint
-# from development_ver_0_3_2 import SetPrint
+# from setprint import SetPrint
+from development_ver_0_3_2 import SetPrint
 import numpy as np
 
 import sys
@@ -30,12 +30,13 @@ def print_set_collection(test_array,style_settings,keep_settings):
             list_data.update_data_with_arguments(style_settings)
 
       # 整形
-      format_texts = list_data.set_collection ( route='SLIM', y_axis=True, keep_settings=keep_settings)
+      format_texts = list_data.set_collection ( route=True, y_axis=True, keep_settings=keep_settings,  verbose = True)
       # format_texts = list_data.set_list ( route=True, keep_settings=keep_settings )
     #   for line in format_texts:
     #        print(line)
       
       return format_texts
+
 
 x_Y = {1:'x',2:'y'}
 #              ^^^
@@ -67,7 +68,8 @@ style_settings = (
                         '┗' : '└' ,
                         '┓' : '┐' }})
 
-      )
+    )
+
 
 if False:
       
@@ -126,14 +128,15 @@ if False:
       # keep_settings = y_X
       # keep_settings = x_YF
       # keep_settings = yf_F
-    #   keep_settings = yf_F_Y
-      
+      # keep_settings = yf_F_Y
+    
       format_txt = [
             print_set_collection(sq_sq,style_settings,keep_settings),
             print_set_collection(sq_mp,style_settings,keep_settings),
             print_set_collection(mp_sq,style_settings,keep_settings),
             print_set_collection(mp_mp,style_settings,keep_settings)
       ]
+
 
 elif True:
 
@@ -244,7 +247,7 @@ elif True:
                        (( ('++++',),{'two':10.0}, {'len_0':''} ),
                         ( {'one':10.0},('++++',), ('',)        )),
 
-                       # < 
+                       # <
                        (( (1000.0,),{'twe':'--'}),
                         ( {'one':'--'},(1000.0,)))
                       )
@@ -422,6 +425,7 @@ elif True:
             print_set_collection(mp_mp_str_flot,style_settings,keep_settings_1)
       ]
     
+    
     '''
     keep_settings
     ['x', 'yf']
@@ -443,13 +447,13 @@ elif True:
     mp_mp = cut_blocks_from_index(mp_mp_format_txt, start=1)
 
 
-#     with open ('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/ver_0_3_2/output.txt','w') as f:
+    with open ('/Users/matsuurakenshin/WorkSpace/development/setprint_package/Development_files/ver_0_3_2/output.txt','w') as f:
 
-#         line = '-' * 300
-#         f.write(combine_blocks_with_block_titles(*sq_sq) + '\n\n'+line+'\n\n')        
-#         f.write(combine_blocks_with_block_titles(*sq_mp) + '\n\n'+line+'\n\n')
-#         f.write(combine_blocks_with_block_titles(*mp_sq) + '\n\n'+line+'\n\n')        
-#         f.write(combine_blocks_with_block_titles(*mp_mp) + '\n\n'+line+'\n\n')
+        line = '-' * 300
+        f.write(combine_blocks_with_block_titles(*sq_sq) + '\n\n'+line+'\n\n')        
+        f.write(combine_blocks_with_block_titles(*sq_mp) + '\n\n'+line+'\n\n')
+        f.write(combine_blocks_with_block_titles(*mp_sq) + '\n\n'+line+'\n\n')        
+        f.write(combine_blocks_with_block_titles(*mp_mp) + '\n\n'+line+'\n\n')
 
 elif False:
       
