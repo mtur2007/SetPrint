@@ -15,6 +15,13 @@ Setprint extends Python’s built-in pprint so that not only lists and dictionar
     ```python
     pip install setprint
     ```
+    ## 🚀 Quick Demo
+
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Qs3xgB7pWxmOPtsWonyj29r1VMDwo6KF?usp=sharing)
+
+    Try it live in your browser — no install required!  
+    You can directly test `setprint` with sample data and change `keep_settings` as you like.
+
 
 - ### **Example Usage Template**
     ```python

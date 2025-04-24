@@ -37,10 +37,20 @@ data = {
 
 <br>
 
+<div align="center">
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Qs3xgB7pWxmOPtsWonyj29r1VMDwo6KF?usp=sharing)  
+📎 **この記事のデータを Colab でそのまま試せます**  
+🖱️ インストール不要、`keep_settings` も自由に書き換えてOK！
+
+</div>
+
+
+<br>
+
 ---
 
-## 1. “たった 1 行で構造が丸見え”
-
+## 1. 構造が一目でわかる出力
 
 
 ```txt
@@ -115,7 +125,6 @@ cm = np.array([[50,  2,  0,  0],
                [ 3, 45,  1,  0],
                [ 0,  4, 60,  5],
                [ 0,  0,  6, 70]])
-setprint(cm, keep_start=1)
 ~~~
 
 ~~~txt
@@ -156,35 +165,46 @@ keep_settings
 
 ---
 
-## 5. 👀 たった1つの関数だけでOK！
-`setprint` に関数は1つだけ。名前は `set_collection()`。この中に整形の全機能が詰まってます。<br>
+## 5. 👀 たった1つの関数(メソッド)だけでOK！
+`setprint` に使うべき関数 (正確にはメソッド) は1つだけ。名前は `set_collection()`。この中に整形の全機能が詰まってます。<br>
 「難しいこと考えず、これを呼ぶだけ」でネストの深いリストも NumPy も全部見える化！
 
 ```python
 from setprint import SetPrint
 
-# 整形対象のデータを渡してインスタンス生成
+# === 整形対象のデータを渡してインスタンス生成 ===
+datas = [
+    [[1, 2, 3], [4, 5, 6]],
+    [[7, 8, 9], [10, 11, 12]]
+]
 list_data = SetPrint(datas)
 
-# 展開の方向やフォーマットの設定
+# === 展開の方向やフォーマットの設定 ===
 keep_settings = {
     1: 'x',    # 第1次元をX方向に展開
     3: 'yf',   # 第3次元をY方向 + flatten
     4: 'f'     # 第4次元はフラット化
 }
 
-# 整形処理の実行
+# === 整形処理の実行 ===
 format_texts = list_data.set_collection(
-    route='SLIM',
-    y_axis=False,
+    route='SLIM',         # 表示スタイル：細い線でコンパクトに
+    y_axis=False,         # Y軸のガイド線は非表示
     keep_settings=keep_settings,
-    verbose=False
+    verbose=False         # 処理状況の表示はオフ
 )
 
-# テキストとして保存（表示も可）
+# === 結果の表示やファイル保存 ===
 with open('output.txt', 'w') as f:
     for line in format_texts:
         f.write(line + '\n')
+
+# --- 補足 ---
+# ✅ 同じデータに対しては、インスタンスをそのまま使い回して
+#    keep_settings を変えて何度でも整形可能です。
+#
+# 🔄 データそのもの（例：datas）を変えたい場合は、
+#    SetPrint(new_data) を使って新しくインスタンスを作ってください。
 ```
 
 <br>
@@ -236,7 +256,7 @@ with open('output.txt', 'w') as f:
 
 - GitHub <https://github.com/mtur2007/SetPrint>  
 - PyPI  <https://pypi.org/project/setprint/>  
-- Colab デモ <https://colab.research.google.com/github/mtur2007/SetPrint/blob/main/notebooks/demo.ipynb>
+- Colab デモ <https://colab.research.google.com/drive/1Qs3xgB7pWxmOPtsWonyj29r1VMDwo6KF?usp=sharing>
 
 *Enjoy structural debugging!*
 
