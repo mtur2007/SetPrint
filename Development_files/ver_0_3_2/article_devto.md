@@ -1,5 +1,5 @@
 
-# Why not pprint anymore? Introducing SetPrint — Structural Debugging for Real Data
+# Why not pprint anymore?<br>Introducing SetPrint — Structural Debugging for Real Data
 
 > When your data grows beyond a toy example, `pprint` starts to break.  
 > You see cut-off arrays. Flattened hierarchies. Lost context.  
@@ -192,3 +192,6 @@ pip install setprint
 ---
 
 *If you’ve ever said “I just want to see the damn structure” — SetPrint is for you.*
+
+SetPrint
+
