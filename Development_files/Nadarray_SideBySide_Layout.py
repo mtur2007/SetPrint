@@ -29,3 +29,38 @@ def combine_blocks_with_block_titles(*blocks, separator="  :  "):
         combined_lines.append(f"| {line} |")
 
     return "\n".join(combined_lines)
+
+yx_noguide_output = [
+    ">ndarray",
+    "   ├──── >ndarray ───┬────────────────────┬────────────────────┐",
+    "   │              >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐",
+    "   │                       255  0   4           255 85   0           255 170  0",
+    "   ├──── >ndarray ───┬────────────────────┬────────────────────┐",
+    "   │              >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐",
+    "   │                       170 255  0           85  255  0            0  255  4",
+    "   └──── >ndarray ───┬────────────────────┬────────────────────┐",
+    "                  >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐",
+    "                            0  170 255           0  85  255           4   0  255"
+]
+
+yx_output = [
+    ">ndarray    ┊        ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊  ",
+    "   ├──── >ndarray ───┬────────────────────┬────────────────────┐      ┊   ┊   ┊  ",
+    "   │        ┊     >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  ",
+    "   │        ┊        ┊     255  0   4     ┊     255 85   0     ┊     255 170  0  ",
+    "   ├──── >ndarray ───┬────────────────────┬────────────────────┐      ┊   ┊   ┊  ",
+    "   │        ┊     >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  ",
+    "   │        ┊        ┊     170 255  0     ┊     85  255  0     ┊      0  255  4  ",
+    "   └──── >ndarray ───┬────────────────────┬────────────────────┐      ┊   ┊   ┊  ",
+    "            ┊     >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  ",
+    "            ┊        ┊      0  170 255    ┊      0  85  255    ┊      4   0  255 "
+]
+
+yf_output = [
+    ">ndarray    ┊          ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊      ",
+    "   ├──── >ndarray [ >ndarray [ 255  0   4  ] >ndarray [ 255 85   0  ] >ndarray [ 255 170  0  ] ] ",
+    "   ├──── >ndarray [ >ndarray [ 170 255  0  ] >ndarray [ 85  255  0  ] >ndarray [  0  255  4  ] ] ",
+    "   └──── >ndarray [ >ndarray [  0  170 255 ] >ndarray [  0  85  255 ] >ndarray [  4   0  255 ] ] ",
+]
+
+print(combine_blocks_with_block_titles(yx_noguide_output,yx_output,yf_output, separator="  :  "))

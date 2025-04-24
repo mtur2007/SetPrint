@@ -1,11 +1,22 @@
-# 深いネストが読めないあなたへ――**pprint** を超える *setprint* の世界
+# 深いネストが読めないあなたへ――**pprint** を超える *setprint* の世界  
 ## A hands-on guide to structural debugging with **setprint**
+
+> 「整形ツールを使う時点で、データはもう単純じゃない」  
+> pprint は便利。でも、それは“簡単なデータ”のうちだけだった。  
+> 深くネストされたリスト、型が混ざった辞書、画像のようなNumPy配列…。  
+> pprint は途中で切れ、構造は見えず、バグの兆候も埋もれてしまう。  
+
+そこで私は、**「本当に見える整形ツール」** を作ることにした。  
+名前は **SetPrint**。
+
+---
+
+<br>
 
 > **この記事では**  
 > 1. `pprint` / `rich.pretty` / **`setprint`** を並べて比較  
-> 2. **画像データ**・**混同行列**を例に“構造が見える快感”を体験  
-> 3. 30 秒クイックスタート & 軽量 GIF の作り方  
-> 4. ベンチ結果と現場で効く 5 つの Tips  
+> 2. **画像データ**・**混同行列**を例に“構造が見える快感”を体験   
+> 3. ベンチ結果と現場で効く 5 つの Tips  
 
 ---
 
@@ -81,24 +92,20 @@ keep_settings
 
 ## 2. 画像データも 3 行で読める
 
-| 元画像 (3 × 3) | `setprint` 出力 |
-|---------------|-----------------|
-| ![tiny_rgb](tiny_rgb.png) | ~~~txt
-►ndarray 3×3×3
-  ┣━━ row 0 : ndarray ━┳━━ [255 128  64]
-  ┃                    ┣━━ [ 60 200  10]
-  ┃                    ┗━━ [ 10  20 230]
-  ┣━━ row 1 : ndarray …
-  ┗━━ row 2 : ndarray …
-~~~ |
+```txt
+|                                    [Block 1]                                      :                                      [Block 2]                                      :                                              [Block 3]                                             |
+| >ndarray                                                                          :  >ndarray    ┊        ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊     ┊      ┊   ┊   ┊    :  >ndarray    ┊          ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊       ┊        ┊   ┊   ┊       |
+|    ├──── >ndarray ───┬────────────────────┬────────────────────┐                  :     ├──── >ndarray ───┬────────────────────┬────────────────────┐      ┊   ┊   ┊    :     ├──── >ndarray [ >ndarray [ 255  0   4  ] >ndarray [ 255 85   0  ] >ndarray [ 255 170  0  ] ]  |
+|    │              >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐   :     │        ┊     >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐    :     ├──── >ndarray [ >ndarray [ 170 255  0  ] >ndarray [ 85  255  0  ] >ndarray [  0  255  4  ] ]  |
+|    │                       255  0   4           255 85   0           255 170  0   :     │        ┊        ┊     255  0   4     ┊     255 85   0     ┊     255 170  0    :     └──── >ndarray [ >ndarray [  0  170 255 ] >ndarray [  0  85  255 ] >ndarray [  4   0  255 ] ]  |
+|    ├──── >ndarray ───┬────────────────────┬────────────────────┐                  :     ├──── >ndarray ───┬────────────────────┬────────────────────┐      ┊   ┊   ┊    :                                                                                                    |
+|    │              >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐   :     │        ┊     >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐    :                                                                                                    |
+|    │                       170 255  0           85  255  0            0  255  4   :     │        ┊        ┊     170 255  0     ┊     85  255  0     ┊      0  255  4    :                                                                                                    |
+|    └──── >ndarray ───┬────────────────────┬────────────────────┐                  :     └──── >ndarray ───┬────────────────────┬────────────────────┐      ┊   ┊   ┊    :                                                                                                    |
+|                   >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐   :              ┊     >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐  >ndarray ─┬───┬───┐    :                                                                                                    |
+|                             0  170 255           0  85  255           4   0  255  :              ┊        ┊      0  170 255    ┊      0  85  255    ┊      4   0  255   :                                                                                                    |
 
-~~~python
-from PIL import Image
-from setprint import setprint
-arr = np.array(Image.open("sample.jpg").resize((3, 3)))
-setprint(arr, keep_start=1, keeplen=3)
-~~~
-
+```
 ---
 
 ## 3. 混同行列 (4 × 4) も“テキストヒートマップ”
@@ -112,11 +119,21 @@ setprint(cm, keep_start=1)
 ~~~
 
 ~~~txt
-►ndarray 4×4
-  ┣━━ row 0 : ndarray ━┳━━ 50 ━  2 ━ 0 ━ 0
-  ┣━━ row 1 : ndarray ━┳━━  3 ━ 45 ━ 1 ━ 0
-  ┣━━ row 2 : ndarray ━┳━━  0 ━  4 ━60 ━ 5
-  ┗━━ row 3 : ndarray ━┳━━  0 ━  0 ━ 6 ━70
+keep_settings
+['y', 'x']
+------------------------------
+
+>ndarray 
+   ├──── >ndarray ┬──┬──┬──┐
+   │              50 2  0  0  
+   ├──── >ndarray ┬──┬──┬──┐
+   │              3  45 1  0  
+   ├──── >ndarray ┬──┬──┬──┐
+   │              0  4  60 5  
+   └──── >ndarray ┬──┬──┬──┐
+                  0  0  6  70 
+
+------------------------------
 ~~~
 
 *ヒートマップ画像*と並べれば「画素値 ↔ 行列要素」の対応がすぐ分かります。
@@ -214,18 +231,6 @@ with open('output.txt', 'w') as f:
 動いたら ⭐ をポチッと！　バグ報告・機能要望・PR も大歓迎です 🚀
 
 ---
-
-### Appendix A ─ GIF 生成コマンド
-
-~~~bash
-# asciinema で録画
-asciinema rec demo.cast -t "pprint_vs_setprint"
-# SVG 化
-npx svg-term --cast demo.cast --out demo.svg --window
-# GIF 生成 & 最適化
-gifski -o demo.gif demo.svg
-gifsicle -O3 --lossy=40 -o pprint_vs_rich_vs_setprint.gif demo.gif
-~~~
 
 ### Appendix B ─ 参考リンク
 
