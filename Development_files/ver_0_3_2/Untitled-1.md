@@ -1,4 +1,4 @@
-# 深いネストが読めないあなたへ――**pprint** を超える *setprint* の世界  
+# 深いネストが読めないあなたへ――**pprint** を超える *setprint* の世界
 ## A hands-on guide to structural debugging with **setprint**
 
 > **この記事では**  
@@ -22,31 +22,58 @@ data = {
 }
 ~~~
 
-これを *pprint*・*rich.pretty*・**setprint** で整形し、違いを GIF で一発比較します。
+これを *pprint*・*rich.pretty*・**setprint** で整形し、違いを コードブロック で一発比較します。
 
 <br>
 
 ---
 
-## 1. 6 秒 GIF ― “たった 1 行で構造が丸見え”
+## 1. “たった 1 行で構造が丸見え”
 
-![pprint_vs_rich_vs_setprint.gif](./pprint_vs_rich_vs_setprint.gif)  
-<sub>左: **pprint**   中央: **rich.pretty**   右: **setprint**</sub>
 
-| ライブラリ | 何が見える？ | 何が見えない？ |
-|------------|-------------|----------------|
-| **pprint** | インデント | NumPy 配列中身・深い階層 |
-| **rich**   | カラー強調 | 同上（構造自体は追いづらい） |
-| **setprint**| 配列要素・階層ブロック・インデックス | ― |
 
-> **30 秒お試し**  
-> ~~~bash
-> pip install setprint
-> python - <<'PY'
-> from setprint import setprint; import json, numpy as np
-> setprint(json.loads('{"a":[1,2,3]}'))
-> PY
-> ~~~
+```txt
+== pprint ==
+{'meta': {'created': '2025-04-23'},
+ 'users': [{'name': 'Alice',
+            'scores': array([95, 88, 76])},
+           {'name': 'Bob',
+            'scores': array([72, 85, 90])}]}
+```
+```txt
+== rich.pretty ==
+[{'meta': {'created': '2025-04-23'},
+  'users': [{'name': 'Alice',
+             'scores': array([95, 88, 76])},
+            {'name': 'Bob',
+             'scores': array([72, 85, 90])}]}]
+```
+```txt
+== setprint ==
+keep_settings
+['y', 'y', 'y', 'y']
+--------------------------------------------------------
+
+◆dict 
+  ├── users:►list 
+  │        ├───── -------.  ◆dict    
+  │        │              ├─────────  name : Alice   
+  │        │              └───────── scores:>ndarray 
+  │        │                                ├─────── 95 
+  │        │                                ├─────── 88 
+  │        │                                └─────── 76 
+  │        └───── -------.  ◆dict    
+  │                       ├─────────  name :  Bob    
+  │                       └───────── scores:>ndarray 
+  │                                         ├─────── 72 
+  │                                         ├─────── 85 
+  │                                         └─────── 90 
+  └── meta :◆dict 
+           ├───── created:2025-04-23 
+           └───── version:   1.2     
+
+--------------------------------------------------------
+```
 
 <br>
 
@@ -100,11 +127,11 @@ setprint(cm, keep_start=1)
 
 ## 4. ライブラリ別ベンチマーク（10 回平均）
 
-| ライブラリ | 実行時間 [ms] | 出力行数 | 構造可視性 |
-|------------|--------------|----------|------------|
-| **pprint** | 1.5 | 4  | ★☆☆☆☆ |
-| **rich.pretty** | 3.2 | 4  | ★★☆☆☆ |
-| **setprint** | 4.8 | 14 | ★★★★★ |
+| ライブラリ        | 実行時間 [ms] | 出力行数 | 構造可視性 |
+|-----------------|:------------:|:-------:|:--------:|
+| **pprint**      |      1.5     |    4    |   ★☆☆☆☆  |
+| **rich.pretty** |      3.2     |    4    |   ★★☆☆☆  |
+| **setprint**    |      4.8     |   14    |   ★★★★★  |
 
 ±数 ms のオーバーヘッドで **構造が丸見え**なら圧倒的にペイ。
 
@@ -112,13 +139,36 @@ setprint(cm, keep_start=1)
 
 ---
 
-## 5. API チートシート
+## 5. 👀 たった1つの関数だけでOK！
+`setprint` に関数は1つだけ。名前は `set_collection()`。この中に整形の全機能が詰まってます。<br>
+「難しいこと考えず、これを呼ぶだけ」でネストの深いリストも NumPy も全部見える化！
 
-| 関数 / 引数 | 概要 | 例 |
-|-------------|------|----|
-| `setprint(obj, keep_start=1, keeplen=None)` | 基本整形 | `setprint(arr, keep_start=2)` |
-| `pick_guideprint(obj, keys="asdw")` | WASD 風ナビで対話式選択 | `pick_guideprint(data)` |
-| `bloks_border_print(style='ascii')` | 罫線スタイル変更 | `bloks_border_print('light')` |
+```python
+from setprint import SetPrint
+
+# 整形対象のデータを渡してインスタンス生成
+list_data = SetPrint(datas)
+
+# 展開の方向やフォーマットの設定
+keep_settings = {
+    1: 'x',    # 第1次元をX方向に展開
+    3: 'yf',   # 第3次元をY方向 + flatten
+    4: 'f'     # 第4次元はフラット化
+}
+
+# 整形処理の実行
+format_texts = list_data.set_collection(
+    route='SLIM',
+    y_axis=False,
+    keep_settings=keep_settings,
+    verbose=False
+)
+
+# テキストとして保存（表示も可）
+with open('output.txt', 'w') as f:
+    for line in format_texts:
+        f.write(line + '\n')
+```
 
 <br>
 
@@ -126,11 +176,25 @@ setprint(cm, keep_start=1)
 
 ## 6. 実践 Tips 5 連発
 
-1. **巨大配列は `keeplen=10` で折りたたむ**  
-2. **pytest フック**で失敗時に自動可視化  
-3. VS Code スニペットで `print → setprint` ワンキー化  
-4. `highlight_null=True` で欠損値を赤色強調  
-5. `dict` + `np.ndarray` 混在設定ファイルのレビューに投入  
+1. **展開したい次元は `keep_settings` で柔軟に指定可能**  
+   - たとえば `{1: 'x', 3: 'yf', 4: 'f'}` のように、各次元に展開方向を割り当てられます。  
+   - `'x'`：X方向に展開  
+   - `'y'`：Y方向に展開（ネストを維持）  
+   - `'yf'`：Y方向に展開しつつ中身をフラット化（flatten）  
+   - `'f'`：**`'yf'` 実行後の次元に対して適用される追加フラット化。単独では機能しません**
+
+2. **構造の柱として Y軸ガイド線を表示（`y_axis=True`）**  
+   - ネストが深くても、縦の罫線で構造を見失わずに追うことができます。  
+   - `y_axis=False` にすればオフにもできる柔軟設計です。
+
+3. **整形結果は文字列リストで返されるため、ファイル保存やテキスト表示にそのまま使える**  
+   - `for line in format_texts:` のように各行を書き出すだけでログとして活用できます。
+
+4. **構造混在のデータでも可視化が破綻しない**  
+   - `dict` + `list` + `ndarray` のような複合構造でも、それぞれを展開・視覚化できます。
+
+5. **出力スタイルは `route='SLIM'` などで切り替え可能（簡潔モード）**  
+   - 今後の拡張を見越しつつも、すでにシンプルな表示モードに対応しています。
 
 <br>
 
@@ -170,3 +234,4 @@ gifsicle -O3 --lossy=40 -o pprint_vs_rich_vs_setprint.gif demo.gif
 - Colab デモ <https://colab.research.google.com/github/mtur2007/SetPrint/blob/main/notebooks/demo.ipynb>
 
 *Enjoy structural debugging!*
+
