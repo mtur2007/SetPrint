@@ -1,5 +1,5 @@
 
-# Why not pprint anymore?<br>Introducing SetPrint — Structural Debugging for Real Data
+# Why not pprint anymore?<br>Introducing SetPrint — <br>Structural Debugging for Real Data
 
 > When your data grows beyond a toy example, `pprint` starts to break.  
 > You see cut-off arrays. Flattened hierarchies. Lost context.  
@@ -19,8 +19,9 @@ That’s why I created **SetPrint** — a Python library that shows **structure,
 
 ## 🧪 Quick Colab Demo
 
-Want to see it in action? Try this demo notebook — no install needed.  
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Qs3xgB7pWxmOPtsWonyj29r1VMDwo6KF?usp=sharing)
+Want to see it in action? Try this demo notebook — no install needed.
+  
+🔗 [Try this notebook on Google Colab](https://colab.research.google.com/drive/1Qs3xgB7pWxmOPtsWonyj29r1VMDwo6KF?usp=sharing)
 
 <br>
 
@@ -85,7 +86,7 @@ Even at a glance, the structure is crystal clear.
 
 ```python
 rgb = np.random.randint(0, 255, size=(3, 3, 3))
-setprint(rgb, keep_settings={1: 'yf', 2: 'f'})
+set_collection ( route='SLIM', y_axis=False, keep_settings={1: 'yf', 2: 'f'} )
 ```
 ```txt
 keep_settings
@@ -110,9 +111,9 @@ You don’t just see the values—you see the **hierarchy**.
 
 ```python
 cm = np.array([[50, 2, 0, 0], [3, 45, 1, 0], [0, 4, 60, 5], [0, 0, 6, 70]])
-setprint(cm, keep_settings={1:'y', 2:'x'})
+set_collection ( route='SLIM', y_axis=False, keep_settings={1:'y', 2:'x'} )
 ```
-~~~txt
+```txt
 keep_settings
 ['y', 'x']
 ------------------------------
@@ -128,7 +129,7 @@ keep_settings
                   0  0  6  70 
 
 ------------------------------
-~~~
+```
 
 <br>
 
@@ -185,6 +186,11 @@ for line in formatted:
 pip install setprint
 ```
 
+<br>
+
+🎯 If you found it useful, please consider giving a ⭐ on GitHub!
+🐛 Bug reports, 💡 feature requests, and 📬 pull requests are all welcome!
+
 📎 GitHub: [mtur2007/SetPrint](https://github.com/mtur2007/SetPrint)  
 📘 PyPI: [setprint](https://pypi.org/project/setprint/)  
 🔍 Colab Demo: [Try on Colab](https://colab.research.google.com/drive/1Qs3xgB7pWxmOPtsWonyj29r1VMDwo6KF?usp=sharing)
@@ -192,6 +198,3 @@ pip install setprint
 ---
 
 *If you’ve ever said “I just want to see the damn structure” — SetPrint is for you.*
-
-SetPrint
-
