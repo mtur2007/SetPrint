@@ -1,3 +1,4 @@
+
 # SetPrint(ver, 0.3.2) – Easily Format and Display High-Dimensional Data!
 
 ## <> A Data Visualization Tool Capable of Properly Formatting 2D/NumPy Arrays and Image Data <>
@@ -20,6 +21,8 @@ Setprint extends Python’s built-in pprint so that not only lists and dictionar
     [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Qs3xgB7pWxmOPtsWonyj29r1VMDwo6KF?usp=sharing) ◁ Tap to open
 
     </div>
+
+
 
 - ### **Example Usage Template**
     ```python
@@ -537,6 +540,12 @@ The `keep_setting` parameter allows you to specify the display direction for eac
       keep_settings = {1:'yf',2:'f',3:'f'}
       ```
 
+    ### 💡 Note: About the application of flatten (`'f'`)
+    ```txt
+    ⚠️ 'f' stands for flatten, but it has no effect on its own.<br>
+    It is used to further flatten the contents of dimensions that have been expanded with 'yf'.
+    ```
+
 <br>
 
 ---
@@ -545,7 +554,7 @@ The `keep_setting` parameter allows you to specify the display direction for eac
 ### For large outputs, an additional feature allows you to display or hide the y-axis to help grasp the order of the parallel arrays.
 ```python
 format_texts = list_data.set_collection(route=True, y_axis=True/False, keep_settings=keep_settings)
-#                                                   ^^^^^^ ====:-----
+#                                                      ^^^^^^ ====:-----
 ```
 
 <br>

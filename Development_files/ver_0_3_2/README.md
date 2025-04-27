@@ -540,6 +540,12 @@ The `keep_setting` parameter allows you to specify the display direction for eac
       keep_settings = {1:'yf',2:'f',3:'f'}
       ```
 
+    ### 💡 Note: About the application of flatten (`'f'`)
+    ```txt
+    ⚠️ 'f' stands for flatten, but it has no effect on its own.<br>
+    It is used to further flatten the contents of dimensions that have been expanded with 'yf'.
+    ```
+
 <br>
 
 ---
