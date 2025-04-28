@@ -322,6 +322,8 @@ y_axis : False                                                                  
     視覚的にわかりやすい形式で出力する機能を提供します。<br>
     このメソッドを使用することで、データの次元に応じた最適な整形が可能です。<br>
 
+    > エラーがあった配列や、検査されていいない配列 ( [動作チェックシート](https://github.com/mtur2007/SetPrint/blob/main/Development_files/ver_0_3_2/run_check.md) にない配列 ) があった場合はお知らせください。
+    
    - #### 引数
 
         - **`route`** (bool or str): ルート表示を有効にするかどうか。
