@@ -22,7 +22,7 @@ NumPy配列や2Dデータ（画像データ含む）も適切に整形できる 
     [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Qs3xgB7pWxmOPtsWonyj29r1VMDwo6KF?usp=sharing) ◁ タップ
 
     </div>
-    
+
 - ### **雛形の実行例**
 
     ```python
@@ -319,6 +319,8 @@ y_axis : False                                                                  
     多次元リストや複雑なデータ構造を簡単に整列し、<br>
     視覚的にわかりやすい形式で出力する機能を提供します。<br>
     このメソッドを使用することで、データの次元に応じた最適な整形が可能です。<br>
+
+    > エラーがあった配列や、検査されていいない配列 ( [動作チェックシート](https://github.com/mtur2007/SetPrint/blob/main/Development_files/ver_0_3_2/run_check.md) にない配列 ) があった場合はお知らせください。
 
    - #### 引数
 
