@@ -3,7 +3,7 @@
 
 ## <> A Data Visualization Tool Capable of Properly Formatting 2D/NumPy Arrays and Image Data <>
 
----
+[![PyPI Downloads](https://static.pepy.tech/badge/setprint)](https://pepy.tech/projects/setprint)
 
 *Read this in [English](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README.md) or [日本語](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README_ja.md)*
 

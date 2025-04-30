@@ -2,7 +2,7 @@
 
 ## <> 2D/NumPy配列や画像データも適切に整形可能なデータ可視化ツール <>
 
----
+[![PyPI Downloads](https://static.pepy.tech/badge/setprint)](https://pepy.tech/projects/setprint)
 
 *Read this in [English](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README.md) or [日本語](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README_ja.md)*
 
