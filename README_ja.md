@@ -4,7 +4,12 @@
 
 [![PyPI Downloads](https://static.pepy.tech/badge/setprint)](https://pepy.tech/projects/setprint?timeRange=threeMonths&category=version&includeCIDownloads=true&granularity=daily&viewType=line&versions=0.3.2%2C0.3.1%2C0.2.2%2C0.1.13)
 
+---
+
 *Read this in [English](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README.md) or [日本語](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README_ja.md)*
+
+> 詳細なガイドや他のライブラリとの比較については、こちらの完全版記事をご覧ください：<br>
+🔹 [zenn] [深いネストが読めないあなたへ](https://zenn.dev/mtur/articles/1f87f6800a995a)
 
 ---
 setprint は、Python標準の pprint を拡張し、リストや辞書だけでなく、<br>

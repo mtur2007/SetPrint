@@ -5,7 +5,13 @@
 
 [![PyPI Downloads](https://static.pepy.tech/badge/setprint)](https://pepy.tech/projects/setprint?timeRange=threeMonths&category=version&includeCIDownloads=true&granularity=daily&viewType=line&versions=0.3.2%2C0.3.1%2C0.2.2%2C0.1.13)
 
+---
+
 *Read this in [English](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README.md) or [日本語](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README_ja.md)*
+
+> For a detailed guide and comparison with other libraries, check out the full article here:<br>
+🔹 [Dev.to] [Why not pprint anymore ?](https://dev.to/mtur2007/why-pprint-is-no-longer-enough-introducing-setprint-for-structural-debugging-733)<br>
+🔹 [Dev.to] [Best Alternative to pprint](https://dev.to/mtur2007/why-not-pprint-anymore-introducing-setprint-structural-debugging-for-real-data-3543)
 
 ---
 
