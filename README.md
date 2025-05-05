@@ -5,7 +5,6 @@
 
 [![PyPI Downloads](https://static.pepy.tech/badge/setprint)](https://pepy.tech/projects/setprint?timeRange=threeMonths&category=version&includeCIDownloads=true&granularity=daily&viewType=line&versions=0.3.2%2C0.3.1%2C0.2.2%2C0.1.13)
 
-
 ---
 
 *Read this in [English](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README.md) or [日本語](https://github.com/mtur2007/SetPrint/tree/main/Development_files/ver_0_3_2/README_ja.md)*
@@ -543,9 +542,9 @@ The `keep_setting` parameter allows you to specify the display direction for eac
       ```
   
   - **Setting Example**
-      ```python
-      keep_settings = {1:'yf',2:'f',3:'f'}
-      ```
+    ```python
+    keep_settings = {1:'yf',2:'f',3:'f'}
+    ```
 
     ### 💡 Note: About the application of flatten (`'f'`)
     ```txt
@@ -553,6 +552,24 @@ The `keep_setting` parameter allows you to specify the display direction for eac
     It is used to further flatten the contents of dimensions that have been expanded with 'yf'.
     ```
 
+  <br>
+
+  ---
+
+
+  ## 🚫 You cannot assign both `'y'` and `'x'` directions to the same dimension (i.e., mixed directions in a single depth level).
+
+  ### This is a clear **design decision** based on the following reasons:
+
+  - Mixing display directions breaks **spatial consistency**, which can lead to misinterpretation during debugging.
+
+  - SetPrint prioritizes **visual stability of structure** above all.
+
+  - This restriction preserves SetPrint’s core strength — **making structure visible**.
+
+  While we may consider experimental support for mixed directions with warnings in the future, for now, **each dimension must have a consistent direction setting**.
+
+  <br>
 <br>
 
 ---
