@@ -1076,6 +1076,13 @@ class SetPrint:
        
         return value,dict_key
 
+
+    '''
+    重複項目を除外して格納する方法、set型
+    mismatch_indices = set()
+    mismatch_indices.add( index[][] )
+    '''
+
     # [→:4] キープデータの整形
     def format_keep_data(self,route,X_keep_index,Y_keep_index):
         
