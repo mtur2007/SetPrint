@@ -88,7 +88,7 @@ NumPy配列や2Dデータ（画像データ含む）も適切に整形できる 
     <div align="center">
 
     > 🚀 **インストール不要のデモを Colab で試すことがでます。**  
-    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Qs3xgB7pWxmOPtsWonyj29r1VMDwo6KF?usp=sharing) ◁ タップ
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1RzR9d1RS7WXo4pUz8JzghGK4n9gJqqjH?usp=sharing) ◁ タップ
 
     </div>
 
